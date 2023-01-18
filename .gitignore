@@ -3,3 +3,4 @@ export/
 DONOTCOMPILE\
 APIStuff.hx
 .github/
+DONOTCOMPILE/
