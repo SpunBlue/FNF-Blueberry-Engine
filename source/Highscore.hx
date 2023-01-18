@@ -1,5 +1,6 @@
 package;
 
+import game.PlayState.SongData;
 import flixel.FlxG;
 
 class Highscore
@@ -53,7 +54,7 @@ class Highscore
 		FlxG.save.flush();
 	}
 
-	public static function getScore(song:String, diff:Int):Int
+	public static function getScore(song:String):Int
 	{
 		if (!songScores.exists(song))
 			setScore(song, 0);
@@ -61,12 +62,15 @@ class Highscore
 		return songScores.get(song);
 	}
 
-	public static function getWeekScore(week:Int, diff:Int):Int
+	public static function getWeekScore(songs:Array<String>):Int
 	{
-		if (!songScores.exists('week' + week))
-			setScore('week' + week, 0);
+		var score:Int = 0;
 
-		return songScores.get('week' + week);
+		for (song in songs){
+			score += getScore(song);
+		}
+
+		return score;
 	}
 
 	public static function load():Void

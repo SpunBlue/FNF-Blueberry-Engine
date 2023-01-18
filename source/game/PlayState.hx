@@ -1,5 +1,6 @@
 package game;
 
+import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.math.FlxRandom;
 import engine.modding.Stages;
 import engine.modding.Modding;
@@ -59,6 +60,7 @@ class PlayState extends MusicBeatState
 	var halloweenLevel:Bool = false;
 
 	private var vocals:FlxSound;
+	private var inst:FlxSoundAsset;
 
 	private var dad:Character;
 	private var gf:Character;
@@ -173,6 +175,25 @@ class PlayState extends MusicBeatState
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial');
+
+		if (songPlaylist[0].modID == null){
+			Modding.modLoaded = false;
+		}
+
+		if (SONG.needsVoices){
+			if (Modding.modLoaded){
+				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/' + PlayState.SONG.song));
+			}
+			else
+				vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+		}
+		else
+			vocals = new FlxSound();
+
+		if (Modding.modLoaded)
+			inst = Modding.retrieveAudio('Inst', 'songs/' + PlayState.SONG.song);
+		else
+			inst = Paths.inst(PlayState.SONG.song);
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -995,11 +1016,7 @@ class PlayState extends MusicBeatState
 		lastReportedPlayheadPosition = 0;
 
 		if (!paused){
-			if (Modding.modLoaded){
-				FlxG.sound.playMusic(Modding.retrieveAudio('Inst', 'songs/' + PlayState.SONG.song), 1, false);
-			}
-			else
-				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
+			FlxG.sound.playMusic(inst, 1, false);
 		}
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
@@ -1015,16 +1032,6 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(songData.bpm);
 
 		curSong = songData.song;
-
-		if (SONG.needsVoices){
-			if (Modding.modLoaded){
-				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/' + PlayState.SONG.song));
-			}
-			else
-				vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
-		}
-		else
-			vocals = new FlxSound();
 
 		FlxG.sound.list.add(vocals);
 
@@ -1670,16 +1677,15 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
-		if (SONG.validScore)
-		{
-			#if !switch
-			Highscore.saveScore(SONG.song, songScore);
-			#end
-		}
+
+		Highscore.saveScore(SONG.song, songScore);
 
 		trace("old playlist: " + songPlaylist);
 		songPlaylist.remove(songPlaylist[0]);
 		trace("new playlist: " + songPlaylist);
+
+		storyWeek = songPlaylist[0].week;
+		trace('Week:$storyWeek');
 
 		if (songPlaylist.length <= 0){
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -1689,11 +1695,6 @@ class PlayState extends MusicBeatState
 			songPlaylist = []; // reset the playlist lol
 
 			FlxG.switchState(new FreeplayState());
-
-			if (!isSingle && isValidWeek)
-			{
-				Highscore.saveWeekScore(storyWeek, campaignScore);
-			}
 		}
 		else{
 			trace('LOADING NEXT SONG');
@@ -1718,9 +1719,13 @@ class PlayState extends MusicBeatState
 				PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 			else if (Modding.modPreloaded != songPlaylist[0].modID){
 				Modding.preloadData(songPlaylist[0].modID);
+				Modding.curLoaded = songPlaylist[0].modID;
+				Modding.modLoaded = true;
 				PlayState.SONG = Song.loadModChart(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 			}
 			else{
+				Modding.curLoaded = songPlaylist[0].modID;
+				Modding.modLoaded = true;
 				PlayState.SONG = Song.loadModChart(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 			}
 			
@@ -2411,5 +2416,6 @@ class PlayState extends MusicBeatState
 
 typedef SongData = {
 	var songName:String;
+	var ?week:Int;
 	var ?modID:String;
 }

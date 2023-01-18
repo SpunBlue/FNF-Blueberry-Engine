@@ -34,10 +34,17 @@ class FreeplayState extends MusicBeatState
 {  
     var menuItems:FlxTypedGroup<MenuItem> = new FlxTypedGroup();
     var playIcons:FlxTypedGroup<HealthIcon> = new FlxTypedGroup();
+    var uiItems:FlxGroup = new FlxGroup();
 
+    var itemsLength:Int = 0;
     var curSelected:Int = 0;
     var selectedWeek:WeekData;
     var selectedModID:String;
+
+    var inSongMenu:Bool = false;
+
+    var camFollow:FlxSprite;
+    var scoreText:FlxText;
 
     override function create(){
         allowCamBeat = true;
@@ -45,12 +52,31 @@ class FreeplayState extends MusicBeatState
         super.create();
 
         var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+        bg.scrollFactor.set(0, 0);
 		add(bg);
+
+        camFollow = new FlxSprite().makeGraphic(32, 32, FlxColor.WHITE);
+        camFollow.screenCenter();
+
+        FlxG.camera.follow(camFollow, null, 0.06);
 
         generateMenu(getMenu('weeks'));
 
         add(menuItems);
         add(playIcons);
+
+        var leftBar = new FlxSprite(FlxG.width - 256, 0).makeGraphic(256, FlxG.height, FlxColor.BLACK);
+        leftBar.alpha = 0.75;
+        leftBar.scrollFactor.set(0, 0);
+        uiItems.add(leftBar);
+
+        scoreText = new FlxText(FlxG.width - 256, 5, 0, "", 32);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+        scoreText.scrollFactor.set(0, 0);
+
+        uiItems.add(scoreText);
+
+        add(uiItems);
     }
 
     override function update(elapsed:Float){
@@ -66,20 +92,31 @@ class FreeplayState extends MusicBeatState
 
         if (curSelected >= 1 && controls.DOWN_P)
             curSelected++;
-        else if(curSelected <= menuItems.members.length && controls.UP_P)
+        else if(curSelected <= itemsLength && controls.UP_P)
             curSelected--;
 
         if (curSelected <= 0)
             curSelected = 1;
-        else if (curSelected > menuItems.members.length)
-            curSelected = menuItems.members.length;
+        else if (curSelected > itemsLength)
+            curSelected = itemsLength;
 
         if (controls.UP_P)
-            trace(curSelected + ' ' + menuItems.members.length);
+            trace(curSelected + ' ' + itemsLength);
 
         for (item in menuItems){
 
-            if (curSelected == item.ID + 1 && controls.ACCEPT){
+            if (item != null && curSelected == item.ID + 1){
+                camFollow.y = item.y + 32;
+
+                if (item.type.toLowerCase() == 'week')
+                    scoreText.text = 'SCORE: ' + Highscore.getWeekScore(item.weekData.songs);
+                else if (item.type.toLowerCase() == 'song')
+                    scoreText.text = 'SCORE: ' + Highscore.getScore(item.text);
+                else
+                    scoreText.text = 'SCORE: N/A';
+            }
+
+            if (item != null && curSelected == item.ID + 1 && controls.ACCEPT){
 
                 if (item.type.toLowerCase() == 'week'){
                     selectedWeek = item.weekData;
@@ -91,13 +128,24 @@ class FreeplayState extends MusicBeatState
                 }
 
                 if (item.type.toLowerCase() == 'playall' || item.type.toLowerCase() == 'shuffle'){
-                    var mod:String = "";
-                    mod = menuItems.members[2].modID;
+                    var mod:String = selectedModID;
 
-                    for (item in menuItems.members){
-                        if (item != null && item.type.toLowerCase() == 'song'){
-                            PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: item.modID});
-                            trace(item.text);
+                    if (inSongMenu){
+                        for (item in menuItems.members){
+                            if (item != null && item.type.toLowerCase() == 'song'){
+                                PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: mod, week:selectedWeek.week});
+                                trace(item.text);
+                            }
+                        }
+                    }
+                    else{
+                        for (item in menuItems.members){
+                            if (item != null && item.type.toLowerCase() == 'week'){
+                                for (i in 0...item.weekData.songs.length){
+                                    PlayState.songPlaylist.push({songName: item.weekData.songs[i], modID: item.modID, week:item.weekData.week});
+                                    trace(item.text);
+                                }
+                            }
                         }
                     }
 
@@ -109,23 +157,22 @@ class FreeplayState extends MusicBeatState
                     else
                         PlayState.inShuffleMode = false;
         
-                    if (mod == null){
+                    if (PlayState.songPlaylist[0].modID == null){
                         Modding.modLoaded = false;
                         Modding.curLoaded = "";
 
                         PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
                     }
                     else{
-                        Modding.preloadData(item.modID);
+                        Modding.preloadData(mod);
                         Modding.modLoaded = true;
-                        Modding.curLoaded = item.modID;
+                        Modding.curLoaded = mod;
 
                         PlayState.SONG = Song.loadModChart(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
                     }
 
                     PlayState.isValidWeek = true;
-        
-                    PlayState.storyWeek = selectedWeek.week;
+                    
                     trace('CUR WEEK' + PlayState.storyWeek);
                     trace('PLAYLIST: ' + PlayState.songPlaylist);
         
@@ -148,7 +195,7 @@ class FreeplayState extends MusicBeatState
                         PlayState.SONG = Song.loadModChart(poop, poop);
                     }
                     
-                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: item.modID});
+                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: item.modID, week:selectedWeek.week});
 
                     LoadingState.loadAndSwitchState(new PlayState());
                 }
@@ -159,13 +206,24 @@ class FreeplayState extends MusicBeatState
             else
                 item.alpha = 0.75;
         }
+
+        if (FlxG.keys.justPressed.ESCAPE == true){
+            if (inSongMenu)
+                generateMenu(getMenu('weeks', true));
+            else
+                FlxG.switchState(new MainMenuState());
+        }
+
     }
 
-    function getMenu(type:String){
+    function getMenu(type:String, willLoadMenu:Bool = true){
         var thismenu:Array<MItemInf> = [];
 
         switch (type.toLowerCase()){
             case 'weeks':
+                thismenu.push({type:'playall', string: 'Play All'});
+                thismenu.push({type:'shuffle', string: 'Shuffle'});
+
                 var vanillaweeks:WeekJson = Json.parse(File.getContent(Paths.json('weeks', 'preload')));
         
                 for (week in vanillaweeks.weeks){
@@ -185,6 +243,9 @@ class FreeplayState extends MusicBeatState
                         }
                     }
                 }
+
+                if (willLoadMenu)
+                    inSongMenu = false;
             case 'songs':
                 thismenu.push({type:'playall', string: 'Play All'});
                 thismenu.push({type:'shuffle', string: 'Shuffle'});
@@ -192,6 +253,9 @@ class FreeplayState extends MusicBeatState
                 for (song in selectedWeek.songs){
                     thismenu.push({type: 'song', string: song, modID: selectedModID});
                 }
+
+                if (willLoadMenu)
+                    inSongMenu = true;
         }
 
         return thismenu;
@@ -225,12 +289,15 @@ class FreeplayState extends MusicBeatState
             if (item.type == 'week' && item.weekData != null){
                 var icon = new HealthIcon(weekData.icon, false, weekData.iconIsJson, weekData.isMod , 0, 24 );
                 icon.sprTracker = newItem;
+                icon.scrollFactor.set(1, 1);
                 icon.setGraphicSize(Std.int(icon.width * 0.6));
                 icon.updateHitbox();
     
                 playIcons.add(icon);
             }
         }
+
+        itemsLength = v;
     }
 
     function randomizeSongs(arr:Array<SongData>) {
