@@ -1,0 +1,14 @@
+# format: character:0xAARRGGBB
+bf:0xFF31B0D1
+bf-old:0xFFE9FF48
+dad:0xFFAF66CE
+gf:0xFFA5004D
+spooky:0xFFD57E00
+pico:0xFFB7D855
+mom:0xFFD8558E
+parents-christmas:0xFFAF66CE
+monster:0xFFF3FF6E
+senpai:0xFFFFAA6F
+spirit:0xFFFF3C6E
+tankman:0xFFE1E1E1
+face::0xFFA1A1A1

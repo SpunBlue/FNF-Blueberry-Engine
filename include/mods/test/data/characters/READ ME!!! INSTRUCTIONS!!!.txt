@@ -1,0 +1,6 @@
+Use testChar.json as a Template.
+
+Icon's get detected automatically, however this does mean you will have to name your icons:
+"icon-(json file name)" (Example: icon-amogus).
+
+JSON's aren't that hard people.

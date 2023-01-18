@@ -1,0 +1,82 @@
+{
+    "weeks": [
+        {
+            "name": "Week 1",
+            "songs": [
+                "Tutorial",
+                "Bopeebo",
+                "Fresh",
+                "Dadbattle"
+            ],
+    
+            "icon": "dad",
+            "iconIsJson": false,
+            "week": 1
+        },
+    
+        {
+            "name": "Week 2",
+            "songs": [
+                "Spookeez",
+                "South",
+                "Monster"
+            ],
+    
+            "icon": "spooky",
+            "iconIsJson": false,
+            "week": 2
+        },
+    
+        {
+            "name": "Week 3",
+            "songs": [
+                "Pico",
+                "Philly",
+                "Blammed"
+            ],
+    
+            "icon": "pico",
+            "iconIsJson": false,
+            "week": 3
+        },
+    
+        {
+            "name": "Week 4",
+            "songs": [
+                "Satin-panties",
+                "High",
+                "Milf"
+            ],
+    
+            "icon": "mom",
+            "iconIsJson": false,
+            "week": 4
+        },
+    
+        {
+            "name": "Week 5",
+            "songs": [
+                "Cocoa",
+                "Eggnog",
+                "Winter-horrorland"
+            ],
+    
+            "icon": "parents-christmas",
+            "iconIsJson": false,
+            "week": 5
+        },
+    
+        {
+            "name": "Week 6",
+            "songs": [
+                "Senpai",
+                "Roses",
+                "Thorns"
+            ],
+    
+            "icon": "senpai",
+            "iconIsJson": false,
+            "week": 6
+        }
+    ]
+}
