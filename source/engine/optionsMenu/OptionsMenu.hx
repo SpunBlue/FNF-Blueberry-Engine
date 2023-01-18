@@ -18,6 +18,8 @@ import engine.optionsMenu.TextOption;
 
 using StringTools;
 
+// Credit to DotZZ
+
 class OptionsMenu extends MusicBeatState {
 	var funnyOption:TextOption;
 	var background:FlxSprite;
@@ -30,7 +32,7 @@ class OptionsMenu extends MusicBeatState {
 	var optionsGroup:FlxTypedGroup<TextOption>;
 
 	var gameplayOptions:Array<Dynamic> = [ //display name, description, save variable name
-	    ['Ghost Tapping',"Disables missing once you press a key when a note is not there",'disableGhostTap'],
+	    ['Ghost Tapping',"Disables missing on bad input",'disableGhostTap'],
 	    ['Downscroll',"Sets the Notes position to the bottom",'downScroll'],
 	    ['Middlescroll',"Sets the Notes position to the middle",'middleScroll'],
 	    ['Botplay',"Allows a bot to play the game for you",'botplay'],
@@ -128,7 +130,6 @@ class OptionsMenu extends MusicBeatState {
 				optionDetails.text = graphicsOptions[curSelected][1];
 			default:
 				optionDetails.text = "";
-				optionDetails.text = '';
 		}
 		//optionDetails.text = curOptions[curSelected][1];
 	}
@@ -191,7 +192,8 @@ class OptionsMenu extends MusicBeatState {
 				engine.OptionsData.dumpData();
 				engine.OptionsData.loadData();
 
-				optionsGroup.members[curSelected].refreshText(Reflect.getProperty(engine.OptionsData,curOptions[curSelected][0]),Reflect.getProperty(engine.OptionsData,curOptions[curSelected][2]));
+				optionsGroup.members[curSelected].refreshText(Reflect.getProperty(engine.OptionsData,curOptions[curSelected][0]),
+				Reflect.getProperty(engine.OptionsData,curOptions[curSelected][2]));
 
 				trace('Option State: ${Reflect.getProperty(engine.OptionsData,curOptions[curSelected][2])}'); 
 
