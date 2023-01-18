@@ -28,8 +28,6 @@ import flixel.text.FlxText;
 
 using StringTools;
 
-// STAWP!1
-
 class FreeplayState extends MusicBeatState
 {  
     var menuItems:FlxTypedGroup<MenuItem> = new FlxTypedGroup();
@@ -76,16 +74,16 @@ class MenuItem extends FlxText{
     public var modID:String;
 
 
-    public function new(x:Float, y:Float, text:String, type:String, ?weekData:WeekData, ?modID:String, size:Int = 64, facing:FlxTextAlign = LEFT){
+    public function new(x:Float, y:Float, text:String, type:Dynamic, ?weekData:WeekData, ?modID:String, size:Int = 64, facing:FlxTextAlign = LEFT){
         super(x, y);
         this.text = text;
         this.type = type;
         this.setFormat(Paths.font("PhantomMuff.ttf"), size, FlxColor.WHITE, facing);
         setBorderStyle(OUTLINE, FlxColor.BLACK, 4, 2);
 
-        if (type.toLowerCase() == 'week' || type.toLowerCase() == 'customweek'){
+        if (weekData != null)
             this.weekData = weekData;
+        if (modID != null)
             this.modID = modID;
-        }
     }
 }
