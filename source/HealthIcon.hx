@@ -12,12 +12,14 @@ class HealthIcon extends FlxSprite
 	 */
 	public var sprTracker:FlxObject;
 	var sprOff:Int = 0;
+	var sprYOff:Int = 0;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false, isJson:Bool = false, isMod:Bool = false, ?sprOffset:Int)
+	public function new(char:String = 'bf', isPlayer:Bool = false, isJson:Bool = false, isMod:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
 	{
 		super();
 
 		sprOff = sprOffset;
+		sprYOff = sprYOffset;
 
 		if (isJson && isMod && FileSystem.exists(Modding.getFilePath('icon-$char.png', 'images/icons'))){
 			loadGraphic(Modding.retrieveImage('icon-$char', 'images/icons'), true, 150, 150);
@@ -73,6 +75,6 @@ class HealthIcon extends FlxSprite
 		super.update(elapsed);
 
 		if (sprTracker != null)
-			setPosition(sprTracker.x + (sprTracker.width + 10) + sprOff, sprTracker.y - 30);
+			setPosition(sprTracker.x + (sprTracker.width + 10) + sprOff, (sprTracker.y - 30) + sprYOff);
 	}
 }

@@ -1677,12 +1677,16 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
+		trace("old playlist: " + songPlaylist);
 		songPlaylist.remove(songPlaylist[0]);
+		trace("new playlist: " + songPlaylist);
 
 		if (songPlaylist.length <= 0){
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			FlxG.sound.music.fadeIn(0.5, 0, 1);
 			Conductor.changeBPM(102);
+
+			songPlaylist = []; // reset the playlist lol
 
 			FlxG.switchState(new FreeplayState());
 
@@ -1693,6 +1697,9 @@ class PlayState extends MusicBeatState
 		}
 		else{
 			trace('LOADING NEXT SONG');
+
+			var random:FlxRandom = new FlxRandom();
+			var randomInt:Int = random.int(0, songPlaylist.length - 1);
 
 			if (SONG.song.toLowerCase() == 'eggnog')
 			{
@@ -1705,42 +1712,23 @@ class PlayState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 			}
 
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			prevCamFollow = camFollow;
+			trace(songPlaylist[0].songName.toLowerCase());
 
-			if (inShuffleMode == false){
-				trace(songPlaylist[0].songName.toLowerCase());
-
-				if (songPlaylist[0].modID == null)
-					PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
-				else if (Modding.modPreloaded != songPlaylist[0].modID){
-					Modding.preloadData(songPlaylist[0].modID);
-					PlayState.SONG = Song.loadModChart(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
-				}
-				else{
-					PlayState.SONG = Song.loadModChart(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
-				}
+			if (songPlaylist[0].modID == null)
+				PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
+			else if (Modding.modPreloaded != songPlaylist[0].modID){
+				Modding.preloadData(songPlaylist[0].modID);
+				PlayState.SONG = Song.loadModChart(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 			}
 			else{
-				var random:FlxRandom = new FlxRandom();
-
-				var randomInt:Int = random.int(0, songPlaylist.length - 1);
-
-				trace(songPlaylist[randomInt].songName.toLowerCase());
-
-				if (songPlaylist[randomInt].modID == null)
-					PlayState.SONG = Song.loadFromJson(songPlaylist[randomInt].songName.toLowerCase(), songPlaylist[randomInt].songName);
-				else if (Modding.modPreloaded != songPlaylist[randomInt].modID){
-					Modding.preloadData(songPlaylist[randomInt].modID);
-					PlayState.SONG = Song.loadModChart(songPlaylist[randomInt].songName.toLowerCase(), songPlaylist[randomInt].songName);
-				}
-				else{
-					PlayState.SONG = Song.loadModChart(songPlaylist[randomInt].songName.toLowerCase(), songPlaylist[randomInt].songName);
-				}
+				PlayState.SONG = Song.loadModChart(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 			}
 			
 			FlxG.sound.music.stop();
+
+			FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
+			prevCamFollow = camFollow;
 
 			LoadingState.loadAndSwitchState(new PlayState());
 		}
