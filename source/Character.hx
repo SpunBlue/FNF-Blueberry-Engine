@@ -714,11 +714,12 @@ class Character extends FlxSprite
 		}
 
 		if (isMod){
+			trace('$curCharacter Loaded as Json (Mod)');
 			isModded = true;
 			jsonCharacter = true;
 		}
 		else{
-			trace('$curCharacter Custom Pre-built Character Detected, Some features may not work or will crash... Probably.');
+			trace('$curCharacter Loaded as Json (Non-Mod)');
 			jsonCharacter = true;
 		}
 
@@ -746,4 +747,5 @@ typedef AnimArray = {
 	var name:String;
 	var offsets:Array<Int>;
 	var ?fps:Int;
+	var ?indices:Array<Int>;
 }

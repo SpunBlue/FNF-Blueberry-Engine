@@ -178,6 +178,7 @@ class PlayState extends MusicBeatState
 
 		if (songPlaylist[0].modID == null){
 			Modding.modLoaded = false;
+			trace('no mod loaded L');
 		}
 
 		if (SONG.needsVoices){
@@ -194,6 +195,8 @@ class PlayState extends MusicBeatState
 			inst = Modding.retrieveAudio('Inst', 'songs/' + PlayState.SONG.song);
 		else
 			inst = Paths.inst(PlayState.SONG.song);
+
+		trace(inst);
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -514,9 +517,10 @@ class PlayState extends MusicBeatState
 		}
 		else{
 			var stagelol = engine.modding.Stages;
-			var stageArray:Array<StageObjects> = Stages.stageJsonArray;
 
 			stagelol.init(SONG.stage);
+
+			var stageArray:Array<StageObjects> = Stages.stageJsonArray;
 
 			curStage = stagelol.stageName;
 
@@ -723,12 +727,12 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		iconP1 = new HealthIcon(SONG.player1, true, boyfriend.jsonCharacter, boyfriend.isModded);
+		iconP1 = new HealthIcon(SONG.player1, true, boyfriend.jsonCharacter);
 		iconP1.y = (healthBar.y - (iconP1.height / 2)) + 32;
 		iconP1.alpha = 0.65;
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false, dad.jsonCharacter, dad.isModded);
+		iconP2 = new HealthIcon(SONG.player2, false, dad.jsonCharacter);
 		iconP2.y = (healthBar.y - (iconP2.height / 2)) + 32;
 		iconP2.alpha = 0.65;
 		add(iconP2);
@@ -1684,7 +1688,9 @@ class PlayState extends MusicBeatState
 		songPlaylist.remove(songPlaylist[0]);
 		trace("new playlist: " + songPlaylist);
 
-		storyWeek = songPlaylist[0].week;
+		if (songPlaylist[0].week != null)
+			storyWeek = songPlaylist[0].week;
+		
 		trace('Week:$storyWeek');
 
 		if (songPlaylist.length <= 0){
@@ -2242,14 +2248,10 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
+
 		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
 		{
 			resyncVocals();
-		}
-
-		if (dad.curCharacter == 'spooky' && curStep % 4 == 2)
-		{
-			// dad.dance();
 		}
 	}
 

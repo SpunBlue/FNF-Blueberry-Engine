@@ -7,7 +7,8 @@
             ],
     
             "icon": "dad",
-            "week": -1
+            "week": -1,
+            "isMod": true
         }
     ]
 }

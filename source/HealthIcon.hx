@@ -14,14 +14,16 @@ class HealthIcon extends FlxSprite
 	var sprOff:Int = 0;
 	var sprYOff:Int = 0;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false, isJson:Bool = false, isMod:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
+	public function new(char:String = 'bf', isPlayer:Bool = false, isJson:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
 	{
 		super();
 
 		sprOff = sprOffset;
 		sprYOff = sprYOffset;
 
-		if (isJson && isMod && FileSystem.exists(Modding.getFilePath('icon-$char.png', 'images/icons'))){
+		trace('char: $char isJson: $isJson');
+
+		if (isJson && FileSystem.exists(Modding.getFilePath('icon-$char.png', 'images/icons'))){
 			loadGraphic(Modding.retrieveImage('icon-$char', 'images/icons'), true, 150, 150);
 			antialiasing = true;
 
@@ -29,7 +31,7 @@ class HealthIcon extends FlxSprite
 
 			animation.play(char);
 		}
-		else if (isJson && !isMod && FileSystem.exists('assets/shared/images/icons/icon-$char.png')){
+		else if (isJson && FileSystem.exists('assets/shared/images/icons/icon-$char.png')){
 			loadGraphic(Paths.image('icons/icon-$char', 'shared'), true, 150, 150);
 			antialiasing = true;
 

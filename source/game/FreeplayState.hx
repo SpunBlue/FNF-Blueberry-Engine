@@ -195,7 +195,7 @@ class FreeplayState extends MusicBeatState
                         PlayState.SONG = Song.loadModChart(poop, poop);
                     }
                     
-                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: item.modID, week:selectedWeek.week});
+                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: selectedModID, week:selectedWeek.week});
 
                     LoadingState.loadAndSwitchState(new PlayState());
                 }
@@ -287,7 +287,7 @@ class FreeplayState extends MusicBeatState
             v++;
 
             if (item.type == 'week' && item.weekData != null){
-                var icon = new HealthIcon(weekData.icon, false, weekData.iconIsJson, weekData.isMod , 0, 24 );
+                var icon = new HealthIcon(weekData.icon, false, weekData.iconIsJson, 0, 24 );
                 icon.sprTracker = newItem;
                 icon.scrollFactor.set(1, 1);
                 icon.setGraphicSize(Std.int(icon.width * 0.6));
