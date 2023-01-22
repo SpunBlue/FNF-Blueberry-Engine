@@ -36,11 +36,11 @@ class OptionsMenu extends MusicBeatState {
 	    ['Downscroll',"Sets the Notes position to the bottom",'downScroll'],
 	    ['Middlescroll',"Sets the Notes position to the middle",'middleScroll'],
 	    ['Botplay',"Allows a bot to play the game for you",'botplay'],
+	    ['Debug Mode', "Enables full-logging to the Terminal", 'debugMode']
     ];
     public static var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Distractions',"Toggle Distractions",'noDistractions'],
-	    ['Epilepsy',"Disables most flashing lights",'epilepsyMode'],
-	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
+	    ['Epilepsy',"Disables most flashing lights",'epilepsyMode']
     ];
     var sections:Array<Dynamic> = [
 		['Keybinds','default'],
@@ -194,7 +194,7 @@ class OptionsMenu extends MusicBeatState {
 	}
 
 	function optionSelected(){
-		trace('option type: ' + optionsGroup.members[curSelected].funnyOptionType + ' option text: '+ optionsGroup.members[curSelected].text);
+		Engine.debugPrint('option type: ' + optionsGroup.members[curSelected].funnyOptionType + ' option text: '+ optionsGroup.members[curSelected].text);
 
 		switch (optionsGroup.members[curSelected].funnyOptionType){ // messy but in my opinion it works better than the old system
 			case 0:
@@ -206,7 +206,7 @@ class OptionsMenu extends MusicBeatState {
 				optionsGroup.members[curSelected].refreshText(Reflect.getProperty(engine.OptionsData,curOptions[curSelected][0]),
 				Reflect.getProperty(engine.OptionsData,curOptions[curSelected][2]));
 
-				trace('Option State: ${Reflect.getProperty(engine.OptionsData,curOptions[curSelected][2])}'); 
+				Engine.debugPrint('Option State: ${Reflect.getProperty(engine.OptionsData,curOptions[curSelected][2])}'); 
 
 				generateOptions(curMenu,false); //reload the current menu
 			case 1:
@@ -231,7 +231,7 @@ class OptionsMenu extends MusicBeatState {
 						FlxG.sound.play(Paths.sound('badnoise3', 'shared'));
 				}
 			default:
-				trace('error lmao');
+				Engine.debugPrint('error lmao');
 		}
 	}
 }
