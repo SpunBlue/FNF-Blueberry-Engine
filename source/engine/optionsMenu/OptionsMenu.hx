@@ -31,13 +31,13 @@ class OptionsMenu extends MusicBeatState {
 	
 	var optionsGroup:FlxTypedGroup<TextOption>;
 
-	var gameplayOptions:Array<Dynamic> = [ //display name, description, save variable name
+	public static var gameplayOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Ghost Tapping',"Disables missing on bad input",'disableGhostTap'],
 	    ['Downscroll',"Sets the Notes position to the bottom",'downScroll'],
 	    ['Middlescroll',"Sets the Notes position to the middle",'middleScroll'],
 	    ['Botplay',"Allows a bot to play the game for you",'botplay'],
     ];
-    var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
+    public static var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Distractions',"Toggle Distractions",'noDistractions'],
 	    ['Epilepsy',"Disables most flashing lights",'epilepsyMode'],
 	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
