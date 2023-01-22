@@ -8,6 +8,7 @@ class OptionsData
     public static var downScroll = false;
     public static var middleScroll = false;
     public static var botplay = false;
+    public static var debugMode = false;
 
     public static var noDistractions = false;
     public static var disableOutdatedScreen = false;
@@ -49,6 +50,9 @@ class OptionsData
         if (FlxG.save.data.disableOutdatedScreen != null)
         {
             disableOutdatedScreen = FlxG.save.data.disableOutdatedScreen;
+        }
+        if (FlxG.save.data.debugMode != null){
+            debugMode = FlxG.save.data.debugMode;
         }
     }
 }

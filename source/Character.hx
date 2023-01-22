@@ -1,5 +1,6 @@
 package;
 
+import engine.Engine;
 import sys.io.File;
 import sys.FileSystem;
 import haxe.Json;
@@ -718,12 +719,12 @@ class Character extends FlxSprite
 		}
 
 		if (isMod){
-			trace('$curCharacter Loaded as Json (Mod)');
+			Engine.debugPrint('$curCharacter Loaded as Json (Mod)');
 			isModded = true;
 			jsonCharacter = true;
 		}
 		else{
-			trace('$curCharacter Loaded as Json (Non-Mod)');
+			Engine.debugPrint('$curCharacter Loaded as Json (Non-Mod)');
 			jsonCharacter = true;
 		}
 

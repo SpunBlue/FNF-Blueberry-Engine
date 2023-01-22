@@ -1,5 +1,6 @@
 package game;
 
+import engine.Engine;
 import sys.io.File;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.math.FlxRandom;
@@ -158,7 +159,7 @@ class PlayState extends MusicBeatState
 			FlxG.sound.music.stop();
 
 		if (songPlaylist.length <= 1){
-			trace('In single mode!');
+			Engine.debugPrint('In single mode!');
 			isSingle = true;
 		}
 
@@ -180,7 +181,7 @@ class PlayState extends MusicBeatState
 
 		if (songPlaylist[0].modID == null){
 			Modding.modLoaded = false;
-			trace('no mod loaded L');
+			Engine.debugPrint('no mod loaded L');
 		}
 
 		if (SONG.needsVoices){
@@ -198,7 +199,7 @@ class PlayState extends MusicBeatState
 		else
 			inst = Paths.inst(PlayState.SONG.song);
 
-		trace(inst);
+		Engine.debugPrint(inst);
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -276,7 +277,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		else{
-			trace('Stage is null or is equal to "stage"');
+			Engine.debugPrint('Stage is null or is equal to "stage"');
 			isCustomStage = false;
 		}
 
@@ -552,7 +553,7 @@ class PlayState extends MusicBeatState
 							stageObject.animation.addByIndices(object.name, object.xmlanim, object.indices, "", object.fps, object.loop);
 
 							if (stageDebug)
-								trace('Added animation by Indices in ' + object.name);
+								Engine.debugPrint('Added animation by Indices in ' + object.name);
 						}
 					}
 					
@@ -645,7 +646,7 @@ class PlayState extends MusicBeatState
 		if (SONG.song.toLowerCase() != 'stress')
 			boyfriend = new Boyfriend(770, 450, SONG.player1);
 		else{
-			trace('Character forced to default BF because i am too lazy to modify the chart');
+			Engine.debugPrint('Character forced to default BF because i am too lazy to modify the chart');
 			boyfriend = new Boyfriend(770, 450, 'bf');
 		}
 
@@ -1171,7 +1172,7 @@ class PlayState extends MusicBeatState
 			daBeats += 1;
 		}
 
-		// trace(unspawnNotes.length);
+		// Engine.debugPrint(unspawnNotes.length);
 		// playerCounter += 1;
 
 		unspawnNotes.sort(sortByShit);
@@ -1450,7 +1451,7 @@ class PlayState extends MusicBeatState
 					songTime = (songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
 					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
+					// Engine.debugPrint('MISSED FRAME');
 				}
 			}
 
@@ -1462,7 +1463,7 @@ class PlayState extends MusicBeatState
 		{
 			if (curBeat % 4 == 0)
 			{
-				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
+				// Engine.debugPrint(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
 			}
 
 			if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
@@ -1729,14 +1730,14 @@ class PlayState extends MusicBeatState
 
 		Highscore.saveScore(SONG.song, songScore);
 
-		trace("old playlist: " + songPlaylist);
+		Engine.debugPrint("old playlist: " + songPlaylist);
 		songPlaylist.remove(songPlaylist[0]);
-		trace("new playlist: " + songPlaylist);
+		Engine.debugPrint("new playlist: " + songPlaylist);
 
 		if (songPlaylist != null && songPlaylist[0] != null && songPlaylist[0].week != null && songPlaylist != [])
 			storyWeek = songPlaylist[0].week;
 
-		trace('Week:$storyWeek');
+		Engine.debugPrint('Week:$storyWeek');
 
 		if (songPlaylist.length <= 0){
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -1748,7 +1749,7 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(new FreeplayState());
 		}
 		else{
-			trace('LOADING NEXT SONG');
+			Engine.debugPrint('LOADING NEXT SONG');
 
 			var random:FlxRandom = new FlxRandom();
 			var randomInt:Int = random.int(0, songPlaylist.length - 1);
@@ -1764,7 +1765,7 @@ class PlayState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 			}
 
-			trace(songPlaylist[0].songName.toLowerCase());
+			Engine.debugPrint(songPlaylist[0].songName.toLowerCase());
 
 			if (songPlaylist[0].modID == null)
 				PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
@@ -2480,7 +2481,7 @@ class PlayState extends MusicBeatState
 		var rPercent:Float = FlxMath.roundDecimal(ratingPercent * 100, 2);
 
 		if (FlxG.keys.anyJustPressed([X]))
-			trace(ratingPercent);
+			Engine.debugPrint('' + ratingPercent);
 
 		if (Math.isNaN(ratingPercent))
 			return '???%';

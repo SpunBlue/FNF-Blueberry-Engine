@@ -1,5 +1,6 @@
 package;
 
+import engine.Engine;
 import flixel.FlxObject;
 import sys.FileSystem;
 import engine.modding.Modding;
@@ -21,7 +22,7 @@ class HealthIcon extends FlxSprite
 		sprOff = sprOffset;
 		sprYOff = sprYOffset;
 
-		trace('char: $char');
+		Engine.debugPrint('char: $char');
 
 		antialiasing = true;
 

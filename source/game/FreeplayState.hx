@@ -1,5 +1,6 @@
 package game;
 
+import engine.Engine;
 import game.PlayState.SongData;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup;
@@ -107,7 +108,7 @@ class FreeplayState extends MusicBeatState
             curSelected = itemsLength;
 
         if (controls.UP_P)
-            trace(curSelected + ' ' + itemsLength);
+            Engine.debugPrint(curSelected + ' ' + itemsLength);
 
         for (item in menuItems){
 
@@ -140,7 +141,7 @@ class FreeplayState extends MusicBeatState
                         for (item in menuItems.members){
                             if (item != null && item.type.toLowerCase() == 'song'){
                                 PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: mod, week:selectedWeek.week});
-                                trace(item.text);
+                                Engine.debugPrint(item.text);
                             }
                         }
                     }
@@ -149,7 +150,7 @@ class FreeplayState extends MusicBeatState
                             if (item != null && item.type.toLowerCase() == 'week'){
                                 for (i in 0...item.weekData.songs.length){
                                     PlayState.songPlaylist.push({songName: item.weekData.songs[i], modID: item.modID, week:item.weekData.week});
-                                    trace(item.text);
+                                    Engine.debugPrint(item.text);
                                 }
                             }
                         }
@@ -182,8 +183,8 @@ class FreeplayState extends MusicBeatState
                     if (PlayState.songPlaylist[0].week != null)
                         PlayState.storyWeek = PlayState.songPlaylist[0].week;
                     
-                    trace('CUR WEEK' + PlayState.storyWeek);
-                    trace('PLAYLIST: ' + PlayState.songPlaylist);
+                    Engine.debugPrint('CUR WEEK' + PlayState.storyWeek);
+                    Engine.debugPrint('PLAYLIST: ' + PlayState.songPlaylist);
         
                     LoadingState.loadAndSwitchState(new PlayState());
                 }
