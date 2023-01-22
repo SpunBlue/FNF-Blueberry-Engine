@@ -1,5 +1,6 @@
 package engine.modding;
 
+import game.PlayState;
 import haxe.Json;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxSprite;
@@ -20,6 +21,14 @@ class Stages{
 
         stageArray = stageJson.objects;
     }
+
+    static public function reset(){
+        stageJson = null;
+        stageArray = [];
+        stageName = null;
+
+        PlayState.curStage = '';
+    }
 }
 
 class StageObject extends FlxSprite{
@@ -36,6 +45,10 @@ typedef StageObjectJson = {
     var ?name:String;
     var objects:Array<StageObj>;
     var ?disableAntialiasing:Bool;
+    var ?camZoom:Float;
+    var ?bfPosition:Array<Int>;
+    var ?gfPosition:Array<Int>;
+    var ?dadPosition:Array<Int>;
 }
 
 typedef StageObj = {

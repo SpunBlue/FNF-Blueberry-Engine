@@ -534,6 +534,9 @@ class PlayState extends MusicBeatState
 			curStage = stagelol.stageName;
 			FlxG.camera.antialiasing = !stagelol.stageJson.disableAntialiasing;
 
+			if (stagelol.stageJson.camZoom != null && stagelol.stageJson.camZoom > 0)
+				defaultCamZoom = stagelol.stageJson.camZoom;
+
 			for (object in stageArray){
 				if (object != null){
 					var stageObject:StageObject = new StageObject(object.position[0], object.position[1], object);
@@ -694,6 +697,23 @@ class PlayState extends MusicBeatState
 		add(boyfriendGroup);
 
 		add(layer2);
+
+		if (Stages.stageJson != null){
+			if (Stages.stageJson.bfPosition != null && Stages.stageJson.bfPosition != []){
+				boyfriend.x = Stages.stageJson.bfPosition[0];
+				boyfriend.y = Stages.stageJson.bfPosition[1];
+			}
+	
+			if (Stages.stageJson.gfPosition != null && Stages.stageJson.gfPosition != []){
+				gf.x = Stages.stageJson.gfPosition[0];
+				gf.y = Stages.stageJson.gfPosition[1];
+			}
+	
+			if (Stages.stageJson.dadPosition != null && Stages.stageJson.dadPosition != []){
+				dad.x = Stages.stageJson.dadPosition[0];
+				dad.y = Stages.stageJson.dadPosition[1];
+			}
+		}
 
 		var doof:DialogueBox = new DialogueBox(false, dialogue);
 		// doof.x += 70;
@@ -1733,6 +1753,8 @@ class PlayState extends MusicBeatState
 		Engine.debugPrint("old playlist: " + songPlaylist);
 		songPlaylist.remove(songPlaylist[0]);
 		Engine.debugPrint("new playlist: " + songPlaylist);
+
+		Stages.reset();
 
 		if (songPlaylist != null && songPlaylist[0] != null && songPlaylist[0].week != null && songPlaylist != [])
 			storyWeek = songPlaylist[0].week;

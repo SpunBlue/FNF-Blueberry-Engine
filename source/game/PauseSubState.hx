@@ -1,5 +1,7 @@
 package game;
 
+import engine.Engine;
+import engine.modding.Stages;
 import engine.modding.Modding;
 import Controls.Control;
 import flixel.FlxG;
@@ -129,16 +131,24 @@ class PauseSubState extends MusicBeatSubstate
 				case "Resume":
 					close();
 				case "Restart Song":
+					Stages.reset();
+
 					FlxG.resetState();
 				case "Exit to menu":
+					Stages.reset();
+
 					FlxG.switchState(new MainMenuState());
 				case "Charter":
+					Stages.reset();
+
 					FlxG.switchState(new ChartingState());
 				case "Animation Debug":
+					Stages.reset();
 					FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
 				case 'Reload Data':
-					Modding.modPreloaded = null;
+					Engine.resetModding(false);
 					Modding.preloadData(Modding.curLoaded);
+
 					FlxG.resetState();
 			}
 		}
