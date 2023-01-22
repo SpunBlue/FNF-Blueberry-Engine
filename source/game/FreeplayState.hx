@@ -90,10 +90,16 @@ class FreeplayState extends MusicBeatState
         if (Conductor.bpm != 102)
             Conductor.changeBPM(102);
 
-        if (curSelected >= 1 && controls.DOWN_P)
+        if (curSelected >= 1 && controls.DOWN_P){
+            FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+
             curSelected++;
-        else if(curSelected <= itemsLength && controls.UP_P)
+        }
+        else if(curSelected <= itemsLength && controls.UP_P){
+            FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+
             curSelected--;
+        }
 
         if (curSelected <= 0)
             curSelected = 1;
@@ -164,14 +170,17 @@ class FreeplayState extends MusicBeatState
                         PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
                     }
                     else{
-                        Modding.preloadData(mod);
+                        Modding.preloadData(PlayState.songPlaylist[0].modID);
                         Modding.modLoaded = true;
-                        Modding.curLoaded = mod;
+                        Modding.curLoaded = PlayState.songPlaylist[0].modID;
 
                         PlayState.SONG = Song.loadModChart(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
                     }
 
                     PlayState.isValidWeek = true;
+
+                    if (PlayState.songPlaylist[0].week != null)
+                        PlayState.storyWeek = PlayState.songPlaylist[0].week;
                     
                     trace('CUR WEEK' + PlayState.storyWeek);
                     trace('PLAYLIST: ' + PlayState.songPlaylist);
@@ -197,6 +206,8 @@ class FreeplayState extends MusicBeatState
                     
                     PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: selectedModID, week:selectedWeek.week});
 
+                    PlayState.storyWeek = selectedWeek.week;
+
                     LoadingState.loadAndSwitchState(new PlayState());
                 }
             }
@@ -208,8 +219,10 @@ class FreeplayState extends MusicBeatState
         }
 
         if (FlxG.keys.justPressed.ESCAPE == true){
-            if (inSongMenu)
+            if (inSongMenu){
                 generateMenu(getMenu('weeks', true));
+                curSelected = 0;
+            }
             else
                 FlxG.switchState(new MainMenuState());
         }
@@ -287,13 +300,19 @@ class FreeplayState extends MusicBeatState
             v++;
 
             if (item.type == 'week' && item.weekData != null){
-                var icon = new HealthIcon(weekData.icon, false, weekData.iconIsJson, 0, 24 );
+                if (item.modID != null || item.modID != '')
+                    Modding.curLoaded = item.modID;
+
+                var icon = new HealthIcon(weekData.icon, false, 0, 24 );
                 icon.sprTracker = newItem;
                 icon.scrollFactor.set(1, 1);
                 icon.setGraphicSize(Std.int(icon.width * 0.6));
                 icon.updateHitbox();
     
                 playIcons.add(icon);
+
+                if (Modding.curLoaded != null || Modding.curLoaded != '')
+                    Modding.curLoaded = null;
             }
         }
 

@@ -49,31 +49,37 @@ class Modding {
         }
     }
 
-    public static function retrieveImage(assetid:String, library:String = 'images'){
-        var asset = assetid.toLowerCase() + '.IMAGEASSET';
-        var data:Dynamic = null;
-
-        for (file in preloadedData){
-            if (file != null && file.id == asset){
-                trace("found preloaded data of type: " + asset);
-                
-                if (file.data != null){
-                    data = file.data;
-                }
-                else{
-                    trace('data is null wtf???');
+    public static function retrieveImage(assetid:String, library:String = 'images', ?type:String = 'CharIMGASSET'){
+        if (type != 'StageIMGASSET'){
+            var asset = assetid.toLowerCase() + '.$type';
+            var data:Dynamic = null;
+    
+            for (file in preloadedData){
+                if (file != null && file.id == asset){
+                    trace("found preloaded data of type: " + asset);
+                    
+                    if (file.data != null){
+                        data = file.data;
+                    }
+                    else{
+                        trace('data is null wtf???');
+                    }
                 }
             }
-        }
-
-        if (data != null){
-            var returnData:FlxGraphic = data;
-
-            return returnData;
+    
+            if (data != null){
+                var returnData:FlxGraphic = data;
+    
+                return returnData;
+            }
+            else{
+                trace("couldn't find preloaded data of type: " + asset);
+                return FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$curLoaded/$library/$assetid.png'), false);
+            }
         }
         else{
-            trace("couldn't find preloaded data of type: " + asset);
-            return FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$curLoaded/$library/$assetid.png'), false);
+            trace("Stage Asset requested of: " + assetid);
+            return FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$curLoaded/images/$assetid'), false);
         }
     }
     
@@ -179,7 +185,7 @@ class Modding {
                     var funniAsset:FlxGraphic = FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$mod/images/characters/$file'), false, '$fileName');
                     funniAsset.persist = true;
 
-                    preloadedData.push({id: '$fileName.IMAGEASSET', data: funniAsset});
+                    preloadedData.push({id: '$fileName.CharIMGASSET', data: funniAsset});
                 }
             }
 
@@ -194,7 +200,7 @@ class Modding {
                     var funniAsset:FlxGraphic = FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$mod/images/icons/$file'), false, '$fileName');
                     funniAsset.persist = true;
 
-                    preloadedData.push({id: '$fileName.IMAGEASSET', data: funniAsset});
+                    preloadedData.push({id: '$fileName.IconIMGASSET', data: funniAsset});
                 }
             }
 

@@ -39,7 +39,6 @@ class OptionsMenu extends MusicBeatState {
     ];
     var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Distractions',"Toggle Distractions",'noDistractions'],
-	    ['Epilepsy',"Disables most flashing lights",'epilepsyMode'],
 	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
     ];
     var sections:Array<Dynamic> = [];

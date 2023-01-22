@@ -10,7 +10,6 @@ class OptionsData
     public static var botplay = false;
 
     public static var noDistractions = false;
-    public static var epilepsyMode = false; //try not to false challenge
     public static var disableOutdatedScreen = false;
 
     public static function dumpData()
@@ -21,7 +20,6 @@ class OptionsData
         FlxG.save.data.botplay = botplay;
 
         FlxG.save.data.noDistractions = noDistractions;
-        FlxG.save.data.epilepsyMode = epilepsyMode;
         FlxG.save.data.disableOutdatedScreen = disableOutdatedScreen;
     }
 
@@ -47,10 +45,6 @@ class OptionsData
         if (FlxG.save.data.noDistractions != null)
         {
             noDistractions = FlxG.save.data.noDistractions;
-        }
-        if (FlxG.save.data.epilepsyMode != null)
-        {
-            epilepsyMode = FlxG.save.data.epilepsyMode;
         }
         if (FlxG.save.data.disableOutdatedScreen != null)
         {

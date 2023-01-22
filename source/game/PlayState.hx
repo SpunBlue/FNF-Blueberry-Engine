@@ -1,5 +1,6 @@
 package game;
 
+import sys.io.File;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.math.FlxRandom;
 import engine.modding.Stages;
@@ -126,8 +127,9 @@ class PlayState extends MusicBeatState
 	var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 	var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 
-	var layer1:FlxGroup = new FlxGroup();
-	var layer2:FlxGroup = new FlxGroup();
+	var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 
 	public static var campaignScore:Int = 0;
 
@@ -262,13 +264,20 @@ class PlayState extends MusicBeatState
 			curStage = SONG.stage;
 		}
 
-		var isCustomStage:Bool = false;
+		var isCustomStage:Bool = true;
 		var fnfStageList:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 
-		for (stage in fnfStageList){
-			if (SONG.stage == stage){
-				return;
+		if (SONG.stage != null && SONG.stage.toLowerCase() != 'stage'){
+			for (stage in fnfStageList){
+				if (SONG.stage.toLowerCase() == stage.toLowerCase()){
+					isCustomStage = false;
+					break;
+				}
 			}
+		}
+		else{
+			trace('Stage is null or is equal to "stage"');
+			isCustomStage = false;
 		}
 
 		if (!isCustomStage){
@@ -370,7 +379,6 @@ class PlayState extends MusicBeatState
 					limo.animation.addByPrefix('drive', "Limo stage", 24);
 					limo.animation.play('drive');
 					limo.antialiasing = true;
-					layer1.add(limo);
 
 					fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol', 'week4'));
 				case 'mall':
@@ -503,8 +511,6 @@ class PlayState extends MusicBeatState
 					bgGirls.setGraphicSize(Std.int(bgGirls.width * daPixelZoom));
 					bgGirls.updateHitbox();
 					add(bgGirls);
-					
-					layer1.add(evilTrail);
 				case 'schoolEvil':
 					var bg:FlxSprite = new FlxSprite(400, 200);
 					bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool', 'week6');
@@ -515,20 +521,54 @@ class PlayState extends MusicBeatState
 					add(bg);
 			}
 		}
-		else{
+		else{ // Todo: Add support for Non-modded JSON Stages.
 			var stagelol = engine.modding.Stages;
 
 			stagelol.init(SONG.stage);
 
-			var stageArray:Array<StageObjects> = Stages.stageJsonArray;
+			var stageArray:Array<StageObj> = Stages.stageArray;
+
+			var stageDebug:Bool = true;
 
 			curStage = stagelol.stageName;
-
-			stageArray = stagelol.stageJson.objects;
+			FlxG.camera.antialiasing = !stagelol.stageJson.disableAntialiasing;
 
 			for (object in stageArray){
 				if (object != null){
-					// todo: add code lol
+					var stageObject:StageObject = new StageObject(object.position[0], object.position[1], object);
+					if (object.loop == null)
+						object.loop = false;
+
+					if (object.xmlPath == null || object.xmlPath == '')
+						stageObject.loadGraphic(Modding.retrieveImage(object.image, '', 'StageIMGASSET'));
+					else
+						stageObject.frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(object.image, '', 'StageIMGASSET'),
+					File.getContent('mods/' + Modding.curLoaded + '/images/' + object.xmlPath));
+
+					if (object.isAnimated){
+						if (object.indices == null)
+							stageObject.animation.addByPrefix(object.name, object.xmlanim, object.fps, object.loop);
+						else{
+							stageObject.animation.addByIndices(object.name, object.xmlanim, object.indices, "", object.fps, object.loop);
+
+							if (stageDebug)
+								trace('Added animation by Indices in ' + object.name);
+						}
+					}
+					
+					switch(object.layer){
+						case 0:
+							layer0.add(stageObject);
+						case 1:
+							layer1.add(stageObject);
+						case 2:
+							layer2.add(stageObject);
+						default:
+							layer0.add(stageObject);
+					}
+
+					if (object.isAnimated)
+						stageObject.animation.play(object.name, true);
 				}
 			}
 		}
@@ -633,13 +673,18 @@ class PlayState extends MusicBeatState
 				gf.y += 300;
 		}
 
+		add(layer0);
+
 		gfGroup.add(gf);
 		add(gfGroup);
 
-		if (curStage == 'schoolEvil') // lol
-			layer1.add(evilTrail);
-
 		add(layer1);
+
+		// Lol
+		if (curStage == 'schoolEvil')
+			add(evilTrail);
+		else if (curStage == 'limo')
+			add(limo);
 
 		dadGroup.add(dad);
 		add(dadGroup);
@@ -727,12 +772,12 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		iconP1 = new HealthIcon(SONG.player1, true, boyfriend.jsonCharacter);
+		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = (healthBar.y - (iconP1.height / 2)) + 32;
 		iconP1.alpha = 0.65;
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false, dad.jsonCharacter);
+		iconP2 = new HealthIcon(SONG.player2, false);
 		iconP2.y = (healthBar.y - (iconP2.height / 2)) + 32;
 		iconP2.alpha = 0.65;
 		add(iconP2);
@@ -1688,9 +1733,9 @@ class PlayState extends MusicBeatState
 		songPlaylist.remove(songPlaylist[0]);
 		trace("new playlist: " + songPlaylist);
 
-		if (songPlaylist[0].week != null)
+		if (songPlaylist != null && songPlaylist[0] != null && songPlaylist[0].week != null && songPlaylist != [])
 			storyWeek = songPlaylist[0].week;
-		
+
 		trace('Week:$storyWeek');
 
 		if (songPlaylist.length <= 0){
@@ -2253,6 +2298,21 @@ class PlayState extends MusicBeatState
 		{
 			resyncVocals();
 		}
+
+		for (stageOBJ in layer0){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+
+		for (stageOBJ in layer1){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+		
+		for (stageOBJ in layer2){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
 	}
 
 	var lightningStrikeBeat:Int = 0;
@@ -2330,6 +2390,21 @@ class PlayState extends MusicBeatState
 		{
 			boyfriend.playAnim('hey', true);
 			dad.singAnimPlay('cheer', true);
+		}
+
+		for (stageOBJ in layer0){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+
+		for (stageOBJ in layer1){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+		
+		for (stageOBJ in layer2){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 
 		switch (curStage)

@@ -45,19 +45,35 @@ class PauseSubState extends MusicBeatSubstate
 		bg.scrollFactor.set();
 		add(bg);
 
-		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
+		var levelInfo:FlxText = new FlxText(20, 15, 0, "If you see this, something went wrong.", 32);
 
-		var tempArray = PlayState.SONG.song.split('-');
+		//var tempArray = PlayState.SONG.song.split('-');
 
-		for (i in 0...tempArray.length){
+		for (i in 0...PlayState.songPlaylist.length){
+			var breaker:String = '\n';
+
+			if (i == 0){
+				levelInfo.text = '';
+			}
+
+			if (i < 21)
+				levelInfo.text += PlayState.songPlaylist[i].songName.toString().toUpperCase() + breaker;
+			else if (i == 21){
+				var lol:Int = PlayState.songPlaylist.length - i;
+				levelInfo.text += 'And $lol more...';
+				break;
+			}
+		}
+
+		/*for (i in 0...tempArray.length){
 			levelInfo.text += tempArray[i];
 
 			if (i != tempArray.length - 1)
 				levelInfo.text += ' ';
-		}
+		}*/
 
 		levelInfo.scrollFactor.set();
-		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
+		levelInfo.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 		levelInfo.updateHitbox();
 		add(levelInfo);
 
