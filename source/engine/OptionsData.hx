@@ -10,8 +10,8 @@ class OptionsData
     public static var botplay:Bool = false;
 
     public static var noDistractions:Bool = false;
-    public static var epilepsyMode:Bool = false; //try not to false challenge
     public static var disableOutdatedScreen:Bool = false;
+    public static var debugMode = false;
 
     public static var gameplayOptions = engine.optionsMenu.OptionsMenu.gameplayOptions;
     public static var graphicsOptions = engine.optionsMenu.OptionsMenu.graphicsOptions;
