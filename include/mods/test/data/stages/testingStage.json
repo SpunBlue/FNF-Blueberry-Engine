@@ -10,6 +10,7 @@
         "indices-REMOVETHISDASH": [],
         "playOn": "beat",
         "isAnimated": true,
+		"isDistraction": true,
         "layer": 0
     }],
 
