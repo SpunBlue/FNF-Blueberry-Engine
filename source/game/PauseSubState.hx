@@ -2,6 +2,8 @@ package game;
 
 import engine.Engine;
 import engine.modding.Stages;
+import engine.Engine;
+import engine.modding.Stages;
 import engine.modding.Modding;
 import Controls.Control;
 import flixel.FlxG;
@@ -131,7 +133,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "Resume":
 					close();
 				case "Restart Song":
-				Stages.reset();
+					Stages.reset();
 
 					FlxG.resetState();
 				case "Exit to menu":

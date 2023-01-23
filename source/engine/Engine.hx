@@ -17,7 +17,7 @@ class Engine{
 
         if (removePreloadedData){
             Modding.modPreloaded = null;
-            
+            Modding.preloadedData = [];
         }
 
         PlayState.curStage = '';
