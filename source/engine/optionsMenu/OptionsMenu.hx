@@ -39,7 +39,7 @@ class OptionsMenu extends MusicBeatState {
 	    ['Debug Mode', "Enables full-logging to the Terminal", 'debugMode']
     ];
     
-    var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
+    public static var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Distractions',"Toggle Distractions",'distractions'],
 	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
     ];
