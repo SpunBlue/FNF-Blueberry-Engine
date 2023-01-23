@@ -31,27 +31,28 @@ class OptionsMenu extends MusicBeatState {
 	
 	var optionsGroup:FlxTypedGroup<TextOption>;
 
-	var gameplayOptions:Array<Dynamic> = [ //display name, description, save variable name
+	public static var gameplayOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Ghost Tapping',"Disables missing on bad input",'disableGhostTap'],
 	    ['Downscroll',"Sets the Notes position to the bottom",'downScroll'],
 	    ['Middlescroll',"Sets the Notes position to the middle",'middleScroll'],
 	    ['Botplay',"Allows a bot to play the game for you",'botplay'],
-		['Debug Mode', "Enables full-logging to the Terminal", 'debugMode']
+	    ['Debug Mode', "Enables full-logging to the Terminal", 'debugMode']
     ];
+    
     var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Distractions',"Toggle Distractions",'distractions'],
 	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
     ];
-    var sections:Array<Dynamic> = [];
+    var sections:Array<Dynamic> = [
+		['Keybinds','default'],
+		['Gameplay','default'],
+		['Graphics','default'],
+		['Modding','default']
+	];
 
 	var optionDetails:FlxText;
 
 	override function create() {
-		sections.push(['Keybinds','default']);
-		sections.push(['Gameplay','default']);
-		sections.push(['Graphics','default']);
-		sections.push(['Modding','default']);
-
 		background = new FlxSprite(0, 0, Paths.image('menuBGBlue'));
 		background.scrollFactor.x = 0;
 		background.scrollFactor.y = 0;
@@ -80,6 +81,22 @@ class OptionsMenu extends MusicBeatState {
 		super.create();
 	}
 
+	function changeSelection(change:Int = 1)
+	{
+		FlxG.sound.play(Paths.sound('scrollMenu', 'preload'));
+
+		curSelected += change;
+
+		if (curMenu != 'default') 
+		{
+			optionDetails.text = curOptions[curSelected][1];
+		}
+		else
+		{
+			optionDetails.text = "";
+		}
+	}
+
 	override function update(elapsed:Float) {
 		if (optionsGroup.members[curSelected] != null){
 			camFollow.y = optionsGroup.members[curSelected].y;
@@ -94,20 +111,26 @@ class OptionsMenu extends MusicBeatState {
 			}
 		}
 
-		if (controls.DOWN_P && curSelected < optionsGroup.members.length - 1 || controls.UP_P && curSelected > 0)
-			FlxG.sound.play(Paths.sound('scrollMenu', 'preload'));
-
 		if (controls.DOWN_P && curSelected < optionsGroup.members.length - 1)
-			curSelected++;
+		{
+			changeSelection();
+		}
+
 		if (controls.UP_P && curSelected > 0)
-			curSelected--;
+		{
+			changeSelection(-1);
+		}
+
 		if (controls.ACCEPT)
 		{
 			FlxG.sound.play(Paths.sound('scrollMenu', 'preload'));
 			optionSelected();
 		}
+
 		if (controls.BACK){
 			curSelected = 0;
+
+			optionDetails.text = "";
 
 			if (curMenu != 'default')
 				generateOptions(true);
@@ -121,17 +144,6 @@ class OptionsMenu extends MusicBeatState {
 		if (FlxG.save.data.allowMods == null)
 			FlxG.save.data.allowMods = true;
 		#end
-
-		switch(curMenu)
-		{
-			case 'gameplay':
-				optionDetails.text = gameplayOptions[curSelected][1];
-			case 'graphics':
-				optionDetails.text = graphicsOptions[curSelected][1];
-			default:
-				optionDetails.text = "";
-		}
-		//optionDetails.text = curOptions[curSelected][1];
 	}
 
 	function generateOptions(?theOptionGroup:String = null,?sectionGeneration:Bool = false){
@@ -210,6 +222,8 @@ class OptionsMenu extends MusicBeatState {
 				}
 				generateOptions(curMenu,false);
 				curSelected = 0;
+
+				optionDetails.text = curOptions[curSelected][1];
 			case 2:
 				switch(optionsGroup.members[curSelected].text.toLowerCase()){
 					case 'keybinds':
