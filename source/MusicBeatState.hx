@@ -28,7 +28,7 @@ class MusicBeatState extends FlxUIState
 	override function create()
 	{
 		if (transIn != null)
-			trace('reg ' + transIn.region);
+			Engine.debugPrint('reg ' + transIn.region);
 
 		FlxG.camera.antialiasing = true;
 

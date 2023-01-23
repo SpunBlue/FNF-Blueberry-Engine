@@ -38,8 +38,9 @@ class OptionsMenu extends MusicBeatState {
 	    ['Botplay',"Allows a bot to play the game for you",'botplay'],
 	    ['Debug Mode', "Enables full-logging to the Terminal", 'debugMode']
     ];
-    public static var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
-	    ['Distractions',"Toggle Distractions",'noDistractions'],
+    
+    var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
+	    ['Distractions',"Toggle Distractions",'distractions'],
 	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
     ];
     var sections:Array<Dynamic> = [

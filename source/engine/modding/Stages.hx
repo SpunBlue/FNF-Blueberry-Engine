@@ -63,4 +63,5 @@ typedef StageObj = {
     var ?playOn:String;
     var ?isAnimated:Bool;
     var ?layer:Int; // 0 = behind all, 1 = infront of GF, 2 = infront of dad & bf
+    var ?isDistraction:Bool;
 }

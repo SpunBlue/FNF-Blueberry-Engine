@@ -1,5 +1,7 @@
 package game;
 
+import Song.Events;
+import sys.io.File;
 import engine.Engine;
 import sys.FileSystem;
 import engine.modding.Modding;
@@ -68,8 +70,11 @@ class ChartingState extends MusicBeatState
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
 
 	var gridBG:FlxSprite;
+	var eventGridBG:FlxSprite;
 
 	var _song:SwagSong;
+	var eventNotes:FlxTypedGroup<EventNote> = new FlxTypedGroup();
+	var eventSelected:EventNote;
 
 	var typingShit:FlxInputText;
 	/*
@@ -80,6 +85,7 @@ class ChartingState extends MusicBeatState
 	var tempBpm:Float = 0;
 
 	var vocals:FlxSound;
+	var vocals2:FlxSound;
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
@@ -103,6 +109,10 @@ class ChartingState extends MusicBeatState
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
+		eventGridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE, GRID_SIZE * 16);
+		eventGridBG.x -= GRID_SIZE;
+		add(eventGridBG);
+
 		leftIcon = new HealthIcon('bf');
 		rightIcon = new HealthIcon('dad');
 		leftIcon.scrollFactor.set(1, 1);
@@ -120,6 +130,9 @@ class ChartingState extends MusicBeatState
 		var gridBlackLine:FlxSprite = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
 		add(gridBlackLine);
 
+		var gridBlackLine2:FlxSprite = new FlxSprite(0).makeGraphic(2, Std.int(eventGridBG.height), FlxColor.BLACK);
+		add(gridBlackLine2);
+
 		curRenderedNotes = new FlxTypedGroup<Note>();
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 
@@ -136,7 +149,8 @@ class ChartingState extends MusicBeatState
 				player1: 'bf',
 				player2: 'dad',
 				speed: 1,
-				validScore: false
+				validScore: false,
+				events: []
 			};
 		}
 
@@ -183,6 +197,7 @@ class ChartingState extends MusicBeatState
 
 		add(curRenderedNotes);
 		add(curRenderedSustains);
+		add(eventNotes);
 
 		super.create();
 	}
@@ -199,6 +214,17 @@ class ChartingState extends MusicBeatState
 		{
 			_song.needsVoices = check_voices.checked;
 			Engine.debugPrint('CHECKED!');
+		};
+
+		var check_voices_2 = new FlxUICheckBox(10, 45, null, null, "Seperated Vocals", 100);
+		check_voices_2.checked = _song.seperatedVocalTracks;
+		// _song.needsVoices = check_voices.checked;
+		check_voices_2.callback = function()
+		{
+			_song.seperatedVocalTracks = check_voices_2.checked;
+			Engine.debugPrint('CHECKED!');
+
+			loadVocals();
 		};
 
 		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, "Mute Instrumental (in editor)", 100);
@@ -283,6 +309,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(UI_songTitle);
 
 		tab_group_song.add(check_voices);
+		tab_group_song.add(check_voices_2);
 		tab_group_song.add(check_mute_inst);
 		tab_group_song.add(saveButton);
 		tab_group_song.add(reloadSong);
@@ -290,10 +317,10 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(loadAutosaveBtn);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
-		tab_group_song.add(player1DropDown);
-		tab_group_song.add(player2DropDown);
 		tab_group_song.add(check_hitSounds);
 		tab_group_song.add(stageDropDown);
+		tab_group_song.add(player1DropDown);
+		tab_group_song.add(player2DropDown);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -391,26 +418,54 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		if (Modding.modLoaded){
-			FlxG.sound.playMusic(Modding.retrieveAudio('Inst', 'songs/$daSong'), 1, false);
-			vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/$daSong'));
+		/*if (_song.seperatedVocalTracks == false){
+			if (Modding.modLoaded){
+				FlxG.sound.playMusic(Modding.retrieveAudio('Inst', 'songs/$daSong'), 1, false);
+				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/$daSong'));
+			}
+			else{
+				FlxG.sound.playMusic(Paths.inst(daSong), 1, false);
+				vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+			}
 		}
 		else{
+			if (Modding.modLoaded){
+				FlxG.sound.playMusic(Modding.retrieveAudio('Inst', 'songs/$daSong'), 1, false);
+				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices-BF', 'songs/$daSong'));
+				vocals2 = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices-DAD', 'songs/$daSong'));
+			}
+			else{
+				FlxG.sound.playMusic(Paths.inst(daSong), 1, false);
+				vocals = new FlxSound().loadEmbedded(Paths.voices(daSong, '-BF'));
+				vocals2 = new FlxSound().loadEmbedded(Paths.voices(daSong, '-DAD'));
+			}
+		}*/
+
+		if (Modding.modLoaded)
+			FlxG.sound.playMusic(Modding.retrieveAudio('Inst', 'songs/$daSong'), 1, false);
+		else
 			FlxG.sound.playMusic(Paths.inst(daSong), 1, false);
-			vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
-		}
+
+		loadVocals();
 
 		FlxG.sound.list.add(vocals);
+		FlxG.sound.list.add(vocals2);
 
 		FlxG.sound.music.pause();
 		vocals.pause();
+		vocals2.pause();
 
 		FlxG.sound.music.onComplete = function()
 		{
 			vocals.pause();
 			vocals.time = 0;
+
+			vocals2.pause();
+			vocals2.time = 0;
+
 			FlxG.sound.music.pause();
 			FlxG.sound.music.time = 0;
+
 			changeSection();
 		};
 	}
@@ -594,6 +649,7 @@ class ChartingState extends MusicBeatState
 			PlayState.SONG = _song;
 			FlxG.sound.music.stop();
 			vocals.stop();
+			vocals2.stop();
 			FlxG.switchState(new PlayState());
 		}
 
@@ -630,10 +686,12 @@ class ChartingState extends MusicBeatState
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
+					vocals2.pause();
 				}
 				else
 				{
 					vocals.play();
+					vocals2.play();
 					FlxG.sound.music.play();
 				}
 			}
@@ -650,9 +708,11 @@ class ChartingState extends MusicBeatState
 			{
 				FlxG.sound.music.pause();
 				vocals.pause();
+				vocals2.pause();
 
 				FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
 				vocals.time = FlxG.sound.music.time;
+				vocals2.time = FlxG.sound.music.time;
 			}
 
 			if (!FlxG.keys.pressed.SHIFT)
@@ -661,6 +721,7 @@ class ChartingState extends MusicBeatState
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
+					vocals2.pause();
 
 					var daTime:Float = 700 * FlxG.elapsed;
 
@@ -672,6 +733,7 @@ class ChartingState extends MusicBeatState
 						FlxG.sound.music.time += daTime;
 
 					vocals.time = FlxG.sound.music.time;
+					vocals2.time = FlxG.sound.music.time;
 				}
 			}
 			else
@@ -680,6 +742,7 @@ class ChartingState extends MusicBeatState
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
+					vocals2.pause();
 
 					var daTime:Float = Conductor.stepCrochet * 2;
 
@@ -691,11 +754,65 @@ class ChartingState extends MusicBeatState
 						FlxG.sound.music.time += daTime;
 
 					vocals.time = FlxG.sound.music.time;
+					vocals2.time = FlxG.sound.music.time;
 				}
 			}
 		}
 
 		_song.bpm = tempBpm;
+
+		if (FlxG.mouse.overlaps(eventGridBG)){ // This isn't gonna be coded like how the charter is coded AT ALL.
+			dummyArrow.x = -40;
+			dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
+
+			if (FlxG.mouse.justPressed){
+				var noteStrum = dummyArrow.y + getYfromStrum(sectionStartTime());
+
+				for (note in eventNotes.members){
+					if (note.y == dummyArrow.y){
+						return;
+						break;
+					}
+				}
+
+				Engine.debugPrint('Made new Event | Event MS: $noteStrum');
+				var event:Events = {
+					name: '',
+					ms: noteStrum
+				};
+
+				if (_song.events == null)
+					_song.events = [];
+
+				_song.events.push(event);
+
+				var newEvent:EventNote = new EventNote(dummyArrow.x, dummyArrow.y, event);
+				eventNotes.add(newEvent);
+
+				eventSelected = newEvent;
+			}
+
+			if (FlxG.mouse.justPressedRight){
+				for (note in eventNotes.members){
+					if (note.y == dummyArrow.y){
+						_song.events.remove(note.eventData);
+						note.kill();
+						eventNotes.remove(note);
+					}
+				}
+			}
+		}
+
+		if (eventNotes.length <= 0 && _song.events != null){
+			for (eventNote in _song.events){
+				if (eventNote != null && eventNote.ms >= getYfromStrum(sectionStartTime()) &&
+					eventNote.ms < getYfromStrum(sectionStartTime()) + eventGridBG.height)
+				{
+					var newEvent:EventNote = new EventNote(-40, eventNote.ms - getYfromStrum(sectionStartTime()), eventNote);
+					eventNotes.add(newEvent);
+				}
+			}
+		}
 
 		/* if (FlxG.keys.justPressed.UP)
 				Conductor.changeBPM(Conductor.bpm + 1);
@@ -715,6 +832,7 @@ class ChartingState extends MusicBeatState
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
 			+ "\nSection: "
 			+ curSection;
+
 		super.update(elapsed);
 
 		for (note in curRenderedNotes) {
@@ -772,6 +890,7 @@ class ChartingState extends MusicBeatState
 
 		FlxG.sound.music.pause();
 		vocals.pause();
+		vocals2.pause();
 
 		// Basically old shit from changeSection???
 		FlxG.sound.music.time = sectionStartTime();
@@ -783,6 +902,8 @@ class ChartingState extends MusicBeatState
 		}
 
 		vocals.time = FlxG.sound.music.time;
+		vocals2.time = FlxG.sound.music.time;
+
 		updateCurStep();
 
 		updateGrid();
@@ -803,6 +924,7 @@ class ChartingState extends MusicBeatState
 			{
 				FlxG.sound.music.pause();
 				vocals.pause();
+				vocals2.pause();
 
 				/*var daNum:Int = 0;
 					var daLength:Float = 0;
@@ -813,7 +935,11 @@ class ChartingState extends MusicBeatState
 				}*/
 
 				FlxG.sound.music.time = sectionStartTime();
+
 				vocals.time = FlxG.sound.music.time;
+				vocals2.time = FlxG.sound.music.time;
+
+
 				updateCurStep();
 			}
 
@@ -872,6 +998,12 @@ class ChartingState extends MusicBeatState
 
 	function updateGrid():Void
 	{
+		for (event in eventNotes){
+			if (event != null)
+				event.kill();
+		}
+		eventNotes.clear();
+
 		while (curRenderedNotes.members.length > 0)
 		{
 			curRenderedNotes.remove(curRenderedNotes.members[0], true);
@@ -1101,10 +1233,33 @@ class ChartingState extends MusicBeatState
 		FlxG.save.flush();
 	}
 
+	function loadVocals(){
+		if (_song.seperatedVocalTracks == false || _song.seperatedVocalTracks == null){
+			if (Modding.modLoaded){
+				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/' + PlayState.SONG.song));
+				vocals2 = new FlxSound();
+			}
+			else{
+				vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+				vocals2 = new FlxSound();
+			}
+		}
+		else if(_song.seperatedVocalTracks){
+			if (Modding.modLoaded){
+				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices-BF', 'songs/' + PlayState.SONG.song));
+				vocals2 = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices-DAD', 'songs/' + PlayState.SONG.song));
+			}
+			else{
+				vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, '-BF'));
+				vocals2 = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, '-DAD'));
+			}
+		}
+	}
+
 	private function saveLevel()
 	{
 		var json = {
-			"song": _song
+			"song": _song,
 		};
 
 		var data:String = Json.stringify(json);
@@ -1149,5 +1304,18 @@ class ChartingState extends MusicBeatState
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 		_file = null;
 		FlxG.log.error("Problem saving Level data");
+	}
+}
+
+class EventNote extends FlxSprite
+{
+	public var eventData:Events;
+
+	public function new(x:Float, y:Float, event:Events){
+		super(x, y);
+
+		makeGraphic(40, 40, FlxColor.GRAY);
+
+		eventData = event;
 	}
 }

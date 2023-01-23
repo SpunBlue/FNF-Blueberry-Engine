@@ -2,6 +2,8 @@ package game;
 
 import engine.Engine;
 import engine.modding.Stages;
+import engine.Engine;
+import engine.modding.Stages;
 import engine.modding.Modding;
 import Controls.Control;
 import flixel.FlxG;

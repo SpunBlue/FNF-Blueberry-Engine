@@ -1,5 +1,6 @@
 package game;
 
+import engine.OptionsData;
 import engine.Engine;
 import sys.io.File;
 import flixel.system.FlxAssets.FlxSoundAsset;
@@ -62,6 +63,7 @@ class PlayState extends MusicBeatState
 	var halloweenLevel:Bool = false;
 
 	private var vocals:FlxSound;
+	private var vocals2:FlxSound;
 	private var inst:FlxSoundAsset;
 
 	private var dad:Character;
@@ -185,14 +187,31 @@ class PlayState extends MusicBeatState
 		}
 
 		if (SONG.needsVoices){
-			if (Modding.modLoaded){
-				vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/' + PlayState.SONG.song));
+			if (SONG.seperatedVocalTracks == false || SONG.seperatedVocalTracks == null){
+				if (Modding.modLoaded){
+					vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices', 'songs/' + PlayState.SONG.song));
+					vocals2 = new FlxSound();
+				}
+				else{
+					vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+					vocals2 = new FlxSound();
+				}
 			}
-			else
-				vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			else if(SONG.seperatedVocalTracks){
+				if (Modding.modLoaded){
+					vocals = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices-BF', 'songs/' + PlayState.SONG.song));
+					vocals2 = new FlxSound().loadEmbedded(Modding.retrieveAudio('Voices-DAD', 'songs/' + PlayState.SONG.song));
+				}
+				else{
+					vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, '-BF'));
+					vocals2 = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, '-DAD'));
+				}
+			}
 		}
-		else
+		else{
 			vocals = new FlxSound();
+			vocals2 = new FlxSound();
+		}
 
 		if (Modding.modLoaded)
 			inst = Modding.retrieveAudio('Inst', 'songs/' + PlayState.SONG.song);
@@ -1090,6 +1109,7 @@ class PlayState extends MusicBeatState
 		}
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
+		vocals2.play();
 	}
 
 	var debugNum:Int = 0;
@@ -1104,6 +1124,7 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		FlxG.sound.list.add(vocals);
+		FlxG.sound.list.add(vocals2);
 
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
@@ -1323,6 +1344,7 @@ class PlayState extends MusicBeatState
 			{
 				FlxG.sound.music.pause();
 				vocals.pause();
+				vocals2.pause();
 			}
 
 			if (!startTimer.finished)
@@ -1352,11 +1374,16 @@ class PlayState extends MusicBeatState
 	function resyncVocals():Void
 	{
 		vocals.pause();
+		vocals2.pause();
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
+
 		vocals.time = Conductor.songPosition;
+		vocals2.time = Conductor.songPosition;
+
 		vocals.play();
+		vocals2.play();
 	}
 
 	private var paused:Bool = false;
@@ -1509,8 +1536,8 @@ class PlayState extends MusicBeatState
 					camFollow.y += dad.jsonData.cameraPosition[1];
 				}
 
-				if (dad.curCharacter == 'mom')
-					vocals.volume = 1;
+				/*if (dad.curCharacter == 'mom')
+					vocals.volume = 1;*/
 
 				if (SONG.song.toLowerCase() == 'tutorial')
 				{
@@ -1580,6 +1607,7 @@ class PlayState extends MusicBeatState
 			{
 				case 128, 129, 130:
 					vocals.volume = 0;
+					vocals2.volume = 0;
 					// FlxG.sound.music.stop();
 					// FlxG.switchState(new PlayState());
 			}
@@ -1684,8 +1712,13 @@ class PlayState extends MusicBeatState
 
 					dad.holdTimer = 0;
 
-					if (SONG.needsVoices)
-						vocals.volume = 1;
+					if (SONG.needsVoices){
+						if (SONG.seperatedVocalTracks)
+							vocals2.volume = 1;
+						else{
+							vocals.volume = 1;
+						}
+					}
 
 					daNote.kill();
 					notes.remove(daNote, true);
@@ -1747,6 +1780,7 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
+		vocals2.volume = 0;
 
 		Highscore.saveScore(SONG.song, songScore);
 
@@ -2324,17 +2358,20 @@ class PlayState extends MusicBeatState
 
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
-				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
+					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 
 		for (stageOBJ in layer1){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
-				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
+					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 		
 		for (stageOBJ in layer2){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
-				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
+					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 	}
 
@@ -2417,64 +2454,69 @@ class PlayState extends MusicBeatState
 
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
-				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
+					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 
 		for (stageOBJ in layer1){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
-				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
+					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 		
 		for (stageOBJ in layer2){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
-				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
+					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
 		}
 
-		switch (curStage)
-		{
-			case 'school':
-				bgGirls.dance();
-
-			case 'mall':
-				upperBoppers.animation.play('bop', true);
-				bottomBoppers.animation.play('bop', true);
-				santa.animation.play('idle', true);
-
-			case 'limo':
-				grpLimoDancers.forEach(function(dancer:BackgroundDancer)
-				{
-					dancer.dance();
-				});
-
-				if (FlxG.random.bool(10) && fastCarCanDrive)
-					fastCarDrive();
-			case "philly":
-				if (!trainMoving)
-					trainCooldown += 1;
-
-				if (curBeat % 4 == 0)
-				{
-					phillyCityLights.forEach(function(light:FlxSprite)
+		if (OptionsData.distractions){
+			switch (curStage)
+			{
+				case 'school':
+					bgGirls.dance();
+	
+				case 'mall':
+					upperBoppers.animation.play('bop', true);
+					bottomBoppers.animation.play('bop', true);
+					santa.animation.play('idle', true);
+	
+				case 'limo':
+					grpLimoDancers.forEach(function(dancer:BackgroundDancer)
 					{
-						light.visible = false;
+						dancer.dance();
 					});
-
-					curLight = FlxG.random.int(0, phillyCityLights.length - 1);
-
-					phillyCityLights.members[curLight].visible = true;
-					// phillyCityLights.members[curLight].alpha = 1;
-				}
-
-				if (curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8)
-				{
-					trainCooldown = FlxG.random.int(-4, 0);
-					trainStart();
-				}
-		}
-
-		if (isHalloween && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
-		{
-			lightningStrikeShit();
+	
+					if (FlxG.random.bool(10) && fastCarCanDrive)
+						fastCarDrive();
+				case "philly":
+					if (!trainMoving)
+						trainCooldown += 1;
+	
+					if (curBeat % 4 == 0)
+					{
+						phillyCityLights.forEach(function(light:FlxSprite)
+						{
+							light.visible = false;
+						});
+	
+						curLight = FlxG.random.int(0, phillyCityLights.length - 1);
+	
+						phillyCityLights.members[curLight].visible = true;
+						// phillyCityLights.members[curLight].alpha = 1;
+					}
+	
+					if (curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8)
+					{
+						trainCooldown = FlxG.random.int(-4, 0);
+						trainStart();
+					}
+			}
+	
+			if (isHalloween && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
+			{
+				lightningStrikeShit();
+			}
 		}
 	}
 
@@ -2486,6 +2528,7 @@ class PlayState extends MusicBeatState
 		paused = true;
 
 		vocals.stop();
+		vocals2.stop();
 		FlxG.sound.music.stop();
 
 		DiscordClient.changePresence("GAME OVER!!!  |  " + daDRPCText, null);
