@@ -8,10 +8,10 @@ class OptionsData
     public static var downScroll:Bool = false;
     public static var middleScroll:Bool = false;
     public static var botplay:Bool = false;
+    public static var debugMode = false;
 
     public static var noDistractions:Bool = false;
     public static var disableOutdatedScreen:Bool = false;
-    public static var debugMode = false;
 
     public static var gameplayOptions = engine.optionsMenu.OptionsMenu.gameplayOptions;
     public static var graphicsOptions = engine.optionsMenu.OptionsMenu.graphicsOptions;
