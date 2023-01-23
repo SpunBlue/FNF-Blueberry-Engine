@@ -1,5 +1,6 @@
 package game;
 
+import engine.Engine;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -174,7 +175,7 @@ class MainMenuState extends MusicBeatState
 									case 'freeplay':
 										FlxG.switchState(new FreeplayState());
 
-										trace("Freeplay Menu Selected");
+										Engine.debugPrint("Freeplay Menu Selected");
 
 									case 'options':
 										FlxG.switchState(new engine.optionsMenu.OptionsMenu());

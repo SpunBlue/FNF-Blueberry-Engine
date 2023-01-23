@@ -6,9 +6,8 @@
                 "Test"
             ],
     
-            "icon": "dad",
-            "week": -1,
-            "isMod": true
+            "icon": "testChar",
+            "week": -1
         }
     ]
 }

@@ -1,5 +1,7 @@
 package game;
 
+import engine.Engine;
+import sys.io.File;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.math.FlxRandom;
 import engine.modding.Stages;
@@ -126,8 +128,9 @@ class PlayState extends MusicBeatState
 	var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 	var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 
-	var layer1:FlxGroup = new FlxGroup();
-	var layer2:FlxGroup = new FlxGroup();
+	var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 
 	public static var campaignScore:Int = 0;
 
@@ -156,7 +159,7 @@ class PlayState extends MusicBeatState
 			FlxG.sound.music.stop();
 
 		if (songPlaylist.length <= 1){
-			trace('In single mode!');
+			Engine.debugPrint('In single mode!');
 			isSingle = true;
 		}
 
@@ -178,7 +181,7 @@ class PlayState extends MusicBeatState
 
 		if (songPlaylist[0].modID == null){
 			Modding.modLoaded = false;
-			trace('no mod loaded L');
+			Engine.debugPrint('no mod loaded L');
 		}
 
 		if (SONG.needsVoices){
@@ -196,7 +199,7 @@ class PlayState extends MusicBeatState
 		else
 			inst = Paths.inst(PlayState.SONG.song);
 
-		trace(inst);
+		Engine.debugPrint(inst);
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -262,13 +265,20 @@ class PlayState extends MusicBeatState
 			curStage = SONG.stage;
 		}
 
-		var isCustomStage:Bool = false;
+		var isCustomStage:Bool = true;
 		var fnfStageList:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 
-		for (stage in fnfStageList){
-			if (SONG.stage == stage){
-				return;
+		if (SONG.stage != null && SONG.stage.toLowerCase() != 'stage'){
+			for (stage in fnfStageList){
+				if (SONG.stage.toLowerCase() == stage.toLowerCase()){
+					isCustomStage = false;
+					break;
+				}
 			}
+		}
+		else{
+			Engine.debugPrint('Stage is null or is equal to "stage"');
+			isCustomStage = false;
 		}
 
 		if (!isCustomStage){
@@ -370,7 +380,6 @@ class PlayState extends MusicBeatState
 					limo.animation.addByPrefix('drive', "Limo stage", 24);
 					limo.animation.play('drive');
 					limo.antialiasing = true;
-					layer1.add(limo);
 
 					fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol', 'week4'));
 				case 'mall':
@@ -503,8 +512,6 @@ class PlayState extends MusicBeatState
 					bgGirls.setGraphicSize(Std.int(bgGirls.width * daPixelZoom));
 					bgGirls.updateHitbox();
 					add(bgGirls);
-					
-					layer1.add(evilTrail);
 				case 'schoolEvil':
 					var bg:FlxSprite = new FlxSprite(400, 200);
 					bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool', 'week6');
@@ -515,20 +522,57 @@ class PlayState extends MusicBeatState
 					add(bg);
 			}
 		}
-		else{
+		else{ // Todo: Add support for Non-modded JSON Stages.
 			var stagelol = engine.modding.Stages;
 
 			stagelol.init(SONG.stage);
 
-			var stageArray:Array<StageObjects> = Stages.stageJsonArray;
+			var stageArray:Array<StageObj> = Stages.stageArray;
+
+			var stageDebug:Bool = true;
 
 			curStage = stagelol.stageName;
+			FlxG.camera.antialiasing = !stagelol.stageJson.disableAntialiasing;
 
-			stageArray = stagelol.stageJson.objects;
+			if (stagelol.stageJson.camZoom != null && stagelol.stageJson.camZoom > 0)
+				defaultCamZoom = stagelol.stageJson.camZoom;
 
 			for (object in stageArray){
 				if (object != null){
-					// todo: add code lol
+					var stageObject:StageObject = new StageObject(object.position[0], object.position[1], object);
+					if (object.loop == null)
+						object.loop = false;
+
+					if (object.xmlPath == null || object.xmlPath == '')
+						stageObject.loadGraphic(Modding.retrieveImage(object.image, '', 'StageIMGASSET'));
+					else
+						stageObject.frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(object.image, '', 'StageIMGASSET'),
+					File.getContent('mods/' + Modding.curLoaded + '/images/' + object.xmlPath));
+
+					if (object.isAnimated){
+						if (object.indices == null)
+							stageObject.animation.addByPrefix(object.name, object.xmlanim, object.fps, object.loop);
+						else{
+							stageObject.animation.addByIndices(object.name, object.xmlanim, object.indices, "", object.fps, object.loop);
+
+							if (stageDebug)
+								Engine.debugPrint('Added animation by Indices in ' + object.name);
+						}
+					}
+					
+					switch(object.layer){
+						case 0:
+							layer0.add(stageObject);
+						case 1:
+							layer1.add(stageObject);
+						case 2:
+							layer2.add(stageObject);
+						default:
+							layer0.add(stageObject);
+					}
+
+					if (object.isAnimated)
+						stageObject.animation.play(object.name, true);
 				}
 			}
 		}
@@ -605,7 +649,7 @@ class PlayState extends MusicBeatState
 		if (SONG.song.toLowerCase() != 'stress')
 			boyfriend = new Boyfriend(770, 450, SONG.player1);
 		else{
-			trace('Character forced to default BF because i am too lazy to modify the chart');
+			Engine.debugPrint('Character forced to default BF because i am too lazy to modify the chart');
 			boyfriend = new Boyfriend(770, 450, 'bf');
 		}
 
@@ -633,13 +677,18 @@ class PlayState extends MusicBeatState
 				gf.y += 300;
 		}
 
+		add(layer0);
+
 		gfGroup.add(gf);
 		add(gfGroup);
 
-		if (curStage == 'schoolEvil') // lol
-			layer1.add(evilTrail);
-
 		add(layer1);
+
+		// Lol
+		if (curStage == 'schoolEvil')
+			add(evilTrail);
+		else if (curStage == 'limo')
+			add(limo);
 
 		dadGroup.add(dad);
 		add(dadGroup);
@@ -648,6 +697,23 @@ class PlayState extends MusicBeatState
 		add(boyfriendGroup);
 
 		add(layer2);
+
+		if (Stages.stageJson != null){
+			if (Stages.stageJson.bfPosition != null && Stages.stageJson.bfPosition != []){
+				boyfriend.x = Stages.stageJson.bfPosition[0];
+				boyfriend.y = Stages.stageJson.bfPosition[1];
+			}
+	
+			if (Stages.stageJson.gfPosition != null && Stages.stageJson.gfPosition != []){
+				gf.x = Stages.stageJson.gfPosition[0];
+				gf.y = Stages.stageJson.gfPosition[1];
+			}
+	
+			if (Stages.stageJson.dadPosition != null && Stages.stageJson.dadPosition != []){
+				dad.x = Stages.stageJson.dadPosition[0];
+				dad.y = Stages.stageJson.dadPosition[1];
+			}
+		}
 
 		var doof:DialogueBox = new DialogueBox(false, dialogue);
 		// doof.x += 70;
@@ -727,12 +793,12 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		iconP1 = new HealthIcon(SONG.player1, true, boyfriend.jsonCharacter);
+		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = (healthBar.y - (iconP1.height / 2)) + 32;
 		iconP1.alpha = 0.65;
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false, dad.jsonCharacter);
+		iconP2 = new HealthIcon(SONG.player2, false);
 		iconP2.y = (healthBar.y - (iconP2.height / 2)) + 32;
 		iconP2.alpha = 0.65;
 		add(iconP2);
@@ -1126,7 +1192,7 @@ class PlayState extends MusicBeatState
 			daBeats += 1;
 		}
 
-		// trace(unspawnNotes.length);
+		// Engine.debugPrint(unspawnNotes.length);
 		// playerCounter += 1;
 
 		unspawnNotes.sort(sortByShit);
@@ -1405,7 +1471,7 @@ class PlayState extends MusicBeatState
 					songTime = (songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
 					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
+					// Engine.debugPrint('MISSED FRAME');
 				}
 			}
 
@@ -1417,7 +1483,7 @@ class PlayState extends MusicBeatState
 		{
 			if (curBeat % 4 == 0)
 			{
-				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
+				// Engine.debugPrint(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
 			}
 
 			if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
@@ -1684,14 +1750,16 @@ class PlayState extends MusicBeatState
 
 		Highscore.saveScore(SONG.song, songScore);
 
-		trace("old playlist: " + songPlaylist);
+		Engine.debugPrint("old playlist: " + songPlaylist);
 		songPlaylist.remove(songPlaylist[0]);
-		trace("new playlist: " + songPlaylist);
+		Engine.debugPrint("new playlist: " + songPlaylist);
 
-		if (songPlaylist[0].week != null)
+		Stages.reset();
+
+		if (songPlaylist != null && songPlaylist[0] != null && songPlaylist[0].week != null && songPlaylist != [])
 			storyWeek = songPlaylist[0].week;
-		
-		trace('Week:$storyWeek');
+
+		Engine.debugPrint('Week:$storyWeek');
 
 		if (songPlaylist.length <= 0){
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -1703,7 +1771,7 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(new FreeplayState());
 		}
 		else{
-			trace('LOADING NEXT SONG');
+			Engine.debugPrint('LOADING NEXT SONG');
 
 			var random:FlxRandom = new FlxRandom();
 			var randomInt:Int = random.int(0, songPlaylist.length - 1);
@@ -1719,7 +1787,7 @@ class PlayState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 			}
 
-			trace(songPlaylist[0].songName.toLowerCase());
+			Engine.debugPrint(songPlaylist[0].songName.toLowerCase());
 
 			if (songPlaylist[0].modID == null)
 				PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
@@ -2253,6 +2321,21 @@ class PlayState extends MusicBeatState
 		{
 			resyncVocals();
 		}
+
+		for (stageOBJ in layer0){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+
+		for (stageOBJ in layer1){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+		
+		for (stageOBJ in layer2){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
 	}
 
 	var lightningStrikeBeat:Int = 0;
@@ -2332,6 +2415,21 @@ class PlayState extends MusicBeatState
 			dad.singAnimPlay('cheer', true);
 		}
 
+		for (stageOBJ in layer0){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+
+		for (stageOBJ in layer1){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+		
+		for (stageOBJ in layer2){
+			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
+				stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+		}
+
 		switch (curStage)
 		{
 			case 'school':
@@ -2405,7 +2503,7 @@ class PlayState extends MusicBeatState
 		var rPercent:Float = FlxMath.roundDecimal(ratingPercent * 100, 2);
 
 		if (FlxG.keys.anyJustPressed([X]))
-			trace(ratingPercent);
+			Engine.debugPrint('' + ratingPercent);
 
 		if (Math.isNaN(ratingPercent))
 			return '???%';

@@ -1,5 +1,6 @@
 package;
 
+import engine.Engine;
 import flixel.FlxObject;
 import sys.FileSystem;
 import engine.modding.Modding;
@@ -14,26 +15,26 @@ class HealthIcon extends FlxSprite
 	var sprOff:Int = 0;
 	var sprYOff:Int = 0;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false, isJson:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
+	public function new(char:String = 'bf', isPlayer:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
 	{
 		super();
 
 		sprOff = sprOffset;
 		sprYOff = sprYOffset;
 
-		trace('char: $char isJson: $isJson');
+		Engine.debugPrint('char: $char');
 
-		if (isJson && FileSystem.exists(Modding.getFilePath('icon-$char.png', 'images/icons'))){
-			loadGraphic(Modding.retrieveImage('icon-$char', 'images/icons'), true, 150, 150);
-			antialiasing = true;
+		antialiasing = true;
+
+		if (FileSystem.exists(Modding.getFilePath('icon-$char.png', 'images/icons'))){
+			loadGraphic(Modding.retrieveImage('icon-$char', 'images/icons', 'IconIMGASSET'), true, 150, 150);
 
 			animation.add('$char', [0, 1], 0, false, isPlayer);
 
 			animation.play(char);
 		}
-		else if (isJson && FileSystem.exists('assets/shared/images/icons/icon-$char.png')){
+		else if (FileSystem.exists('assets/shared/images/icons/icon-$char.png')){
 			loadGraphic(Paths.image('icons/icon-$char', 'shared'), true, 150, 150);
-			antialiasing = true;
 
 			animation.add('$char', [0, 1], 0, false, isPlayer);
 
@@ -42,7 +43,6 @@ class HealthIcon extends FlxSprite
 		else{
 			loadGraphic(Paths.image('iconGrid'), true, 150, 150);
 
-			antialiasing = true;
 			animation.add('bf', [0, 1], 0, false, isPlayer);
 			animation.add('bf-car', [0, 1], 0, false, isPlayer);
 			animation.add('bf-christmas', [0, 1], 0, false, isPlayer);

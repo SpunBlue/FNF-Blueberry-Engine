@@ -1,5 +1,6 @@
 package;
 
+import engine.Engine;
 import sys.io.File;
 import sys.FileSystem;
 import haxe.Json;
@@ -685,7 +686,7 @@ class Character extends FlxSprite
 		if (isMod == true){
 			charJson = Json.parse(Modding.retrieveContent('$curCharacter.json', 'data/characters'));
 
-			frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(charJson.image, 'images/characters'),
+			frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(charJson.image, 'images/characters', 'CharIMGASSET'),
 			Modding.retrieveContent(charJson.image + '.xml', 'images/characters'));
 		}
 		else{
@@ -702,11 +703,15 @@ class Character extends FlxSprite
 				var xmlAnim:String = '' + anim.xmlanim;
 				var animName:String = '' + anim.name;
 				var animFPS:Int = anim.fps;
+				var loopAnimation:Bool = anim.loop;
 
 				if (animFPS <= 0)
 					animFPS = 24;
-
-				animation.addByPrefix(animName, xmlAnim, animFPS, false);
+				
+				if (anim.indices == null)
+					animation.addByPrefix(animName, xmlAnim, animFPS, loopAnimation);
+				else
+					animation.addByIndices(animName, xmlAnim, anim.indices, "", animFPS, loopAnimation);
 
 				if (anim.offsets != null)
 					addOffset(animName, anim.offsets[0], anim.offsets[1]);
@@ -714,12 +719,12 @@ class Character extends FlxSprite
 		}
 
 		if (isMod){
-			trace('$curCharacter Loaded as Json (Mod)');
+			Engine.debugPrint('$curCharacter Loaded as Json (Mod)');
 			isModded = true;
 			jsonCharacter = true;
 		}
 		else{
-			trace('$curCharacter Loaded as Json (Non-Mod)');
+			Engine.debugPrint('$curCharacter Loaded as Json (Non-Mod)');
 			jsonCharacter = true;
 		}
 
@@ -748,4 +753,5 @@ typedef AnimArray = {
 	var offsets:Array<Int>;
 	var ?fps:Int;
 	var ?indices:Array<Int>;
+	var ?loop:Bool;
 }

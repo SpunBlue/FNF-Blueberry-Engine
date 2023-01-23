@@ -105,9 +105,9 @@ class KeybindsState extends MusicBeatState
             if (FlxG.keys.justPressed.ANY && !ignoreInput){
                 PlayerSettings.reset();
 
-                trace(selected);
+                Engine.debugPrint('' + selected);
                 FlxG.save.data.userControls[selected] = FlxG.keys.getIsDown()[0].ID;
-                trace(FlxG.keys.getIsDown()[0].ID.toString());
+                Engine.debugPrint(FlxG.keys.getIsDown()[0].ID.toString());
 
                 PlayerSettings.init();
 

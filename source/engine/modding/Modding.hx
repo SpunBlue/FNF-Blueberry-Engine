@@ -22,7 +22,7 @@ class Modding {
     public static var modPreloaded:String;
 
     public static function init(){
-        trace('Initializing');
+        Engine.debugPrint('Initializing');
 
         if (FileSystem.readDirectory('mods/') != null){
             var modFolders:Array<String> = FileSystem.readDirectory('mods/');
@@ -40,7 +40,7 @@ class Modding {
                         }));
                     }
 
-                    trace('Succesfully imported mod: ' + modFolders[i]);
+                    Engine.debugPrint('Succesfully imported mod: ' + modFolders[i]);
                 }
             }
         }
@@ -49,31 +49,37 @@ class Modding {
         }
     }
 
-    public static function retrieveImage(assetid:String, library:String = 'images'){
-        var asset = assetid.toLowerCase() + '.IMAGEASSET';
-        var data:Dynamic = null;
-
-        for (file in preloadedData){
-            if (file != null && file.id == asset){
-                trace("found preloaded data of type: " + asset);
-                
-                if (file.data != null){
-                    data = file.data;
-                }
-                else{
-                    trace('data is null wtf???');
+    public static function retrieveImage(assetid:String, library:String = 'images', ?type:String = 'CharIMGASSET'){
+        if (type != 'StageIMGASSET'){
+            var asset = assetid.toLowerCase() + '.$type';
+            var data:Dynamic = null;
+    
+            for (file in preloadedData){
+                if (file != null && file.id == asset){
+                    Engine.debugPrint("found preloaded data of type: " + asset);
+                    
+                    if (file.data != null){
+                        data = file.data;
+                    }
+                    else{
+                        Engine.debugPrint('data is null wtf???');
+                    }
                 }
             }
-        }
-
-        if (data != null){
-            var returnData:FlxGraphic = data;
-
-            return returnData;
+    
+            if (data != null){
+                var returnData:FlxGraphic = data;
+    
+                return returnData;
+            }
+            else{
+                Engine.debugPrint("couldn't find preloaded data of type: " + asset);
+                return FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$curLoaded/$library/$assetid.png'), false);
+            }
         }
         else{
-            trace("couldn't find preloaded data of type: " + asset);
-            return FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$curLoaded/$library/$assetid.png'), false);
+            Engine.debugPrint("Stage Asset requested of: " + assetid);
+            return FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$curLoaded/images/$assetid'), false);
         }
     }
     
@@ -83,13 +89,13 @@ class Modding {
 
         for (file in preloadedData){
             if (file != null && file.id == asset){
-                trace("found preloaded data of type: " + asset);
+                Engine.debugPrint("found preloaded data of type: " + asset);
     
                 if (file.data != null){
                     data = file.data;
                 }
                 else{
-                    trace('data is null wtf???');
+                    Engine.debugPrint('data is null wtf???');
                 }
             }
         }
@@ -98,7 +104,7 @@ class Modding {
             return data;
         }
         else{
-            trace("couldn't find preloaded data of type: " + asset);
+            Engine.debugPrint("couldn't find preloaded data of type: " + asset);
             return Sound.fromFile('mods/$curLoaded/$library/$asset.ogg');
         }
     }
@@ -116,13 +122,13 @@ class Modding {
 
         for (file in preloadedData){
             if (file != null && file.id == asset){
-                trace("found preloaded data of type: " + asset);
+                Engine.debugPrint("found preloaded data of type: " + asset);
     
                 if (file.data != null){
                     data = file.data;
                 }
                 else{
-                    trace('data is null wtf???');
+                    Engine.debugPrint('data is null wtf???');
                 }
             }
         }
@@ -131,7 +137,7 @@ class Modding {
             return data;
         }
         else{
-            trace("couldn't find preloaded data of type: " + asset);
+            Engine.debugPrint("couldn't find preloaded data of type: " + asset);
             return File.getContent('mods/$curLoaded/$library/$assetid');
         }
     }
@@ -174,12 +180,12 @@ class Modding {
                 if (fileArray[1].toLowerCase() == 'png'){
                     var fileName:String = fileArray[0].toLowerCase();
 
-                    trace('preloading data of $fileName');
+                    Engine.debugPrint('preloading data of $fileName');
 
                     var funniAsset:FlxGraphic = FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$mod/images/characters/$file'), false, '$fileName');
                     funniAsset.persist = true;
 
-                    preloadedData.push({id: '$fileName.IMAGEASSET', data: funniAsset});
+                    preloadedData.push({id: '$fileName.CharIMGASSET', data: funniAsset});
                 }
             }
 
@@ -189,12 +195,12 @@ class Modding {
                 if (fileArray[1].toLowerCase() == 'png'){
                     var fileName:String = fileArray[0].toLowerCase();
 
-                    trace('preloading data of $fileName');
+                    Engine.debugPrint('preloading data of $fileName');
 
                     var funniAsset:FlxGraphic = FlxGraphic.fromBitmapData(BitmapData.fromFile('mods/$mod/images/icons/$file'), false, '$fileName');
                     funniAsset.persist = true;
 
-                    preloadedData.push({id: '$fileName.IMAGEASSET', data: funniAsset});
+                    preloadedData.push({id: '$fileName.IconIMGASSET', data: funniAsset});
                 }
             }
 
@@ -205,7 +211,7 @@ class Modding {
                 if (fileArray[1].toLowerCase() == 'xml' /*|| fileArray[1].toLowerCase() == 'txt'*/){
                     var fileName:String = fileArray[0].toLowerCase() + '.' + fileArray[1].toLowerCase();
 
-                    trace('preloading data of $fileName');
+                    Engine.debugPrint('preloading data of $fileName');
 
                     preloadedData.push({id: '$fileName', data: File.getContent('mods/$mod/images/characters/$file')});
                 }
@@ -218,7 +224,7 @@ class Modding {
                 if (fileArray[1].toLowerCase() == 'json'){
                     var fileName:String = fileArray[0].toLowerCase() + '.' + fileArray[1].toLowerCase();
 
-                    trace('preloading data of $fileName');
+                    Engine.debugPrint('preloading data of $fileName');
 
                     preloadedData.push({id: '$fileName', data: File.getContent('mods/$mod/data/characters/$file')});
                 }
