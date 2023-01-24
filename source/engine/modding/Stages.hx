@@ -55,7 +55,7 @@ typedef StageObj = {
     var image:String;
     var ?xmlPath:String;
     var ?position:Array<Float>;
-    var ?scrollFactor:Array<Int>;
+    var ?scrollFactor:Array<Float>;
     var xmlanim:String;
     var name:String;
     var fps:Int;

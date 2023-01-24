@@ -3,6 +3,7 @@
         "image": "teststage/reallyBadStage.png",
         "xmlPath": "teststage/reallyBadStage.xml",
         "position": [-256, -256],
+        "scrollFactor": [1, 1],
         "xmlanim": "animation0",
         "name": "stageAnimation",
         "fps": 24,

@@ -24,7 +24,7 @@ typedef SwagSong =
 }
 typedef Events = {
 	var name:String;
-	var ms:Float;
+	var ?ms:Float;
 	var ?var1:String;
 	var ?var2:String;
 	var ?var3:String;

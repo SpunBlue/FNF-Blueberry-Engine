@@ -1,5 +1,6 @@
-package game;
+package engine.editors;
 
+import game.PlayState;
 import Song.Events;
 import sys.io.File;
 import engine.Engine;
@@ -274,7 +275,13 @@ class ChartingState extends MusicBeatState
 			loadJson(_song.song.toLowerCase());
 		});
 
-		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'load autosave', loadAutosave);
+		/*var songEventsButt:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 60, "Startup Events", function()
+		{
+			PlayState.SONG = _song;
+			FlxG.switchState(new EventsState());
+		});*/
+
+		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x + 50, reloadSongJson.y + 30, 'load autosave', loadAutosave);
 
 		var stepperSpeed:FlxUINumericStepper = new FlxUINumericStepper(10, 80, 0.1, 1, 0.1, 10, 1);
 		stepperSpeed.value = _song.speed;
@@ -334,6 +341,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(saveButton);
 		tab_group_song.add(reloadSong);
 		tab_group_song.add(reloadSongJson);
+		//tab_group_song.add(songEventsButt);
 		tab_group_song.add(loadAutosaveBtn);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
@@ -419,7 +427,8 @@ class ChartingState extends MusicBeatState
 				}
 			});
 
-		eventInstructionText = new FlxText(10, 350);
+		eventInstructionText = new FlxText(10, 325);
+		eventInstructionText.text = "Click to place, Right click to Edit\nYou cannot delete by clicking!";
 
 		tab_group_section.add(eventVar1);
 		tab_group_section.add(eventVar2);
@@ -675,6 +684,21 @@ class ChartingState extends MusicBeatState
 		}
 		return daPos;
 	}
+
+	function sectionEndTime():Float
+		{
+			var daBPM:Float = _song.bpm;
+			var daPos:Float = 0;
+			for (i in 0...curSection + 1)
+			{
+				if (_song.notes[i].changeBPM)
+				{
+					daBPM = _song.notes[i].bpm;
+				}
+				daPos += 4 * (1000 * 60 / daBPM);
+			}
+			return daPos;
+		}
 
 	override function update(elapsed:Float)
 	{
@@ -949,8 +973,7 @@ class ChartingState extends MusicBeatState
 					var strumTime = eventNote.ms;
 					var yPos = getYfromStrum(Math.floor(eventNote.ms % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
 
-					if (eventNote != null && strumTime >= sectionStartTime() && yPos >= 0 
-						&& strumTime <= getStrumTime(eventGridBG.height + 39) + sectionStartTime())
+					if (eventNote != null && strumTime >= sectionStartTime() && strumTime < sectionEndTime())
 					{
 						var newEvent:EventNote = new EventNote(-40, yPos, _song.events.indexOf(eventNote));
 						eventNotes.add(newEvent);

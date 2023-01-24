@@ -1,5 +1,6 @@
 package game;
 
+import engine.editors.ChartingState;
 import engine.Engine;
 import engine.modding.Stages;
 import engine.Engine;

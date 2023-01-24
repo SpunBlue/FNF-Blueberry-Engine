@@ -1,5 +1,6 @@
 package game;
 
+import sys.FileSystem;
 import Song.Events;
 import engine.OptionsData;
 import engine.Engine;
@@ -577,6 +578,10 @@ class PlayState extends MusicBeatState
 			for (object in stageArray){
 				if (object != null){
 					var stageObject:StageObject = new StageObject(object.position[0], object.position[1], object);
+
+					if (object.scrollFactor[0] != null && object.scrollFactor[1] != null)
+						stageObject.scrollFactor.set(object.scrollFactor[0], object.scrollFactor[1]);
+
 					if (object.loop == null)
 						object.loop = false;
 
@@ -904,6 +909,26 @@ class PlayState extends MusicBeatState
 				schoolIntro(doof);
 			default:
 				startCountdown();
+		}
+
+		var events:Array<Events> = [];
+
+		if (Modding.modLoaded){
+			if (FileSystem.exists(Modding.getFilePath('startupEvents.json', 'data/charts/' + SONG.song.toLowerCase()))){
+				var json = Json.parse(Modding.retrieveContent('startupEvents.json', 'data/charts/' + SONG.song.toLowerCase()));
+				events = json.events;
+			}
+		}
+		else{
+			if (FileSystem.exists(Paths.json('charts/' + SONG.song.toLowerCase() +  'startupEvents.json'))){
+				var json = Json.parse(Paths.json('charts/' + SONG.song.toLowerCase() +  'startupEvents.json'));
+				events = json.events;
+			}
+		}
+
+		for (event in events){
+			if (event != null)
+				performEvent(event);
 		}
 
 		super.create();
@@ -2101,11 +2126,14 @@ class PlayState extends MusicBeatState
 			});
 		}
 
-		if (boyfriendGroup.members[selectedBF].holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left)
-		{
-			if (boyfriendGroup.members[selectedBF].animation.curAnim.name.startsWith('sing') && !boyfriendGroup.members[selectedBF].animation.curAnim.name.endsWith('miss'))
-			{
-				boyfriendGroup.members[selectedBF].playAnim('idle');
+		for (bf in boyfriendGroup.members){
+			if (bf != null){
+				if (bf.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left){
+					if (bf.animation.curAnim.name.startsWith('sing') && !bf.animation.curAnim.name.endsWith('miss'))
+					{
+						bf.playAnim('idle');
+					}
+				}
 			}
 		}
 
@@ -2466,22 +2494,22 @@ class PlayState extends MusicBeatState
 			gf.dance();
 		}
 
-		for (boyfriend in boyfriendGroup){
+		for (boyfriend in boyfriendGroup.members){
 			if (boyfriend != null){
-				if (!boyfriendGroup.members[selectedBF].animation.curAnim.name.startsWith("sing") || !boyfriendGroup.members[selectedBF].animation.curAnim.name.startsWith("idle") &&
-					!boyfriendGroup.members[selectedBF].animation.curAnim.name.startsWith("sing") && boyfriendGroup.members[selectedBF].animation.curAnim.finished)
+				if (!boyfriend.animation.curAnim.name.startsWith("sing") || !boyfriend.animation.curAnim.name.startsWith("idle") &&
+					!boyfriend.animation.curAnim.name.startsWith("sing") && boyfriend.animation.curAnim.finished)
 				{
-					boyfriendGroup.members[selectedBF].playAnim('idle');
+					boyfriend.playAnim('idle');
 				}
 			}
 		}
 
-		for (dad in dadGroup){
+		for (dad in dadGroup.members){
 			if (dad != null){
-				if (dadGroup.members[selectedDad].animation.curAnim.name.startsWith("idle") || !dadGroup.members[selectedDad].animation.curAnim.name.startsWith("idle") &&
-					!dadGroup.members[selectedDad].animation.curAnim.name.startsWith("sing") && dadGroup.members[selectedDad].animation.curAnim.finished)
+				if (dad.animation.curAnim.name.startsWith("idle") || !dad.animation.curAnim.name.startsWith("idle") &&
+					!dad.animation.curAnim.name.startsWith("sing") && dad.animation.curAnim.finished)
 				{
-					dadGroup.members[selectedDad].dance();
+					dad.dance();
 				}	
 			}
 		}
@@ -2602,7 +2630,7 @@ class PlayState extends MusicBeatState
 	function performEvent(event:Events){
 		switch (event.name){
 			default:
-				Engine.debugPrint('Event at ' + event.ms + ' has been ran at ' + Conductor.songPosition + ' With the name of ' + event.name);
+				//Engine.debugPrint('Event at ' + event.ms + ' has been ran at ' + Conductor.songPosition + ' With the name of ' + event.name);
 			case 'deleteCharacter':
 				if (event.var1.toLowerCase() == 'dad'){
 					for (dad in dadGroup){

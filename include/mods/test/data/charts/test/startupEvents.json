@@ -1,0 +1,30 @@
+{
+    "events": [
+        {
+            "name": "addCharacter",
+            "var1": "bf",
+            "var2": "pico",
+            "var3": "1",
+            "var4": "950",
+            "var5": "450"
+        },
+        {
+            "name": "singAsCharacter",
+            "var1": "bf",
+            "var2": "0"
+        },
+        {
+            "name": "addCharacter",
+            "var1": "dad",
+            "var2": "bf-pixel",
+            "var3": "1",
+            "var4": "0",
+            "var5": "450"
+        },
+        {
+            "name": "singAsCharacter",
+            "var1": "dad",
+            "var2": "0"
+        }
+    ]
+}
