@@ -54,7 +54,8 @@ typedef StageObjectJson = {
 typedef StageObj = {
     var image:String;
     var ?xmlPath:String;
-    var ?position:Array<Int>;
+    var ?position:Array<Float>;
+    var ?scrollFactor:Array<Int>;
     var xmlanim:String;
     var name:String;
     var fps:Int;

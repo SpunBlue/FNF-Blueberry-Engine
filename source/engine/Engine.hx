@@ -5,11 +5,17 @@ import game.PlayState;
 import engine.modding.Modding;
 
 class Engine{
+    /*
+    *   A function that only calls "trace();" if OptionsData.debugMode is equal to True.
+    */
     public static function debugPrint(text:String){
         if (OptionsData.debugMode)
             trace(text);
     }
 
+    /*
+    *   Unloads all Mod Data/Variables.
+    */
     public static function resetModding(?removePreloadedData:Bool = true){
         Stages.stageJson = null;
         Stages.stageArray = [];

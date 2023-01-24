@@ -29,6 +29,7 @@ typedef Events = {
 	var ?var2:String;
 	var ?var3:String;
 	var ?var4:String;
+	var ?var5:String;
 }
 
 class Song
@@ -40,6 +41,7 @@ class Song
 	public var needsVoices:Bool = true;
 	public var seperatedVocalTracks:Bool = false;
 	public var speed:Float = 1;
+	public var events:Array<Events> = [];
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
