@@ -579,8 +579,7 @@ class PlayState extends MusicBeatState
 				if (object != null){
 					var stageObject:StageObject = new StageObject(object.position[0], object.position[1], object);
 
-					if (object.scrollFactor[0] != null && object.scrollFactor[1] != null)
-						stageObject.scrollFactor.set(object.scrollFactor[0], object.scrollFactor[1]);
+					stageObject.scrollFactor.set(object.scrollFactor[0], object.scrollFactor[1]);
 
 					if (object.loop == null)
 						object.loop = false;
