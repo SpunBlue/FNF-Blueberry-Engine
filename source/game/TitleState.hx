@@ -255,12 +255,47 @@ class TitleState extends MusicBeatState
 			transitioning = true;
 			// FlxG.sound.music.stop();
 
+			#if debug
+			FlxG.switchState(new MainMenuState());
+			#else
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
-				// Check if version is outdated TO BE ADDED
+				// Check if version is outdated
 
-				FlxG.switchState(new MainMenuState());
+				var version:String = "v" + Application.current.meta.get('version');
+
+				var http = new haxe.Http("https://raw.githubusercontent.com/SpunBlue/FNF-Blueberry-Engine/master/version.Update");
+				var returnedData:Array<String> = [];
+				
+				http.onData = function (data:String)
+				{
+					returnedData[0] = data.substring(0, data.indexOf(';'));
+					returnedData[1] = data.substring(data.indexOf('-'), data.length);
+					  if (!version.contains(returnedData[0].trim()) && !OutdatedSubState.leftState)
+					{
+						trace('outdated lmao! ' + returnedData[0] + ' != ' + version);
+						OutdatedSubState.needVer = returnedData[0];
+						OutdatedSubState.currChanges = returnedData[1];
+						if (!FlxG.save.data.disableOutdatedScreen) {
+							FlxG.switchState(new OutdatedSubState());
+						} else {
+							FlxG.switchState(new MainMenuState());
+						}
+					}
+					else
+					{
+						FlxG.switchState(new MainMenuState());
+					}
+				}
+
+				http.onError = function (error) {
+					trace('error: $error');
+					FlxG.switchState(new MainMenuState()); // fail but we go anyway
+				  }
+				  
+				  http.request();
 			});
+			#end
 			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 		}
 

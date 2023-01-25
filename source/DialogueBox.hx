@@ -1,5 +1,8 @@
 package;
 
+import lime.math.RGBA;
+import engine.modding.Modding;
+import sys.FileSystem;
 import game.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -20,7 +23,8 @@ class DialogueBox extends FlxSpriteGroup
 	var curCharacter:String = '';
 
 	var dialogue:Alphabet;
-	var dialogueList:Array<String> = [];
+	var dialogueList:Array<DialogueShit> = [];
+	var json:DialogueShitJson;
 
 	// SECOND DIALOGUE FOR THE PIXEL SHIT INSTEAD???
 	var swagDialogue:FlxTypeText;
@@ -35,9 +39,11 @@ class DialogueBox extends FlxSpriteGroup
 	var handSelect:FlxSprite;
 	var bgFade:FlxSprite;
 
-	public function new(talkingRight:Bool = true, ?dialogueList:Array<String>)
+	public function new(talkingRight:Bool = true, ?dialogueJson:DialogueShitJson)
 	{
 		super();
+
+		json = dialogueJson;
 
 		switch (PlayState.SONG.song.toLowerCase())
 		{
@@ -61,57 +67,48 @@ class DialogueBox extends FlxSpriteGroup
 				bgFade.alpha = 0.7;
 		}, 5);
 
-		box = new FlxSprite(-20, 45);
-		
-		var hasDialog = false;
-		switch (PlayState.SONG.song.toLowerCase())
-		{
-			case 'senpai':
-				hasDialog = true;
-				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-pixel', 'week6');
-				box.animation.addByPrefix('normalOpen', 'Text Box Appear', 24, false);
-				box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
-			case 'roses':
-				hasDialog = true;
-				FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
+		var xOff:Float = json.boxXOffset;
+		var yOff:Float = json.boxYOffset;
 
-				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-senpaiMad', 'week6');
-				box.animation.addByPrefix('normalOpen', 'SENPAI ANGRY IMPACT SPEECH', 24, false);
-				box.animation.addByIndices('normal', 'SENPAI ANGRY IMPACT SPEECH', [4], "", 24);
+		box = new FlxSprite(-20 + xOff, 45 + yOff);
+		if (FileSystem.exists('assets/images/' + dialogueJson.boxImage + '.png') && FileSystem.exists('assets/images/' + dialogueJson.boxXML + '.xml')){
+			box.frames = Paths.getSparrowAtlas(dialogueJson.boxImage, 'shared');
+			box.animation.addByPrefix('normalOpen', dialogueJson.boxOpenAnimation, dialogueJson.fps, false);
+			box.animation.addByPrefix('normal', dialogueJson.boxIdleAnimation, dialogueJson.fps, true);
+		}
+		else if (Modding.modLoaded && FileSystem.exists(Modding.getFilePath(dialogueJson.boxImage, "images")) && FileSystem.exists(Modding.getFilePath(dialogueJson.boxXML, "images"))){
+			box.frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(dialogueJson.boxImage, 'images'), Modding.retrieveContent(dialogueJson.boxXML, 'images'));
+			box.animation.addByPrefix('normalOpen', dialogueJson.boxOpenAnimation, dialogueJson.fps, false);
+			box.animation.addByPrefix('normal', dialogueJson.boxIdleAnimation, dialogueJson.fps, true);
+		}
+		else{
+			switch (PlayState.SONG.song.toLowerCase())
+			{
+				default:
+					box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-pixel', 'week6');
+					box.animation.addByPrefix('normalOpen', 'Text Box Appear', 24, false);
+					box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
+				case 'roses':
+					FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
 
-			case 'thorns':
-				hasDialog = true;
-				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-evil', 'week6');
-				box.animation.addByPrefix('normalOpen', 'Spirit Textbox spawn', 24, false);
-				box.animation.addByIndices('normal', 'Spirit Textbox spawn', [11], "", 24);
-
-				var face:FlxSprite = new FlxSprite(320, 170).loadGraphic(Paths.image('weeb/spiritFaceForward', 'week6'));
-				face.setGraphicSize(Std.int(face.width * 6));
-				add(face);
+					box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-pixel', 'week6');
+					box.animation.addByPrefix('normalOpen', 'Text Box Appear', 24, false);
+					box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
+	
+				case 'thorns':
+					box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-evil', 'week6');
+					box.animation.addByPrefix('normalOpen', 'Spirit Textbox spawn', 24, false);
+					box.animation.addByIndices('normal', 'Spirit Textbox spawn', [11], "", 24);
+			}
 		}
 
-		this.dialogueList = dialogueList;
-		
-		if (!hasDialog)
-			return;
-		
-		portraitLeft = new FlxSprite(-20, 40);
-		portraitLeft.frames = Paths.getSparrowAtlas('weeb/senpaiPortrait', 'week6');
-		portraitLeft.animation.addByPrefix('enter', 'Senpai Portrait Enter', 24, false);
-		portraitLeft.setGraphicSize(Std.int(portraitLeft.width * PlayState.daPixelZoom * 0.9));
-		portraitLeft.updateHitbox();
-		portraitLeft.scrollFactor.set();
-		add(portraitLeft);
-		portraitLeft.visible = false;
+		this.dialogueList = dialogueJson.dialogues;
 
-		portraitRight = new FlxSprite(0, 40);
-		portraitRight.frames = Paths.getSparrowAtlas('weeb/bfPortrait', 'week6');
-		portraitRight.animation.addByPrefix('enter', 'Boyfriend portrait enter', 24, false);
-		portraitRight.setGraphicSize(Std.int(portraitRight.width * PlayState.daPixelZoom * 0.9));
-		portraitRight.updateHitbox();
-		portraitRight.scrollFactor.set();
+		portraitLeft = new FlxSprite();
+		portraitRight = new FlxSprite();
+
+		add(portraitLeft);
 		add(portraitRight);
-		portraitRight.visible = false;
 		
 		box.animation.play('normalOpen');
 		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
@@ -119,27 +116,44 @@ class DialogueBox extends FlxSpriteGroup
 		add(box);
 
 		box.screenCenter(X);
-		portraitLeft.screenCenter(X);
 
-		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('weeb/pixelUI/hand_textbox', 'week6'));
-		add(handSelect);
-
-
-		if (!talkingRight)
-		{
-			// box.flipX = true;
-		}
+		portraitLeft.visible = false;
+		portraitRight.visible = false;
 
 		dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.6), "", 32);
-		dropText.font = 'Pixel Arial 11 Bold';
-		dropText.color = 0xFFD89494;
+		dropText.alpha = 0;
 		add(dropText);
 
 		swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.6), "", 32);
-		swagDialogue.font = 'Pixel Arial 11 Bold';
-		swagDialogue.color = 0xFF3F2021;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
 		add(swagDialogue);
+
+		dropText.color = FlxColor.GRAY;
+		swagDialogue.color = FlxColor.BLACK;
+
+		if (dialogueJson.usePixelFont == true){
+			dropText.font = 'Pixel Arial 11 Bold';
+			swagDialogue.font = 'Pixel Arial 11 Bold';
+		}
+		else{
+			dropText.font = Paths.font("PhantomMuff.ttf");
+			swagDialogue.font = Paths.font("PhantomMuff.ttf");
+		}
+
+		if (PlayState.storyWeek == 6){
+			box.screenCenter(X);
+
+			handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('weeb/pixelUI/hand_textbox', 'week6'));
+			add(handSelect);
+
+			dropText.color = 0xFFD89494;
+			dropText.alpha = 1;
+
+			swagDialogue.color = 0xFF3F2021;
+
+			dropText.font = 'Pixel Arial 11 Bold';
+			swagDialogue.font = 'Pixel Arial 11 Bold';
+		}
 
 		dialogue = new Alphabet(0, 80, "", false, true);
 		// dialogue.x = 90;
@@ -152,11 +166,8 @@ class DialogueBox extends FlxSpriteGroup
 	override function update(elapsed:Float)
 	{
 		// HARD CODING CUZ IM STUPDI
-		if (PlayState.SONG.song.toLowerCase() == 'roses')
-			portraitLeft.visible = false;
 		if (PlayState.SONG.song.toLowerCase() == 'thorns')
 		{
-			portraitLeft.color = FlxColor.BLACK;
 			swagDialogue.color = FlxColor.WHITE;
 			dropText.color = FlxColor.BLACK;
 		}
@@ -224,38 +235,93 @@ class DialogueBox extends FlxSpriteGroup
 
 	function startDialogue():Void
 	{
-		cleanDialog();
 		// var theDialog:Alphabet = new Alphabet(0, 70, dialogueList[0], false, true);
 		// dialogue = theDialog;
 		// add(theDialog);
 
 		// swagDialogue.text = ;
-		swagDialogue.resetText(dialogueList[0]);
-		swagDialogue.start(0.04, true);
+		swagDialogue.resetText(dialogueList[0].dialogue);
 
-		switch (curCharacter)
-		{
-			case 'dad':
+		if (dialogueList[0].speed > 0)
+			swagDialogue.start(dialogueList[0].speed, true);
+		else
+			swagDialogue.start(0.04, true);
+
+		var lXOff:Float = 0;
+		var rXOff:Float = 0;
+		var yOff:Float = 0;
+
+		if (json.leftPortraitXOffset != null)
+			lXOff = json.leftPortraitXOffset;
+
+		if (json.rightPortraitXOffset != null)
+			rXOff = json.rightPortraitXOffset;
+
+		if (json.portraitYOffset != null)
+			yOff = json.portraitYOffset;
+
+		switch (dialogueList[0].facing.toLowerCase()){
+			case 'left':
 				portraitRight.visible = false;
 				if (!portraitLeft.visible)
 				{
 					portraitLeft.visible = true;
-					portraitLeft.animation.play('enter');
+
+					if (Modding.modLoaded && FileSystem.exists(Modding.getFilePath(dialogueList[0].image + '.png', "images")))
+						portraitLeft.loadGraphic(Modding.getFilePath(dialogueList[0].image + '.png', "images"));
+					else
+						portraitLeft.loadGraphic(Paths.image(dialogueList[0].image));
+
+					if (portraitLeft.flipX != false)
+						portraitLeft.flipX = false;
+
+					if (PlayState.storyWeek == 6)
+						portraitLeft.setGraphicSize(Std.int(portraitLeft.width * PlayState.daPixelZoom * 0.9));
+					portraitLeft.updateHitbox();
+					portraitLeft.setPosition(box.x + lXOff, (box.y - portraitLeft.height) + yOff);
 				}
-			case 'bf':
+			case 'right':
 				portraitLeft.visible = false;
 				if (!portraitRight.visible)
 				{
 					portraitRight.visible = true;
-					portraitRight.animation.play('enter');
+
+					if (Modding.modLoaded && FileSystem.exists(Modding.getFilePath(dialogueList[0].image + '.png', "images")))
+						portraitRight.loadGraphic(Modding.getFilePath(dialogueList[0].image + '.png', "images"));
+					else
+						portraitRight.loadGraphic(Paths.image(dialogueList[0].image));
+
+					if (portraitRight.flipX != true)
+						portraitRight.flipX = true;
+
+					if (PlayState.storyWeek == 6)
+						portraitRight.setGraphicSize(Std.int(portraitRight.width * PlayState.daPixelZoom * 0.9));
+					portraitRight.updateHitbox();
+					portraitRight.setPosition((box.width - portraitRight.width) + rXOff, (box.y - portraitRight.height) + yOff);
 				}
 		}
 	}
+}
 
-	function cleanDialog():Void
-	{
-		var splitName:Array<String> = dialogueList[0].split(":");
-		curCharacter = splitName[1];
-		dialogueList[0] = dialogueList[0].substr(splitName[1].length + 2).trim();
-	}
+typedef DialogueShitJson = {
+	var ?boxImage:String;
+	var ?boxXML:String;
+	var ?boxOpenAnimation:String;
+	var ?boxIdleAnimation:String;
+	var ?boxXOffset:Float;
+	var ?boxYOffset:Float;
+	var ?portraitYOffset:Float;
+	var ?leftPortraitXOffset:Float;
+	var ?rightPortraitXOffset:Float;
+	var ?fps:Int;
+	var ?color:FlxColor;
+	var ?usePixelFont:Bool;
+	var dialogues:Array<DialogueShit>;
+}
+
+typedef DialogueShit = {
+	var dialogue:String;
+	var ?speed:Float; // Lower is faster and Higher as slower... for some reason.
+	var image:String;
+	var facing:String; // Left or Right
 }

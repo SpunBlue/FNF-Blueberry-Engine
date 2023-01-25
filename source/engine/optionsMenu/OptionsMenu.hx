@@ -41,7 +41,7 @@ class OptionsMenu extends MusicBeatState {
     
     public static var graphicsOptions:Array<Dynamic> = [ //display name, description, save variable name
 	    ['Distractions',"Toggle Distractions",'distractions'],
-	    ['Show Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
+	    ['Disable Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
     ];
     var sections:Array<Dynamic> = [
 		['Keybinds','default'],

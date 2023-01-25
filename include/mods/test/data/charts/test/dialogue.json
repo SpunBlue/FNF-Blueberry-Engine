@@ -1,0 +1,37 @@
+{
+	"leftPortraitXOffset": 128,
+	"rightPortraitXOffset": -128,
+	"portraitYOffset": 394,
+	"dialogues": [
+		{
+			"dialogue": "Hey there, are you ready for the test song?",
+			"speed": 0.16,
+			"image": "dadPortrait",
+			"facing": "left"
+		},
+		{
+			"dialogue": "TALK FASTER YOU BITCH",
+			"speed": 0.002,
+			"image": "bfPortrait",
+			"facing": "right"
+		},
+		{
+			"dialogue": "Jeez do you kiss your mother with that mouth?",
+			"speed": 0.16,
+			"image": "dadPortrait",
+			"facing": "left"
+		},
+		{
+			"dialogue": "No but I kiss yours.",
+			"speed": 0.002,
+			"image": "bfPortrait",
+			"facing": "right"
+		},
+		{
+			"dialogue": "Fuck you. You useless piece of shit. You absolute waste of space and air. You uneducated, ignorant, idiotic dumb swine, you’re an absolute embarrassment to humanity and all life as a whole. The magnitude of your failure just now is so indescribably massive that one hundred years into the future your name will be used as moniker of evil for heretics.",
+			"speed": 0.002,
+			"image": "dadPortrait",
+			"facing": "left"
+		}
+	]
+}

@@ -21,6 +21,8 @@ typedef SwagSong =
 	var player2:String;
 	var validScore:Bool;
 	var ?events:Array<Events>;
+	var ?introVideo:String;
+	var ?outroVideo:String;
 }
 typedef Events = {
 	var name:String;
@@ -42,6 +44,8 @@ class Song
 	public var seperatedVocalTracks:Bool = false;
 	public var speed:Float = 1;
 	public var events:Array<Events> = [];
+	public var introVideo:String;
+	public var outroVideo:String;
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';

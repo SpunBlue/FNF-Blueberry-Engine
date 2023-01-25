@@ -1,0 +1,32 @@
+{
+	"leftPortraitXOffset": 128,
+	"rightPortraitXOffset": -128,
+	"portraitYOffset": 512,
+	"dialogues": [
+		{
+			"dialogue": "Direct contact with real humans, after being trapped in here for so long...",
+			"image": "weeb/spiritFaceForward",
+			"facing": "left"
+		},
+		{
+			"dialogue": "and HER of all people.",
+			"image": "weeb/spiritFaceForward",
+			"facing": "left"
+		},
+		{
+			"dialogue": "I'll make her father pay for what he's done to me and all the others...",
+			"image": "weeb/spiritFaceForward",
+			"facing": "left"
+		},
+		{
+			"dialogue": "I'll beat you and make you take my place.",
+			"image": "weeb/spiritFaceForward",
+			"facing": "left"
+		},
+		{
+			"dialogue": "You don't mind your bodies being borrowed right? It's only fair...",
+			"image": "weeb/spiritFaceForward",
+			"facing": "left"
+		}
+	]
+}

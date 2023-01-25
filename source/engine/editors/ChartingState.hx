@@ -112,6 +112,9 @@ class ChartingState extends MusicBeatState
 
 	var eventInstructionText:FlxText;
 
+	var ui_videoIntroName:FlxUIInputText;
+	var ui_videoOutroName:FlxUIInputText;
+
 	override function create()
 	{
 		hitSound = new FlxSound();
@@ -281,7 +284,7 @@ class ChartingState extends MusicBeatState
 			FlxG.switchState(new EventsState());
 		});*/
 
-		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x + 50, reloadSongJson.y + 30, 'load autosave', loadAutosave);
+		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'load autosave', loadAutosave);
 
 		var stepperSpeed:FlxUINumericStepper = new FlxUINumericStepper(10, 80, 0.1, 1, 0.1, 10, 1);
 		stepperSpeed.value = _song.speed;
@@ -329,12 +332,19 @@ class ChartingState extends MusicBeatState
 
 		var check_hitSounds = new FlxUICheckBox(10, check_mute_inst.y + 20, null, null, "Enable Hitsounds", 100);
 
+		var text1:FlxText = new FlxText(10, check_mute_inst.y + 40, 0, "Intro Video");
+		var text2:FlxText = new FlxText(10, check_mute_inst.y + 100, 0, "Outro Video");
+
+		ui_videoIntroName = new FlxUIInputText(10, check_mute_inst.y + 60, 120, "", 8);
+		ui_videoOutroName = new FlxUIInputText(10, check_mute_inst.y + 120, 120, "", 8);
+
 		player2DropDown.selectedLabel = _song.player2;
 
 		var tab_group_song = new FlxUI(null, UI_box);
+		tab_group_song.add(text1);
+		tab_group_song.add(text2);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
-
 		tab_group_song.add(check_voices);
 		tab_group_song.add(check_voices_2);
 		tab_group_song.add(check_mute_inst);
@@ -349,6 +359,8 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stageDropDown);
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
+		tab_group_song.add(ui_videoIntroName);
+		tab_group_song.add(ui_videoOutroName);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -506,6 +518,7 @@ class ChartingState extends MusicBeatState
 	}
 
 	var stepperSusLength:FlxUINumericStepper;
+	var stepperCharID:FlxUINumericStepper;
 
 	function addNoteUI():Void
 	{
@@ -516,9 +529,24 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
-		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
+		var text:FlxText = new FlxText(10, 40, 0, "Character ID (-1 is Selected Character)");
+
+		stepperCharID = new FlxUINumericStepper(10, 60, 1, -1, -1, 1000);
+		stepperCharID.value = -1;
+		stepperCharID.name = "note_charID";
+
+		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply'); // I don't even think this does anything..
+		
+		/*var noteActions:Array<String>
+
+		var noteActionDropdown = new FlxUIDropDownMenu(10, 50, FlxUIDropDownMenu.makeStrIdLabelArray(eventNames, true), function(lol:String)
+			{
+
+			});*/
 
 		tab_group_note.add(stepperSusLength);
+		tab_group_note.add(stepperCharID);
+		tab_group_note.add(text);
 		tab_group_note.add(applyLength);
 
 		UI_box.addGroup(tab_group_note);
@@ -648,6 +676,11 @@ class ChartingState extends MusicBeatState
 			else if (wname == 'note_susLength')
 			{
 				curSelectedNote[2] = nums.value;
+				updateGrid();
+			}
+			else if (wname == 'note_charID')
+			{
+				curSelectedNote[3] = nums.value;
 				updateGrid();
 			}
 			else if (wname == 'section_bpm')
@@ -890,6 +923,12 @@ class ChartingState extends MusicBeatState
 
 		_song.bpm = tempBpm;
 
+		if (_song.introVideo != ui_videoIntroName.text)
+			_song.introVideo = ui_videoIntroName.text;
+
+		if (_song.outroVideo != ui_videoIntroName.text)
+			_song.outroVideo = ui_videoIntroName.text;
+
 		// I am pretty sure I did this the most horrible way possible but whatever it works.
 
 		if (FlxG.mouse.justPressedRight){
@@ -964,6 +1003,8 @@ class ChartingState extends MusicBeatState
 				eventVar3InfoText.text = "";
 				eventVar4InfoText.text = "";
 				eventVar5InfoText.text = "";
+
+				autosaveSong();
 			}
 		}
 
@@ -1043,6 +1084,21 @@ class ChartingState extends MusicBeatState
 
 		updateNoteUI();
 		updateGrid();
+	}
+
+	function changeNoteSinger(value:Float):Void
+	{
+		if (curSelectedNote != null)
+			{
+				if (curSelectedNote[3] != null)
+				{
+					curSelectedNote[3] += value;
+					curSelectedNote[3] = Math.max(curSelectedNote[3], -1);
+				}
+			}
+	
+			updateNoteUI();
+			updateGrid();
 	}
 
 	function recalculateSteps():Int
@@ -1172,8 +1228,10 @@ class ChartingState extends MusicBeatState
 
 	function updateNoteUI():Void
 	{
-		if (curSelectedNote != null)
+		if (curSelectedNote != null){
 			stepperSusLength.value = curSelectedNote[2];
+			stepperCharID.value = curSelectedNote[3];	
+		}
 	}
 
 	function updateGrid():Void
@@ -1319,7 +1377,7 @@ class ChartingState extends MusicBeatState
 		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
 		var noteSus = 0;
 
-		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus]);
+		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, -1]);
 
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
 
@@ -1494,7 +1552,12 @@ class EventNote extends FlxSprite
 	public function new(x:Float, y:Float, id:Int){
 		super(x, y);
 
-		makeGraphic(40, 40, FlxColor.GRAY);
+		loadGraphic(Paths.image('event', 'preload'));
+		setGraphicSize(40, 40);
+		updateHitbox();
+
+		this.x = x;
+		this.y = y;
 
 		eventID = id;
 	}
