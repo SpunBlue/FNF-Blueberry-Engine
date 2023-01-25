@@ -1,5 +1,6 @@
 package game;
 
+import engine.OptionsData;
 import engine.modding.Modding;
 #if desktop
 import Discord.DiscordClient;
@@ -276,7 +277,7 @@ class TitleState extends MusicBeatState
 						trace('outdated lmao! ' + returnedData[0] + ' != ' + version);
 						OutdatedSubState.needVer = returnedData[0];
 						OutdatedSubState.currChanges = returnedData[1];
-						if (!FlxG.save.data.disableOutdatedScreen) {
+						if (!OptionsData.disableOutdatedScreen) {
 							FlxG.switchState(new OutdatedSubState());
 						} else {
 							FlxG.switchState(new MainMenuState());

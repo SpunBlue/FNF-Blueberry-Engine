@@ -28,7 +28,7 @@ class OutdatedSubState extends MusicBeatState
 		logoBl = new FlxSprite(0, -64);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logoBl.animation.play('bump');
 		logoBl.screenCenter(X);
 		logoBl.updateHitbox();
