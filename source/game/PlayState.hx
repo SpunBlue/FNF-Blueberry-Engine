@@ -704,8 +704,8 @@ class PlayState extends MusicBeatState
 
 		switch(gfVersion){
 			case 'gf-pixel':
-				gfGroup.members[selectedGF].x += 180;
-				gfGroup.members[selectedGF].y += 300;
+				gf.x += 180;
+				gf.y += 300;
 		}
 
 		add(layer0);
