@@ -1758,8 +1758,9 @@ class PlayState extends MusicBeatState
 
 					var selection:Int = selectedDad;
 
-					if (daNote.charSinger > -1)
-						selection = daNote.charSinger;
+					if (daNote.charSinger > -1){
+						selection = getProperCharacterID(daNote.charSinger, 'dad');
+					}
 
 					switch (Math.abs(daNote.noteData))
 					{
@@ -1824,8 +1825,9 @@ class PlayState extends MusicBeatState
 
 						var selection:Int = selectedBF;
 
-						if (daNote.charSinger > -1)
-							selection = daNote.charSinger;
+						if (daNote.charSinger > -1){
+							selection = getProperCharacterID(daNote.charSinger, 'bf');
+						}
 
 						switch (Math.abs(daNote.noteData)){
 							case 0:
@@ -2293,8 +2295,9 @@ class PlayState extends MusicBeatState
 
 			var selection:Int = selectedBF;
 
-			if (note.charSinger > -1)
-				selection = note.charSinger;
+			if (note.charSinger > -1){
+				selection = getProperCharacterID(note.charSinger, 'bf');
+			}
 
 			switch (note.noteData)
 			{
@@ -2758,10 +2761,12 @@ class PlayState extends MusicBeatState
 					boyfriendGroup.add(newBF);
 				}
 			case 'singAsCharacter':
-				if (event.var1.toLowerCase() == 'dad')
-					selectedDad = Std.parseInt(event.var2);
-				else if (event.var1.toLowerCase() == 'bf' || event.var1.toLowerCase() == 'boyfriend')
-					selectedBF = Std.parseInt(event.var2);
+				if (event.var1.toLowerCase() == 'dad'){
+					selectedDad = getProperCharacterID(Std.parseInt(event.var2), event.var1.toLowerCase());
+				}
+				else if (event.var1.toLowerCase() == 'bf' || event.var1.toLowerCase() == 'boyfriend'){
+					selectedBF = getProperCharacterID(Std.parseInt(event.var2), event.var1.toLowerCase());
+				}
 			case 'replaceGF':
 				if (event.var1 != null){
 					if (event.var2 == null || event.var2 == '')
@@ -2813,16 +2818,56 @@ class PlayState extends MusicBeatState
 				}
 
 				if (event.var1.toLowerCase() == 'dad'){
-					dadGroup.members[Std.parseInt(event.var2)].playAnim(event.var3, true);
+					dadGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
 				else if (event.var1.toLowerCase() == 'bf' || event.var1.toLowerCase() == 'boyfriend'){
-					boyfriendGroup.members[Std.parseInt(event.var2)].playAnim(event.var3, true);
-					Engine.debugPrint('Should be playing animation.');
+					boyfriendGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
 				else if (event.var1.toLowerCase() == 'gf' || event.var1.toLowerCase() == 'girlfriend'){
-					gfGroup.members[Std.parseInt(event.var2)].playAnim(event.var3, true);
+					gfGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
 		}
+	}
+
+	private function getProperCharacterID(ID:Int, type:String):Int{
+		type = type.toLowerCase();
+
+		if (ID == -1)
+			switch(type){
+				case 'dad':
+					return selectedDad;
+				case 'gf':
+					return selectedGF;
+				case 'bf' | 'boyfriend':
+					return selectedBF;
+			}
+
+		if (type == 'dad'){
+			for (dad in dadGroup){
+				if (dad != null && dad.ID == ID){
+					return dadGroup.members.indexOf(dad);
+					break;
+				}
+			}
+		}
+		else if (type == 'bf' || type == 'boyfriend'){
+			for (bf in boyfriendGroup){
+				if (bf != null && bf.ID == ID){
+					return boyfriendGroup.members.indexOf(bf);
+					break;
+				}
+			}
+		}
+		else if (type == 'gf'){
+			for (gf in gfGroup){
+				if (gf != null && gf.ID == ID){
+					return gfGroup.members.indexOf(gf);
+					break;
+				}
+			}
+		}
+
+		return 0;
 	}
 
 	var curLight:Int = 0;
