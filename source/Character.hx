@@ -704,6 +704,7 @@ class Character extends FlxSprite
 				var animName:String = '' + anim.name;
 				var animFPS:Int = anim.fps;
 				var loopAnimation:Bool = anim.loop;
+				var indiceslol:Array<Int> = anim.indices;
 
 				if (animFPS <= 0)
 					animFPS = 24;
@@ -711,7 +712,7 @@ class Character extends FlxSprite
 				if (anim.indices == null)
 					animation.addByPrefix(animName, xmlAnim, animFPS, loopAnimation);
 				else
-					animation.addByIndices(animName, xmlAnim, anim.indices, "", animFPS, loopAnimation);
+					animation.addByIndices(animName, xmlAnim, indiceslol, "", animFPS, loopAnimation);
 
 				if (anim.offsets != null)
 					addOffset(animName, anim.offsets[0], anim.offsets[1]);

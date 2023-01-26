@@ -165,8 +165,8 @@ class PlayState extends MusicBeatState
 		["addCharacter", "'bf' or 'dad'?", "New Character", "Character ID", "X Offset", "Y Offset", "Add a Character and set as the current Character."],
 		["replaceGF", "New Character", "X Offset", "Y Offset", "", "", "Replaces the current Girlfriend with a new one."],
 		["singAsCharacter", "'bf' Group or 'dad' Group?", "Character ID", "", "", "", "Set current Character to specified ID."],
-		["playAnimation", "'bf' Group, 'dad' Group or 'gf'?", "Character ID", "Animation Name", "", "", "Play Animation on Character with specific ID"]
-		//["Zoom", "Lock at Zoom? 'true' or 'false'", "Which Camera? 'game' or 'hud'", "Zoom Amount", "", "", "Zooms Camera to specified value."] < Broken
+		["playAnimation", "'bf' Group, 'dad' Group or 'gf'?", "Character ID", "Animation Name", "", "", "Play Animation on Character with specific ID"],
+		["Zoom", "Lock at Zoom? 'true' or 'false'", "Which Camera? 'game' or 'hud'", "Zoom Amount", "", "", "Zooms Camera to specified value."]
 	];
 	var songEvents:Array<Events> = [];
 
@@ -1476,7 +1476,12 @@ class PlayState extends MusicBeatState
 						performEvent(event);
 		
 						songEvents.remove(event);
+
+						Engine.debugPrint('' + event + ' has been Played');
 					}
+				}
+				else{
+					Engine.debugPrint('' + event + ' is Null!');
 				}
 			}
 		}
@@ -2773,24 +2778,24 @@ class PlayState extends MusicBeatState
 					newGF.ID = 0;
 					gfGroup.add(newGF);
 				}
-			case 'Zoom': // needs to be fixed 
+			case 'Zoom':
 				if (event.var2.toLowerCase() == 'game'){
 					if (event.var1.toLowerCase() == 'true'){
-						defaultCamZoom = Std.parseInt(event.var3);
+						defaultCamZoom = Std.parseFloat(event.var3);
 					}
 
-					FlxG.camera.zoom = Std.parseInt(event.var3);
+					FlxG.camera.zoom = Std.parseFloat(event.var3);
 				}
 				else if (event.var2.toLowerCase() == 'hud'){
 					if (event.var1.toLowerCase() == 'true'){
-						defaultHudZoom = Std.parseInt(event.var3);
+						defaultHudZoom = Std.parseFloat(event.var3);
 					}
 
 
-					camHUD.zoom = Std.parseInt(event.var3);
+					camHUD.zoom = Std.parseFloat(event.var3);
 				}
 			case 'playAnimation':
-				if (Std.parseInt(event.var2) == -1)
+				if (Std.parseInt(event.var2) == -1){
 					switch(event.var1.toLowerCase()){
 						default:
 							event.var2 = '0';
@@ -2805,12 +2810,14 @@ class PlayState extends MusicBeatState
 						case 'girlfriend':
 							event.var2 = '$selectedGF';
 					}
+				}
 
 				if (event.var1.toLowerCase() == 'dad'){
 					dadGroup.members[Std.parseInt(event.var2)].playAnim(event.var3, true);
 				}
 				else if (event.var1.toLowerCase() == 'bf' || event.var1.toLowerCase() == 'boyfriend'){
 					boyfriendGroup.members[Std.parseInt(event.var2)].playAnim(event.var3, true);
+					Engine.debugPrint('Should be playing animation.');
 				}
 				else if (event.var1.toLowerCase() == 'gf' || event.var1.toLowerCase() == 'girlfriend'){
 					gfGroup.members[Std.parseInt(event.var2)].playAnim(event.var3, true);
