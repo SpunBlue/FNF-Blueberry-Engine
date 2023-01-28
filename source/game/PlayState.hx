@@ -2872,6 +2872,7 @@ class PlayState extends MusicBeatState
 					gfGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
 		}
+		script.call("event", [event]);
 	}
 
 	private function getProperCharacterID(ID:Int, type:String):Int{
