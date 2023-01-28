@@ -2,6 +2,7 @@ package;
 
 import game.PlayState;
 import lime.utils.Assets;
+import openfl.display.BlendMode;
 
 using StringTools;
 
@@ -27,5 +28,24 @@ class CoolUtil
 			dumbArray.push(i);
 		}
 		return dumbArray;
+	}
+
+	public static function returnBlendMode(str:String):BlendMode
+	{
+		return switch (str)
+		{
+			case "normal": BlendMode.NORMAL;
+			case "darken": BlendMode.DARKEN;
+			case "multiply": BlendMode.MULTIPLY;
+			case "lighten": BlendMode.LIGHTEN;
+			case "screen": BlendMode.SCREEN;
+			case "overlay": BlendMode.OVERLAY;
+			case "hardlight": BlendMode.HARDLIGHT;
+			case "difference": BlendMode.DIFFERENCE;
+			case "add": BlendMode.ADD;
+			case "subtract": BlendMode.SUBTRACT;
+			case "invert": BlendMode.INVERT;
+			case _: BlendMode.NORMAL;
+		}
 	}
 }

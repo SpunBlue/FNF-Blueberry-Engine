@@ -1,7 +1,6 @@
 package game;
 
 import DialogueBox.DialogueShitJson;
-import hxcodec.VideoHandler;
 import sys.FileSystem;
 import Song.Events;
 import engine.OptionsData;
@@ -49,8 +48,15 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
+
 #if desktop
 import Discord.DiscordClient;
+#end
+
+#if (hxCodec <= "2.5.1")
+import vlc.MP4Handler;
+#else
+import VideoHandler;
 #end
 
 using StringTools;
@@ -580,6 +586,22 @@ class PlayState extends MusicBeatState
 						stageObject.frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(object.image, '', 'StageIMGASSET'),
 					File.getContent('mods/' + Modding.curLoaded + '/images/' + object.xmlPath));
 
+					if (object.size != null)
+						stageObject.setGraphicSize(Std.int(stageObject.width * object.size));
+
+					if (object.blend != null)
+						stageObject.blend = CoolUtil.returnBlendMode(object.blend);
+
+					if (object.scale != null)
+					{
+						stageObject.scale.x = object.scale[0];
+						stageObject.scale.y = object.scale[1];
+					}
+
+					stageObject.flipX = object.flipX;
+					stageObject.flipY = object.flipY;
+					stageObject.antialiasing = object.antialiasing;
+
 					if (object.isAnimated){
 						if (object.indices == null)
 							stageObject.animation.addByPrefix(object.name, object.xmlanim, object.fps, object.loop);
@@ -830,13 +852,11 @@ class PlayState extends MusicBeatState
 		add(healthBar);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
-		iconP1.y = (healthBar.y - (iconP1.height / 2)) + 32;
-		iconP1.alpha = 0.65;
+		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
 		iconP2 = new HealthIcon(SONG.player2, false);
-		iconP2.y = (healthBar.y - (iconP2.height / 2)) + 32;
-		iconP2.alpha = 0.65;
+		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
 		scoreTxt = new FlxText(0, healthBar.y + 24, FlxG.width, "", 20);
@@ -1523,13 +1543,13 @@ class PlayState extends MusicBeatState
 				openSubState(new PauseSubState(boyfriendGroup.members[selectedBF].getScreenPosition().x, boyfriendGroup.members[selectedBF].getScreenPosition().y));
 		}
 
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width * 0.75, 0.75)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width * 0.75, 0.75)));
+		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
+		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
 
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
-		var iconOffset:Int = 16;
+		var iconOffset:Int = 26;
 
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
@@ -2377,7 +2397,12 @@ class PlayState extends MusicBeatState
 		inCutscene = true;
 		FlxG.sound.music.stop();
 		
+		#if (hxCodec <= "2.5.1")
+		var video:vlc.MP4Handler = new vlc.MP4Handler();
+		#else
 		var video:VideoHandler = new VideoHandler();
+		#end
+
 		video.finishCallback = function()
 		{
 			if (atEndOfSong)
