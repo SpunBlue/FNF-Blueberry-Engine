@@ -171,6 +171,7 @@ class PlayState extends MusicBeatState
 
 	var isSingle:Bool = false;
 
+    // Why did I put this here?
 	public static var validEvents:Array<Dynamic> = [
 		["None", "Variable 1", "Variable 2", "Variable 3", "Variable 4", "Variable 5", "Information"],
 		["deleteCharacter", "'bf' or 'dad'?", "Character ID (0 is default)", "", "", "", 'Delete a Character of an specific ID.\nWill crash if no characters left avaliable.\n'],
@@ -178,7 +179,7 @@ class PlayState extends MusicBeatState
 		["replaceGF", "New Character", "X Offset", "Y Offset", "", "", "Replaces the current Girlfriend with a new one."],
 		["singAsCharacter", "'bf' Group or 'dad' Group?", "Character ID", "", "", "", "Set current Character to specified ID."],
 		["playAnimation", "'bf' Group, 'dad' Group or 'gf'?", "Character ID", "Animation Name", "", "", "Play Animation on Character with specific ID"],
-		["Zoom", "Lock at Zoom? 'true' or 'false'", "Which Camera? 'game' or 'hud'", "Zoom Amount", "", "", "Zooms Camera to specified value."]
+		["Zoom", "Lerp Value? 'true' or 'false'", "Which Camera? 'game' or 'hud'", "Zoom Amount", "", "", "Zooms Camera to specified value.\nLerp will make the Camera do the Zoom In/Out effect.\nZoom Amount adds on to the current value. This number can be negative or positive."]
 	];
 	var songEvents:Array<Events> = [];
 
@@ -1088,7 +1089,7 @@ class PlayState extends MusicBeatState
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
 
-        script.call('startCountdown', []);
+        script.call('startCountdown');
 
 		var swagCounter:Int = 0;
 
@@ -1193,9 +1194,12 @@ class PlayState extends MusicBeatState
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
+        script.call('startCountdown');
+
 		if (!paused){
 			FlxG.sound.playMusic(inst, 1, false);
 		}
+
 		FlxG.sound.music.onComplete = forceEndSong;
 		vocals.play();
 		vocals2.play();
@@ -1867,6 +1871,8 @@ class PlayState extends MusicBeatState
 						}
 					}
 
+					script.call('dadNoteHit', []);
+
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
@@ -1966,7 +1972,7 @@ class PlayState extends MusicBeatState
 		songPlaylist.remove(songPlaylist[0]);
 		Engine.debugPrint("new playlist: " + songPlaylist);
 
-        script.call('endSong', []);
+        script.call('endSong');
 
 		Stages.reset();
 
@@ -2034,6 +2040,8 @@ class PlayState extends MusicBeatState
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 
 		vocals.volume = 1;
+
+        script.call('popUpScore', [strumtime]);
 
 		var placement:String = Std.string(combo);
 
@@ -2309,7 +2317,7 @@ class PlayState extends MusicBeatState
 
 		songScore -= 10;
 		songMisses++;
- 
+
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 		// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 		// FlxG.log.add('played imss note');
@@ -2333,6 +2341,8 @@ class PlayState extends MusicBeatState
 			case 3:
 				boyfriendGroup.members[selectedBF].playAnim('singRIGHTmiss', true);
 		}
+
+        script.call('noteMiss', [direction]);
 	}
 
 	function badNoteCheck()
@@ -2406,6 +2416,8 @@ class PlayState extends MusicBeatState
 				notes.remove(note, true);
 				note.destroy();
 			}
+
+			script.call('goodNoteHit', [note]);
 		}
 	}
 
@@ -2790,8 +2802,6 @@ class PlayState extends MusicBeatState
 
 	function performEvent(event:Events){
 		switch (event.name){
-			default:
-				//Engine.debugPrint('Event at ' + event.ms + ' has been ran at ' + Conductor.songPosition + ' With the name of ' + event.name);
 			case 'deleteCharacter':
 				if (event.var1.toLowerCase() == 'dad'){
 					for (dad in dadGroup){
@@ -2873,37 +2883,26 @@ class PlayState extends MusicBeatState
 			case 'Zoom':
 				if (event.var2.toLowerCase() == 'game'){
 					if (event.var1.toLowerCase() == 'true'){
-						defaultCamZoom = Std.parseFloat(event.var3);
+						defaultCamZoom = FlxG.camera.zoom + Std.parseFloat(event.var3);
+						camZooming = true;
 					}
-
-					FlxG.camera.zoom = Std.parseFloat(event.var3);
+					else{
+						camZooming = false;
+						FlxG.camera.zoom = FlxG.camera.zoom + Std.parseFloat(event.var3);
+					}
 				}
 				else if (event.var2.toLowerCase() == 'hud'){
 					if (event.var1.toLowerCase() == 'true'){
-						defaultHudZoom = Std.parseFloat(event.var3);
+						defaultHudZoom = camHUD.zoom + Std.parseFloat(event.var3);
+						camZooming = true;
 					}
-
-
-					camHUD.zoom = Std.parseFloat(event.var3);
+					else{
+						camZooming = false;
+						camHUD.zoom = camHUD.zoom + Std.parseFloat(event.var3);
+					}
 				}
+
 			case 'playAnimation':
-				if (Std.parseInt(event.var2) == -1){
-					switch(event.var1.toLowerCase()){
-						default:
-							event.var2 = '0';
-						case 'dad':
-							event.var2 = '$selectedDad';
-						case 'bf':
-							event.var2 = '$selectedBF';
-						case 'boyfriend':
-							event.var2 = '$selectedBF';
-						case 'gf':
-							event.var2 = '$selectedGF';
-						case 'girlfriend':
-							event.var2 = '$selectedGF';
-					}
-				}
-
 				if (event.var1.toLowerCase() == 'dad'){
 					dadGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
@@ -2913,7 +2912,18 @@ class PlayState extends MusicBeatState
 				else if (event.var1.toLowerCase() == 'gf' || event.var1.toLowerCase() == 'girlfriend'){
 					gfGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
+			default:
+				// Engine.debugPrint('Event at ' + event.ms + ' has been ran at ' + Conductor.songPosition + ' With the name of ' + event.name);
 		}
+
+		if (FileSystem.exists(Modding.getFilePath(event.name + '.hx', "scripts/events/"))){
+			script.loadScript("events/" + event.name, true);
+		}
+
+		if (Assets.exists(Paths.hx("scripts/events/" + event.name))){
+			script.loadScript("scripts/events/" + event.name, false);
+		}
+
 		script.call("event", [event]);
 	}
 
