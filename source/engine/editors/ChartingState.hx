@@ -563,8 +563,8 @@ class ChartingState extends MusicBeatState
 		tab_group_note.add(stepperCharID);
 		tab_group_note.add(text);
 		tab_group_note.add(applyLength);
-		tab_group_note.add(instructionsNote);
-		tab_group_note.add(noteActionDropdown);
+		// tab_group_note.add(instructionsNote);
+		// tab_group_note.add(noteActionDropdown);
 
 		UI_box.addGroup(tab_group_note);
 	}
