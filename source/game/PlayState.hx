@@ -1089,7 +1089,7 @@ class PlayState extends MusicBeatState
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
 
-        script.call('startCountdown', []);
+        script.call('startCountdown');
 
 		var swagCounter:Int = 0;
 
@@ -1194,9 +1194,12 @@ class PlayState extends MusicBeatState
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
+        script.call('startCountdown');
+
 		if (!paused){
 			FlxG.sound.playMusic(inst, 1, false);
 		}
+
 		FlxG.sound.music.onComplete = forceEndSong;
 		vocals.play();
 		vocals2.play();
@@ -1868,6 +1871,8 @@ class PlayState extends MusicBeatState
 						}
 					}
 
+					script.call('dadNoteHit', []);
+
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
@@ -1967,7 +1972,7 @@ class PlayState extends MusicBeatState
 		songPlaylist.remove(songPlaylist[0]);
 		Engine.debugPrint("new playlist: " + songPlaylist);
 
-        script.call('endSong', []);
+        script.call('endSong');
 
 		Stages.reset();
 
@@ -2035,6 +2040,8 @@ class PlayState extends MusicBeatState
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 
 		vocals.volume = 1;
+
+        script.call('popUpScore', [strumtime]);
 
 		var placement:String = Std.string(combo);
 
@@ -2310,7 +2317,7 @@ class PlayState extends MusicBeatState
 
 		songScore -= 10;
 		songMisses++;
- 
+
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 		// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 		// FlxG.log.add('played imss note');
@@ -2334,6 +2341,8 @@ class PlayState extends MusicBeatState
 			case 3:
 				boyfriendGroup.members[selectedBF].playAnim('singRIGHTmiss', true);
 		}
+
+        script.call('noteMiss', [direction]);
 	}
 
 	function badNoteCheck()
@@ -2407,6 +2416,8 @@ class PlayState extends MusicBeatState
 				notes.remove(note, true);
 				note.destroy();
 			}
+
+			script.call('goodNoteHit', [note]);
 		}
 	}
 
@@ -2791,8 +2802,6 @@ class PlayState extends MusicBeatState
 
 	function performEvent(event:Events){
 		switch (event.name){
-			default:
-				//Engine.debugPrint('Event at ' + event.ms + ' has been ran at ' + Conductor.songPosition + ' With the name of ' + event.name);
 			case 'deleteCharacter':
 				if (event.var1.toLowerCase() == 'dad'){
 					for (dad in dadGroup){
@@ -2903,7 +2912,18 @@ class PlayState extends MusicBeatState
 				else if (event.var1.toLowerCase() == 'gf' || event.var1.toLowerCase() == 'girlfriend'){
 					gfGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
+			default:
+				// Engine.debugPrint('Event at ' + event.ms + ' has been ran at ' + Conductor.songPosition + ' With the name of ' + event.name);
 		}
+
+		if (FileSystem.exists(Modding.getFilePath(event.name + '.hx', "scripts/events/"))){
+			script.loadScript("events/" + event.name, true);
+		}
+
+		if (Assets.exists(Paths.hx("scripts/events/" + event.name))){
+			script.loadScript("scripts/events/" + event.name, false);
+		}
+
 		script.call("event", [event]);
 	}
 
