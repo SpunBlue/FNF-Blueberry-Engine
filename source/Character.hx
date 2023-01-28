@@ -741,7 +741,7 @@ class Character extends FlxSprite
 			updateHitbox();
 		}
 
-		antialiasing = charJson.disableAntialiasing;
+		antialiasing = charJson.antialiasing;
 
 		jsonData = charJson;
 	}
