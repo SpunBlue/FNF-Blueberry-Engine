@@ -95,13 +95,14 @@ class PlayState extends MusicBeatState
 
 	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	public var playerStrums:FlxTypedGroup<FlxSprite>;
+	public var dadStrums:FlxTypedGroup<FlxSprite>;
 
 	public var camZooming:Bool = false;
 	public var curSong:String = "";
 
-	private var gfSpeed:Int = 1;
-	private var health:Float = 1;
-	private var combo:Int = 0;
+	public var gfSpeed:Int = 1;
+	public var health:Float = 1;
+	public var combo:Int = 0;
 
 	public var healthBarBG:FlxSprite;
 	public var healthBar:FlxBar;
@@ -806,6 +807,7 @@ class PlayState extends MusicBeatState
 		add(strumLineNotes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
+		dadStrums = new FlxTypedGroup<FlxSprite>();
 
 		// startCountdown();
 
@@ -1408,9 +1410,12 @@ class PlayState extends MusicBeatState
 
 			babyArrow.ID = i;
 
-			if (player == 1)
+			switch (player)
 			{
-				playerStrums.add(babyArrow);
+				case 0:
+					dadStrums.add(babyArrow);
+				case 1:
+					playerStrums.add(babyArrow);
 			}
 
 			babyArrow.animation.play('static');
@@ -1419,7 +1424,11 @@ class PlayState extends MusicBeatState
 
 			if (player == 0)
 				babyArrow.x += 98;
-			
+
+			dadStrums.forEach(function(spr:FlxSprite)
+			{					
+				spr.centerOffsets(); //CPU arrows start out slightly off-center
+			});
 
 			strumLineNotes.add(babyArrow);
 		}
@@ -1830,6 +1839,22 @@ class PlayState extends MusicBeatState
 					else if(SONG.song.toLowerCase() == 'stress' && curStep == 736)
 						dadGroup.members[selectedDad].playAnim('tankTalk', true);
 
+					dadStrums.forEach(function(spr:FlxSprite)
+					{
+						if (Math.abs(daNote.noteData) == spr.ID)
+						{
+							spr.animation.play('confirm', true);
+						}
+						if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
+						{
+							spr.centerOffsets();
+							spr.offset.x -= 13;
+							spr.offset.y -= 13;
+						}
+						else
+							spr.centerOffsets();
+					});
+
 					dadGroup.members[selectedDad].holdTimer = 0;
 
 					if (SONG.needsVoices){
@@ -1890,6 +1915,15 @@ class PlayState extends MusicBeatState
 				}
 			});
 		}
+
+		dadStrums.forEach(function(spr:FlxSprite)
+		{
+			if (spr.animation.finished)
+			{
+				spr.animation.play('static');
+				spr.centerOffsets();
+			}
+		});
 
 		if (!inCutscene){
 			keyShit();
