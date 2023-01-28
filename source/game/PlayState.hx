@@ -171,6 +171,7 @@ class PlayState extends MusicBeatState
 
 	var isSingle:Bool = false;
 
+	// Why did I put this here?
 	public static var validEvents:Array<Dynamic> = [
 		["None", "Variable 1", "Variable 2", "Variable 3", "Variable 4", "Variable 5", "Information"],
 		["deleteCharacter", "'bf' or 'dad'?", "Character ID (0 is default)", "", "", "", 'Delete a Character of an specific ID.\nWill crash if no characters left avaliable.\n'],
