@@ -65,4 +65,10 @@ typedef StageObj = {
     var ?isAnimated:Bool;
     var ?layer:Int; // 0 = behind all, 1 = infront of GF, 2 = infront of dad & bf
     var ?isDistraction:Bool;
+	var ?scale:Array<Float>;
+	var ?flipX:Bool;
+	var ?flipY:Bool;
+	var ?size:Float;
+	var ?blend:String;
+	var ?antialiasing:Bool;
 }

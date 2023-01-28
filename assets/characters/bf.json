@@ -127,7 +127,7 @@
 			"xmlanim": "BF Dead confirm"
 		}
 	],
-	"disableAntialiasing": false,
+	"antialiasing": true,
 	"image": "BOYFRIEND",
 	"flipX": true,
 	"singHold": 4,

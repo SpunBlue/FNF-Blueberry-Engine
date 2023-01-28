@@ -38,7 +38,7 @@
         }
     ],
     "image": "DADDY_DEAREST",
-    "disableAntialiasing": false,
+    "antialiasing": true,
     "flipX": false,
     "charScale": 1,
 
