@@ -70,5 +70,4 @@ typedef StageObj = {
 	var ?flipY:Bool;
 	var ?size:Float;
 	var ?blend:String;
-	var ?antialiasing:Bool;
 }

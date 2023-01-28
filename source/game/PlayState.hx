@@ -1,5 +1,6 @@
 package game;
 
+import engine.modding.Hscript;
 import DialogueBox.DialogueShitJson;
 import sys.FileSystem;
 import Song.Events;
@@ -63,6 +64,8 @@ using StringTools;
 
 class PlayState extends MusicBeatState
 {
+	public static var instance:PlayState = null;
+
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
 	public static var storyWeek:Int = 0;
@@ -76,9 +79,9 @@ class PlayState extends MusicBeatState
 	private var vocals2:FlxSound;
 	private var inst:FlxSoundAsset;
 
-	private var dad:Character;
-	private var gf:Character;
-	private var boyfriend:Boyfriend;
+	public var dad:Character;
+	public var gf:Character;
+	public var boyfriend:Boyfriend;
 
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
@@ -90,26 +93,27 @@ class PlayState extends MusicBeatState
 
 	private static var prevCamFollow:FlxObject;
 
-	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
-	private var playerStrums:FlxTypedGroup<FlxSprite>;
+	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
+	public var playerStrums:FlxTypedGroup<FlxSprite>;
+	public var dadStrums:FlxTypedGroup<FlxSprite>;
 
-	private var camZooming:Bool = false;
-	private var curSong:String = "";
+	public var camZooming:Bool = false;
+	public var curSong:String = "";
 
-	private var gfSpeed:Int = 1;
-	private var health:Float = 1;
-	private var combo:Int = 0;
+	public var gfSpeed:Int = 1;
+	public var health:Float = 1;
+	public var combo:Int = 0;
 
-	private var healthBarBG:FlxSprite;
-	private var healthBar:FlxBar;
+	public var healthBarBG:FlxSprite;
+	public var healthBar:FlxBar;
 
-	private var generatedMusic:Bool = false;
-	private var startingSong:Bool = false;
+	public var generatedMusic:Bool = false;
+	public var startingSong:Bool = false;
 
-	private var iconP1:HealthIcon;
-	private var iconP2:HealthIcon;
-	private var camHUD:FlxCamera;
-	private var camGame:FlxCamera;
+	public var iconP1:HealthIcon;
+	public var iconP2:HealthIcon;
+	public var camHUD:FlxCamera;
+	public var camGame:FlxCamera;
 
 	var dialogue:DialogueShitJson;
 
@@ -143,6 +147,8 @@ class PlayState extends MusicBeatState
 	var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+
+	public var script = new Hscript();
 
 	public static var campaignScore:Int = 0;
 
@@ -185,6 +191,8 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{	
+		instance = this;
+
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
@@ -192,6 +200,16 @@ class PlayState extends MusicBeatState
 			Engine.debugPrint('In single mode!');
 			isSingle = true;
 		}
+
+		if (FileSystem.exists(Modding.getFilePath(SONG.script + '.hx', "scripts/"))){
+		    script.loadScript(SONG.script, true);
+		}
+
+		if (Assets.exists(Paths.hx("scripts/" + SONG.script))){
+		    script.loadScript("scripts/" + SONG.script, false);
+		}
+
+		script.call('create');
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -601,7 +619,6 @@ class PlayState extends MusicBeatState
 
 					stageObject.flipX = object.flipX;
 					stageObject.flipY = object.flipY;
-					stageObject.antialiasing = object.antialiasing;
 
 					if (object.isAnimated){
 						if (object.indices == null)
@@ -791,6 +808,7 @@ class PlayState extends MusicBeatState
 		add(strumLineNotes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
+		dadStrums = new FlxTypedGroup<FlxSprite>();
 
 		// startCountdown();
 
@@ -958,6 +976,8 @@ class PlayState extends MusicBeatState
 
 		if (storyWeek == 6)
 			FlxG.camera.antialiasing = false;
+
+		script.call("createPost");
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBox):Void
@@ -1068,6 +1088,8 @@ class PlayState extends MusicBeatState
 		startedCountdown = true;
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
+
+        script.call('startCountdown', []);
 
 		var swagCounter:Int = 0;
 
@@ -1391,9 +1413,12 @@ class PlayState extends MusicBeatState
 
 			babyArrow.ID = i;
 
-			if (player == 1)
+			switch (player)
 			{
-				playerStrums.add(babyArrow);
+				case 0:
+					dadStrums.add(babyArrow);
+				case 1:
+					playerStrums.add(babyArrow);
 			}
 
 			babyArrow.animation.play('static');
@@ -1402,7 +1427,11 @@ class PlayState extends MusicBeatState
 
 			if (player == 0)
 				babyArrow.x += 98;
-			
+
+			dadStrums.forEach(function(spr:FlxSprite)
+			{					
+				spr.centerOffsets(); //CPU arrows start out slightly off-center
+			});
 
 			strumLineNotes.add(babyArrow);
 		}
@@ -1472,6 +1501,8 @@ class PlayState extends MusicBeatState
 		#if !debug
 		perfectMode = false;
 		#end
+
+		script.call("update", [elapsed]);
 
 		switch (curStage)
 		{
@@ -1811,6 +1842,22 @@ class PlayState extends MusicBeatState
 					else if(SONG.song.toLowerCase() == 'stress' && curStep == 736)
 						dadGroup.members[selectedDad].playAnim('tankTalk', true);
 
+					dadStrums.forEach(function(spr:FlxSprite)
+					{
+						if (Math.abs(daNote.noteData) == spr.ID)
+						{
+							spr.animation.play('confirm', true);
+						}
+						if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
+						{
+							spr.centerOffsets();
+							spr.offset.x -= 13;
+							spr.offset.y -= 13;
+						}
+						else
+							spr.centerOffsets();
+					});
+
 					dadGroup.members[selectedDad].holdTimer = 0;
 
 					if (SONG.needsVoices){
@@ -1872,6 +1919,15 @@ class PlayState extends MusicBeatState
 			});
 		}
 
+		dadStrums.forEach(function(spr:FlxSprite)
+		{
+			if (spr.animation.finished)
+			{
+				spr.animation.play('static');
+				spr.centerOffsets();
+			}
+		});
+
 		if (!inCutscene){
 			keyShit();
 		}
@@ -1910,6 +1966,8 @@ class PlayState extends MusicBeatState
 		Engine.debugPrint("old playlist: " + songPlaylist);
 		songPlaylist.remove(songPlaylist[0]);
 		Engine.debugPrint("new playlist: " + songPlaylist);
+
+        script.call('endSong', []);
 
 		Stages.reset();
 
@@ -2521,6 +2579,8 @@ class PlayState extends MusicBeatState
 			resyncVocals();
 		}
 
+		script.call("stepHit", [curStep]);
+
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
@@ -2551,6 +2611,8 @@ class PlayState extends MusicBeatState
 		{
 			notes.sort(FlxSort.byY, FlxSort.DESCENDING);
 		}
+
+		script.call("beatHit", [curBeat]);
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
 		{
@@ -2842,6 +2904,7 @@ class PlayState extends MusicBeatState
 					gfGroup.members[getProperCharacterID(Std.parseInt(event.var2), event.var1)].playAnim(event.var3, true);
 				}
 		}
+		script.call("event", [event]);
 	}
 
 	private function getProperCharacterID(ID:Int, type:String):Int{

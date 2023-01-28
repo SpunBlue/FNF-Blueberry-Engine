@@ -30,8 +30,7 @@ class CoolUtil
 		return dumbArray;
 	}
 
-	public static function returnBlendMode(str:String):BlendMode
-	{
+	public static function returnBlendMode(str:String):BlendMode{
 		return switch (str)
 		{
 			case "normal": BlendMode.NORMAL;
