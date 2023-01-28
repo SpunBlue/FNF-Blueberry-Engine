@@ -543,7 +543,7 @@ class ChartingState extends MusicBeatState
 
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply'); // I don't even think this does anything..
 		
-		/*var noteActions:Array<String> = [""];
+		var noteActions:Array<String> = [""];
 
 		for (file in FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/')){
 			if (file != null && file.contains('.json')){
@@ -557,14 +557,14 @@ class ChartingState extends MusicBeatState
 		{	
 			if (curSelectedNote != null)
 				curSelectedNote[4] = noteActions[Std.parseInt(lol)];
-		});*/
+		});
 
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(stepperCharID);
 		tab_group_note.add(text);
 		tab_group_note.add(applyLength);
-		// tab_group_note.add(instructionsNote);
-		// tab_group_note.add(noteActionDropdown);
+		tab_group_note.add(instructionsNote);
+		tab_group_note.add(noteActionDropdown);
 
 		UI_box.addGroup(tab_group_note);
 	}

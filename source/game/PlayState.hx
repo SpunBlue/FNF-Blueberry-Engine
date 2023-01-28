@@ -57,7 +57,7 @@ import Discord.DiscordClient;
 #if (hxCodec <= "2.5.1")
 import vlc.MP4Handler;
 #else
-import VideoHandler;
+import hxcodec.VideoHandler;
 #end
 
 using StringTools;
