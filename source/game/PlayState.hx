@@ -600,7 +600,6 @@ class PlayState extends MusicBeatState
 
 					stageObject.flipX = object.flipX;
 					stageObject.flipY = object.flipY;
-					stageObject.antialiasing = object.antialiasing;
 
 					if (object.isAnimated){
 						if (object.indices == null)
