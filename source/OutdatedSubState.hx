@@ -62,7 +62,7 @@ class OutdatedSubState extends MusicBeatState
 
 		if (controls.ACCEPT)
 		{
-			FlxG.openURL("https://github.com/SpunBlue/FNF-Blueberry-Engine/releases/tag/v" + needVer);
+			FlxG.openURL("https://github.com/SpunBlue/FNF-Blueberry-Engine/releases/tag/" + needVer);
 		}
 		if (controls.BACK)
 		{
