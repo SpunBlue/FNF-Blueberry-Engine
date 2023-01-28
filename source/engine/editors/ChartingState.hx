@@ -115,6 +115,8 @@ class ChartingState extends MusicBeatState
 	var ui_videoIntroName:FlxUIInputText;
 	var ui_videoOutroName:FlxUIInputText;
 
+	var ui_scriptName:FlxUIInputText;
+
 	override function create()
 	{
 		hitSound = new FlxSound();
@@ -332,17 +334,20 @@ class ChartingState extends MusicBeatState
 
 		var check_hitSounds = new FlxUICheckBox(10, check_mute_inst.y + 20, null, null, "Enable Hitsounds", 100);
 
-		var text1:FlxText = new FlxText(10, check_mute_inst.y + 40, 0, "Intro Video");
-		var text2:FlxText = new FlxText(10, check_mute_inst.y + 100, 0, "Outro Video");
+		var text1:FlxText = new FlxText(10, check_mute_inst.y + 50, 0, "Intro Video");
+		var text2:FlxText = new FlxText(10, check_mute_inst.y + 90, 0, "Outro Video");
+		var text3:FlxText = new FlxText(10, check_mute_inst.y + 130, 0, "Script Name");
 
-		ui_videoIntroName = new FlxUIInputText(10, check_mute_inst.y + 60, 120, "", 8);
-		ui_videoOutroName = new FlxUIInputText(10, check_mute_inst.y + 120, 120, "", 8);
+		ui_videoIntroName = new FlxUIInputText(10, check_mute_inst.y + 70, 120, "", 8);
+		ui_videoOutroName = new FlxUIInputText(10, check_mute_inst.y + 110, 120, "", 8);
+		ui_scriptName = new FlxUIInputText(10, check_mute_inst.y + 150, 120, "", 8);
 
 		player2DropDown.selectedLabel = _song.player2;
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.add(text1);
 		tab_group_song.add(text2);
+		tab_group_song.add(text3);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
 		tab_group_song.add(check_voices);
@@ -361,6 +366,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(player2DropDown);
 		tab_group_song.add(ui_videoIntroName);
 		tab_group_song.add(ui_videoOutroName);
+		tab_group_song.add(ui_scriptName);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -928,6 +934,9 @@ class ChartingState extends MusicBeatState
 
 		if (_song.outroVideo != ui_videoIntroName.text)
 			_song.outroVideo = ui_videoIntroName.text;
+
+		if (_song.script != ui_scriptName.text)
+			_song.script = ui_scriptName.text;
 
 		// I am pretty sure I did this the most horrible way possible but whatever it works.
 

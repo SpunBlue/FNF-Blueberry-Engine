@@ -23,7 +23,9 @@ typedef SwagSong =
 	var ?events:Array<Events>;
 	var ?introVideo:String;
 	var ?outroVideo:String;
+	var ?script:String;
 }
+
 typedef Events = {
 	var name:String;
 	var ?ms:Float;
@@ -46,6 +48,7 @@ class Song
 	public var events:Array<Events> = [];
 	public var introVideo:String;
 	public var outroVideo:String;
+	public var script:String;
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';

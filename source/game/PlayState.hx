@@ -1,5 +1,6 @@
 package game;
 
+import engine.modding.Hscript;
 import DialogueBox.DialogueShitJson;
 import sys.FileSystem;
 import Song.Events;
@@ -144,6 +145,8 @@ class PlayState extends MusicBeatState
 	var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 
+	public var script = new Hscript();
+
 	public static var campaignScore:Int = 0;
 
 	var defaultCamZoom:Float = 1.05;
@@ -191,6 +194,16 @@ class PlayState extends MusicBeatState
 			Engine.debugPrint('In single mode!');
 			isSingle = true;
 		}
+
+		if (FileSystem.exists(Modding.getFilePath(SONG.script + '.hx', "scripts/"))){
+		    script.loadScript(SONG.script, true);
+		}
+
+		if (Assets.exists(Paths.hx("scripts/" + SONG.script))){
+		    script.loadScript("scripts/" + SONG.script, false);
+		}
+
+		script.call('create');
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -956,6 +969,8 @@ class PlayState extends MusicBeatState
 
 		if (storyWeek == 6)
 			FlxG.camera.antialiasing = false;
+
+		script.call("createPost");
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBox):Void
@@ -1470,6 +1485,8 @@ class PlayState extends MusicBeatState
 		#if !debug
 		perfectMode = false;
 		#end
+
+		script.call("update", [elapsed]);
 
 		switch (curStage)
 		{
@@ -2519,6 +2536,8 @@ class PlayState extends MusicBeatState
 			resyncVocals();
 		}
 
+		script.call("stepHit", [curStep]);
+
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
@@ -2549,6 +2568,8 @@ class PlayState extends MusicBeatState
 		{
 			notes.sort(FlxSort.byY, FlxSort.DESCENDING);
 		}
+
+		script.call("beatHit", [curBeat]);
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
 		{
