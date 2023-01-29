@@ -548,9 +548,11 @@ class ChartingState extends MusicBeatState
 		
 		var noteActions:Array<String> = [""];
 
-		for (file in FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/')){
-			if (file != null && file.contains('.json')){
-				noteActions.push(file.replace('.json', ''));
+		if (FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/') != null){
+			for (file in FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/')){
+				if (file != null && file.contains('.json')){
+					noteActions.push(file.replace('.json', ''));
+				}
 			}
 		}
 

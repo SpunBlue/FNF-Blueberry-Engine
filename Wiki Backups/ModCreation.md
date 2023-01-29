@@ -318,6 +318,24 @@ The JSON file should have the following format:
         "playAnimationDAD": "noteName_dad",
         "instaKill": false
     },
+    "onSustain": {
+        "health": 0.1,
+        "playAnimationBF": "noteName_bf",
+        "playAnimationDAD": "noteName_dad",
+        "instaKill": false
+    },
+    "onDadHit": {
+        "health": 0.1,
+        "playAnimationBF": "noteName_bf",
+        "playAnimationDAD": "noteName_dad",
+        "instaKill": false
+    },
+    "onDadSustain": {
+        "health": 0.1,
+        "playAnimationBF": "noteName_bf",
+        "playAnimationDAD": "noteName_dad",
+        "instaKill": false
+    },
     "onMiss": {
         "health": 0.1,
         "playAnimationBF": "noteName_bf",
