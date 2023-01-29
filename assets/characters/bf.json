@@ -115,7 +115,8 @@
 			],
 			"name": "deathLoop",
 			"fps": 24,
-			"xmlanim": "BF Dead Loop"
+			"xmlanim": "BF Dead Loop",
+			"loop": true
 		},
         {
 			"offsets": [

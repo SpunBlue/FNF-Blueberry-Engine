@@ -50,6 +50,8 @@ class Hscript
         interp.variables.set("FileSystem",FileSystem);
 		interp.variables.set("PlayState",game.PlayState);
 
+        interp.allowStaticVariables = interp.allowPublicVariables = true;
+
         interp.variables.set("trace", function(value:Dynamic) {
             trace(value);
         });

@@ -136,36 +136,41 @@ class PlayState extends MusicBeatState
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var evilTrail:FlxTrail;
 
-	var talking:Bool = true;
-	var songScore:Int = 0;
-	var scoreTxt:FlxText;
+	public var talking:Bool = true;
+	public var songScore:Int = 0;
+	public var scoreTxt:FlxText;
 
-	var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
-	var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
-	var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
+	public var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
+	public var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
+	public var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 
-	var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
-	var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
-	var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	public var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	public var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
+	public var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 
 	public var script = new Hscript();
 
 	public static var campaignScore:Int = 0;
 
-	var defaultCamZoom:Float = 1.05;
-	var defaultHudZoom:Float = 1;
+	public var defaultCamZoom:Float = 1.05;
+	public var defaultHudZoom:Float = 1;
 
 	// how big to stretch the pixel art assets
 	public static var daPixelZoom:Float = 6;
 
-	var inCutscene:Bool = false;
+	public var inCutscene:Bool = false;
 
-	var shits:Int = 0; var bads:Int = 0; var goods:Int = 0; var sicks:Int = 0;
-	var songHits:Int = 0; var songMisses:Int = 0;
+	public var shits:Int = 0;
+	public var bads:Int = 0;
+	public var goods:Int = 0;
+	public var sicks:Int = 0;
+
+	public var songHits:Int = 0;
+	public var songMisses:Int = 0;
 
 	var daDRPCText:String = 'hi';
 
-	var songScrollSpeed:Float = 1;
+	public var songScrollSpeed:Float = 1;
 
 	private var midScrollOffset:Int = -280;
 
@@ -1194,7 +1199,7 @@ class PlayState extends MusicBeatState
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
-        script.call('startCountdown');
+        script.call('startSong');
 
 		if (!paused){
 			FlxG.sound.playMusic(inst, 1, false);
