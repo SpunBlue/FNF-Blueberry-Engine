@@ -1081,13 +1081,6 @@ class ChartingState extends MusicBeatState
 
 		super.update(elapsed);
 
-		if (curSelectedNote != null){
-			if (curSelectedNote[4] != null && curSelectedNote[4] != noteActionDropdown.selectedLabel)
-				noteActionDropdown.selectedLabel = curSelectedNote[4]
-			else if ((curSelectedNote[4] != null || curSelectedNote[4] == null) && noteActionDropdown.selectedLabel != "")
-				noteActionDropdown.selectedLabel = "";
-		}
-
 		for (note in curRenderedNotes) {
 			if (strumLine.overlaps(note)){
 
@@ -1424,6 +1417,8 @@ class ChartingState extends MusicBeatState
 		{
 			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus]);
 		}
+
+		noteActionDropdown.selectedLabel = "";
 
 		Engine.debugPrint('' + noteStrum);
 		Engine.debugPrint('' + curSection);

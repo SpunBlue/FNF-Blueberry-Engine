@@ -1843,6 +1843,14 @@ class PlayState extends MusicBeatState
 							case 3:
 								dadGroup.members[selection].singAnimPlay('singRIGHT' + altAnim, true);
 						}
+
+						if (SONG.needsVoices){
+							if (SONG.seperatedVocalTracks)
+								vocals2.volume = 1;
+							else{
+								vocals.volume = 1;
+							}
+						}
 					}
 
 					// funni week 7 events
@@ -1878,14 +1886,6 @@ class PlayState extends MusicBeatState
 					});
 
 					dadGroup.members[selectedDad].holdTimer = 0;
-
-					if (SONG.needsVoices){
-						if (SONG.seperatedVocalTracks)
-							vocals2.volume = 1;
-						else{
-							vocals.volume = 1;
-						}
-					}
 
 					script.call('dadNoteHit', []);
 
@@ -2437,13 +2437,32 @@ class PlayState extends MusicBeatState
 			selection = getProperCharacterID(note.charSinger, 'bf');
 		}
 
-		if (note.noteJson != null){
-			var json:NoteJson = note.noteJson;
+		if (!note.wasGoodHit){	
+			if (note.noteJson != null){
+				var json:NoteJson = note.noteJson;
+	
+				if (note.isSustainNote == false && json.onHit != null)
+					performActions(json.onHit, note.noteData, selection);
+				else if (note.isSustainNote == true && json.onSustain != null)
+					performActions(json.onSustain, note.noteData, selection);
 
-			if (note.isSustainNote == false && json.onHit != null)
-				performActions(json.onHit, note.noteData, selection);
-			else if (note.isSustainNote == true && json.onSustain != null)
-				performActions(json.onSustain, note.noteData, selection);
+				playerStrums.forEach(function(spr:FlxSprite)
+					{
+						if (Math.abs(note.noteData) == spr.ID)
+						{
+							spr.animation.play('confirm', true);
+						}
+					});
+	
+				if (!note.isSustainNote)
+				{
+					note.kill();
+					notes.remove(note, true);
+					note.destroy();
+				}
+	
+				note.wasGoodHit = true;
+			}
 		}
 
 		if (note.noteJson == null || note.isSustainNote && note.noteJson.onSustain == null){
@@ -2952,8 +2971,9 @@ class PlayState extends MusicBeatState
 				}
 			case 'Zoom':
 				if (event.var2.toLowerCase() == 'game'){
+					defaultCamZoom = FlxG.camera.zoom + Std.parseFloat(event.var3);
+
 					if (event.var1.toLowerCase() == 'true'){
-						defaultCamZoom = FlxG.camera.zoom + Std.parseFloat(event.var3);
 						camZooming = true;
 					}
 					else{
@@ -2962,8 +2982,9 @@ class PlayState extends MusicBeatState
 					}
 				}
 				else if (event.var2.toLowerCase() == 'hud'){
+					defaultHudZoom = camHUD.zoom + Std.parseFloat(event.var3);
+					
 					if (event.var1.toLowerCase() == 'true'){
-						defaultHudZoom = camHUD.zoom + Std.parseFloat(event.var3);
 						camZooming = true;
 					}
 					else{
