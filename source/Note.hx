@@ -1,5 +1,10 @@
 package;
 
+import haxe.Json;
+import lime.utils.Assets;
+import sys.io.File;
+import engine.modding.Modding;
+import sys.FileSystem;
 import game.PlayState;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -37,8 +42,7 @@ class Note extends FlxSprite
 	public static var BLUE_NOTE:Int = 1;
 	public static var RED_NOTE:Int = 3;
 
-	public var noteName:String; // Note Name
-	public var noteJson:String; // Json Data
+	public var noteJson:NoteJson; // Json Data
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?singer:Int = -1, ?specialType:String, ?sustainNote:Bool = false, ?noteType:String = '')
 	{
@@ -61,55 +65,101 @@ class Note extends FlxSprite
 
 		var daStage:String = PlayState.curStage;
 
-		switch (daStage)
-		{
-			case 'school' | 'schoolEvil':
-				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
+		if (specialType != null){
+			if (FileSystem.exists(Modding.getFilePath(specialType + '.json', "scripts/notes"))){
+				noteJson = Json.parse(Modding.retrieveContent(specialType + '.json', "scripts/notes"));
+			}
+			else if (Assets.exists(Paths.json("notes/" + specialType))){
+				noteJson = Json.parse(File.getContent(Paths.json("notes/" + specialType)));
+			}
+		}
+		
+		if (noteJson != null && noteJson.image != null && noteJson.xml != null){
+			var spriteAntialiasing:Bool = true;
+			var spriteScale:Float = 0;
 
-				animation.add('greenScroll', [6]);
-				animation.add('redScroll', [7]);
-				animation.add('blueScroll', [5]);
-				animation.add('purpleScroll', [4]);
+			if (noteJson.antialiasing != null)
+				spriteAntialiasing = noteJson.antialiasing;
 
-				if (isSustainNote)
-				{
-					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
+			if (noteJson.scale != null)
+				spriteScale = noteJson.scale;
 
-					animation.add('purpleholdend', [4]);
-					animation.add('greenholdend', [6]);
-					animation.add('redholdend', [7]);
-					animation.add('blueholdend', [5]);
+			frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(noteJson.image, 'images'),
+			Modding.retrieveContent(noteJson.xml + '.xml', 'images'));
+	
+			animation.addByPrefix('greenScroll', noteJson.animations.greenScroll);
+			animation.addByPrefix('redScroll', noteJson.animations.redScroll);
+			animation.addByPrefix('blueScroll', noteJson.animations.blueScroll);
+			animation.addByPrefix('purpleScroll', noteJson.animations.purpleScroll);
 
-					animation.add('purplehold', [0]);
-					animation.add('greenhold', [2]);
-					animation.add('redhold', [3]);
-					animation.add('bluehold', [1]);
-				}
+			animation.addByPrefix('purpleholdend', noteJson.animations.purpleholdend);
+			animation.addByPrefix('greenholdend', noteJson.animations.greenholdend);
+			animation.addByPrefix('redholdend', noteJson.animations.redholdend);
+			animation.addByPrefix('blueholdend', noteJson.animations.blueholdend);
 
-				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-				updateHitbox();
+			animation.addByPrefix('purplehold', noteJson.animations.purplehold);
+			animation.addByPrefix('greenhold', noteJson.animations.greenhold);
+			animation.addByPrefix('redhold', noteJson.animations.redhold);
+			animation.addByPrefix('bluehold', noteJson.animations.bluehold);
 
-			default:
-				frames = Paths.getSparrowAtlas('NOTE_assets');
+			setGraphicSize(Std.int(width * (0.7 + spriteScale)));
+			updateHitbox();
+			antialiasing = spriteAntialiasing;
 
-				animation.addByPrefix('greenScroll', 'green0');
-				animation.addByPrefix('redScroll', 'red0');
-				animation.addByPrefix('blueScroll', 'blue0');
-				animation.addByPrefix('purpleScroll', 'purple0');
-
-				animation.addByPrefix('purpleholdend', 'pruple end hold');
-				animation.addByPrefix('greenholdend', 'green hold end');
-				animation.addByPrefix('redholdend', 'red hold end');
-				animation.addByPrefix('blueholdend', 'blue hold end');
-
-				animation.addByPrefix('purplehold', 'purple hold piece');
-				animation.addByPrefix('greenhold', 'green hold piece');
-				animation.addByPrefix('redhold', 'red hold piece');
-				animation.addByPrefix('bluehold', 'blue hold piece');
-
-				setGraphicSize(Std.int(width * 0.7));
-				updateHitbox();
-				antialiasing = true;
+			if (isSustainNote && noteJson.sustainAlpha != null)
+				alpha = noteJson.sustainAlpha;
+		}
+		else{
+			switch (daStage)
+			{
+				case 'school' | 'schoolEvil':
+					loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
+	
+					animation.add('greenScroll', [6]);
+					animation.add('redScroll', [7]);
+					animation.add('blueScroll', [5]);
+					animation.add('purpleScroll', [4]);
+	
+					if (isSustainNote)
+					{
+						loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
+	
+						animation.add('purpleholdend', [4]);
+						animation.add('greenholdend', [6]);
+						animation.add('redholdend', [7]);
+						animation.add('blueholdend', [5]);
+	
+						animation.add('purplehold', [0]);
+						animation.add('greenhold', [2]);
+						animation.add('redhold', [3]);
+						animation.add('bluehold', [1]);
+					}
+	
+					setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+					updateHitbox();
+	
+				default:
+					frames = Paths.getSparrowAtlas('NOTE_assets');
+	
+					animation.addByPrefix('greenScroll', 'green0');
+					animation.addByPrefix('redScroll', 'red0');
+					animation.addByPrefix('blueScroll', 'blue0');
+					animation.addByPrefix('purpleScroll', 'purple0');
+	
+					animation.addByPrefix('purpleholdend', 'pruple end hold');
+					animation.addByPrefix('greenholdend', 'green hold end');
+					animation.addByPrefix('redholdend', 'red hold end');
+					animation.addByPrefix('blueholdend', 'blue hold end');
+	
+					animation.addByPrefix('purplehold', 'purple hold piece');
+					animation.addByPrefix('greenhold', 'green hold piece');
+					animation.addByPrefix('redhold', 'red hold piece');
+					animation.addByPrefix('bluehold', 'blue hold piece');
+	
+					setGraphicSize(Std.int(width * 0.7));
+					updateHitbox();
+					antialiasing = true;
+			}
 		}
 
 		switch (noteData)
@@ -206,4 +256,45 @@ class Note extends FlxSprite
 				alpha = 0.3;
 		}
 	}
+}
+// Json Path: "(Mod File Location)/scripts/notes/name.json"
+// What this is: Custom Notes that can be selected to be used in the ChartingState in the Notes tab.
+typedef NoteJson = {
+	var ?image:String; // path to image (root at : "images/"") don't include extension. don't include for default.
+	var ?xml:String; // path to xml (root at : "images/"") don't include extension. don't include for default.
+	var ?animations:NoteAnimations; // required if image and xml doesn't equal nothing.
+	var ?scale:Float; // 0.1 to inf
+	var ?sustainAlpha:Float; // 0.1 to inf (Don't include for default)
+	var ?antialiasing:Bool; // true or false
+	var ?onHit:NoteActions; // don't include if you want to perform regular events.
+	var ?onSustain:NoteActions; // don't include if you want to perform regular events.
+	var ?onDadHit:NoteActions; // don't include if you want to perform regular events.
+	var ?onDadSustain:NoteActions; // don't include if you want to perform regular events.
+	var ?onMiss:NoteActions; // don't include if you want to perform regular events.
+	var ?scoreOnSick:Int;
+	var ?scoreOnGood:Int;
+	var ?scoreOnBad:Int;
+	var ?scoreOnShit:Int;
+}
+
+typedef NoteActions = {
+	var ?health:Float; // 0.1 to 1.0 how much health to give the player, (Can be negative).
+	var ?playAnimationBF:String; // Animation Name
+	var ?playAnimationDAD:String; // Animation Name
+	var ?instaKill:Bool; // Kill player instantly
+}
+
+typedef NoteAnimations = {
+	var greenScroll:String;
+	var redScroll:String;
+	var blueScroll:String;
+	var purpleScroll:String;
+	var purpleholdend:String;
+	var greenholdend:String;
+	var redholdend:String;
+	var blueholdend:String;
+	var purplehold:String;
+	var greenhold:String;
+	var redhold:String;
+	var bluehold:String;	
 }

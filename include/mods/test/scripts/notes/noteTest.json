@@ -1,0 +1,19 @@
+{
+    "scale": 1,
+    "sustainAlpha": 1,
+    "onHit": {
+        "instaKill": true
+    },
+    "onSustain": {
+        "instaKill": true
+    },
+    "onDadHit": {
+        "instaKill": true
+    },
+    "onDadSustain": {
+        "instaKill": true
+    },
+    "onMiss": {
+        "instaKill": true
+    }
+}
