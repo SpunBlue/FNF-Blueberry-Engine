@@ -162,6 +162,8 @@ class Note extends FlxSprite
 			}
 		}
 
+		updateHitbox();
+
 		switch (noteData)
 		{
 			case 0:
@@ -271,6 +273,7 @@ typedef NoteJson = {
 	var ?onDadHit:NoteActions; // don't include if you want to perform regular events.
 	var ?onDadSustain:NoteActions; // don't include if you want to perform regular events.
 	var ?onMiss:NoteActions; // don't include if you want to perform regular events.
+	var ?allowScoring:Bool;
 	var ?scoreOnSick:Int;
 	var ?scoreOnGood:Int;
 	var ?scoreOnBad:Int;

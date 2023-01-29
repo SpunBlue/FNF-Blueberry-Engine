@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.math.FlxMath;
 import Conductor.BPMChangeEvent;
@@ -30,7 +31,7 @@ class MusicBeatState extends FlxUIState
 		if (transIn != null)
 			Engine.debugPrint('reg ' + transIn.region);
 
-		FlxG.camera.antialiasing = true;
+		FlxSprite.defaultAntialiasing = true;
 
 		super.create();
 	}

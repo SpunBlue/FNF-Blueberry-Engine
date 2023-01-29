@@ -236,6 +236,12 @@ class Modding {
             modPreloaded = mod;
         }
     }
+
+    public static function retrieveModName(id:String){
+        var json = Json.parse(File.getContent('mods/$id/mod.json'));
+
+        return json.name;
+    }
 }
 
 typedef FileData = {
