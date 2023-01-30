@@ -73,6 +73,96 @@ class Note extends FlxSprite
 				noteJson = Json.parse(File.getContent(Paths.json("notes/" + specialType)));
 			}
 		}
+		
+		if (noteJson != null && noteJson.image != null && noteJson.xml != null){
+			var spriteAntialiasing:Bool = true;
+			var spriteScale:Float = 0;
+
+			if (noteJson.antialiasing != null)
+				spriteAntialiasing = noteJson.antialiasing;
+
+			if (noteJson.scale != null)
+				spriteScale = noteJson.scale;
+
+			frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(noteJson.image, 'images'),
+			Modding.retrieveContent(noteJson.xml + '.xml', 'images'));
+	
+			animation.addByPrefix('greenScroll', noteJson.animations.greenScroll);
+			animation.addByPrefix('redScroll', noteJson.animations.redScroll);
+			animation.addByPrefix('blueScroll', noteJson.animations.blueScroll);
+			animation.addByPrefix('purpleScroll', noteJson.animations.purpleScroll);
+
+			animation.addByPrefix('purpleholdend', noteJson.animations.purpleholdend);
+			animation.addByPrefix('greenholdend', noteJson.animations.greenholdend);
+			animation.addByPrefix('redholdend', noteJson.animations.redholdend);
+			animation.addByPrefix('blueholdend', noteJson.animations.blueholdend);
+
+			animation.addByPrefix('purplehold', noteJson.animations.purplehold);
+			animation.addByPrefix('greenhold', noteJson.animations.greenhold);
+			animation.addByPrefix('redhold', noteJson.animations.redhold);
+			animation.addByPrefix('bluehold', noteJson.animations.bluehold);
+
+			setGraphicSize(Std.int(width * (0.7 + spriteScale)));
+			updateHitbox();
+			antialiasing = spriteAntialiasing;
+
+			if (isSustainNote && noteJson.sustainAlpha != null)
+				alpha = noteJson.sustainAlpha;
+		}
+		else{
+			switch (daStage)
+			{
+				case 'school' | 'schoolEvil':
+					loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
+	
+					animation.add('greenScroll', [6]);
+					animation.add('redScroll', [7]);
+					animation.add('blueScroll', [5]);
+					animation.add('purpleScroll', [4]);
+	
+					if (isSustainNote)
+					{
+						loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
+	
+						animation.add('purpleholdend', [4]);
+						animation.add('greenholdend', [6]);
+						animation.add('redholdend', [7]);
+						animation.add('blueholdend', [5]);
+	
+						animation.add('purplehold', [0]);
+						animation.add('greenhold', [2]);
+						animation.add('redhold', [3]);
+						animation.add('bluehold', [1]);
+					}
+	
+					setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+					updateHitbox();
+	
+				default:
+					frames = Paths.getSparrowAtlas('NOTE_assets');
+	
+					animation.addByPrefix('greenScroll', 'green0');
+					animation.addByPrefix('redScroll', 'red0');
+					animation.addByPrefix('blueScroll', 'blue0');
+					animation.addByPrefix('purpleScroll', 'purple0');
+	
+					animation.addByPrefix('purpleholdend', 'pruple end hold');
+					animation.addByPrefix('greenholdend', 'green hold end');
+					animation.addByPrefix('redholdend', 'red hold end');
+					animation.addByPrefix('blueholdend', 'blue hold end');
+	
+					animation.addByPrefix('purplehold', 'purple hold piece');
+					animation.addByPrefix('greenhold', 'green hold piece');
+					animation.addByPrefix('redhold', 'red hold piece');
+					animation.addByPrefix('bluehold', 'blue hold piece');
+	
+					setGraphicSize(Std.int(width * 0.7));
+					updateHitbox();
+					antialiasing = true;
+			}
+		}
+
+		updateHitbox();
 
 		if (FileSystem.exists(Modding.getFilePath(specialType + '.hx', "scripts/notes/"))){
 			PlayState.instance.script.loadScript("notes/" + specialType, true);
