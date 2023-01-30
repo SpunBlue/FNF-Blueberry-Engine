@@ -11,6 +11,7 @@ import hscript.Parser;
 import hscript.Interp;
 import sys.io.File;
 import sys.FileSystem;
+import game.PlayState;
 import engine.modding.Modding;
 
 using StringTools;
@@ -48,7 +49,15 @@ class Hscript
         interp.variables.set("Assets",Assets);
         interp.variables.set("Modding",Modding);
         interp.variables.set("FileSystem",FileSystem);
-		interp.variables.set("PlayState",game.PlayState);
+		interp.variables.set("PlayState",PlayState);
+
+		interp.variables.set("boyfriend",PlayState.boyfriend);
+		interp.variables.set("dad",PlayState.dad);
+		interp.variables.set("gf",PlayState.gf);
+
+		interp.variables.set("boyfriendGroup",PlayState.boyfriendGroup);
+		interp.variables.set("dadGroup",PlayState.dadGroup);
+		interp.variables.set("gfGroup",PlayState.gfGroup);
 
         interp.allowStaticVariables = interp.allowPublicVariables = true;
 

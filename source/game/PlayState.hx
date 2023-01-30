@@ -81,9 +81,9 @@ class PlayState extends MusicBeatState
 	private var vocals2:FlxSound;
 	private var inst:FlxSoundAsset;
 
-	public var dad:Character;
-	public var gf:Character;
-	public var boyfriend:Boyfriend;
+	public static var dad:Character;
+	public static var gf:Character;
+	public static var boyfriend:Boyfriend;
 
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
@@ -142,9 +142,9 @@ class PlayState extends MusicBeatState
 	public var songScore:Int = 0;
 	public var scoreTxt:FlxText;
 
-	public var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
-	public var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
-	public var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
+	public static var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
+	public static var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
+	public static var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 
 	public var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	public var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
