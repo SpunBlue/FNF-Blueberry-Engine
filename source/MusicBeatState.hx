@@ -4,6 +4,7 @@ import sys.FileSystem;
 import lime.utils.Assets;
 import engine.modding.Hscript;
 import engine.modding.Modding;
+import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.math.FlxMath;
 import Conductor.BPMChangeEvent;
