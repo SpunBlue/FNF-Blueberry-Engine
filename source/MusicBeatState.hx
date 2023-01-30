@@ -61,8 +61,6 @@ class MusicBeatState extends FlxUIState
 		if (transIn != null)
 			Engine.debugPrint('reg ' + transIn.region);
 
-		scripts.call('create');
-
 		FlxSprite.defaultAntialiasing = true;
 
 		super.create();
