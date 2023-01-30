@@ -96,7 +96,7 @@ class Hscript
 
 	public function loadScript(key:String, isMod:Bool = true){
 		if (isMod == true)
-			script = parser.parseString(Modding.retrieveContent(key + '.hx', 'scripts'));
+		    script = parser.parseString(Modding.retrieveContent(key + '.hx', 'scripts'));
 	    else
 			script = parser.parseString(Assets.getText(Paths.hx(key)));
 		interp.execute(script);

@@ -126,8 +126,8 @@
 			"name": "deathConfirm",
 			"fps": 24,
 			"xmlanim": "BF Dead confirm"
-		},  
-		{
+		},
+        {
 			"offsets": [
 				-5,
 				0
