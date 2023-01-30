@@ -665,6 +665,14 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		if (FileSystem.exists(Modding.getFilePath(curStage + '.hx', "data/stages/"))){
+		    script.loadScriptStage(curStage, true);
+		}
+
+		if (Assets.exists(Paths.hx("data/stages/" + curStage))){
+		    script.loadScriptStage("data/stages/" + curStage, false);
+		}
+
 		var gfVersion:String = 'gf';
 
 		switch (curStage)

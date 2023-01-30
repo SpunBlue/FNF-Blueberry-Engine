@@ -101,4 +101,12 @@ class Hscript
 			script = parser.parseString(Assets.getText(Paths.hx(key)));
 		interp.execute(script);
 	}
+
+	public function loadScriptStage(key:String, isMod:Bool = true){
+		if (isMod == true)
+		    script = parser.parseString(Modding.retrieveContent(key + '.hx', 'data/stages'));
+	    else
+			script = parser.parseString(Assets.getText(Paths.hx(key)));
+		interp.execute(script);
+	}
 }
