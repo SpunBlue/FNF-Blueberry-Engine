@@ -117,6 +117,8 @@ class ChartingState extends MusicBeatState
 
 	var ui_scriptName:FlxUIInputText;
 
+	var noteActionDropdown:FlxUIDropDownMenu;
+
 	override function create()
 	{
 		hitSound = new FlxSound();
@@ -488,7 +490,8 @@ class ChartingState extends MusicBeatState
 
 		var clearSectionButton:FlxButton = new FlxButton(10, 150, "Clear", clearSection);
 
-		var swapSection:FlxButton = new FlxButton(10, 170, "Swap section", function()
+		// someone help fix this!!! it wont carry over some data!!!
+		var swapSection:FlxButton = new FlxButton(10, 170, "Swap Section (Erases some Data)", function()
 		{
 			for (i in 0..._song.notes[curSection].sectionNotes.length)
 			{
@@ -545,18 +548,22 @@ class ChartingState extends MusicBeatState
 		
 		var noteActions:Array<String> = [""];
 
-		for (file in FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/')){
-			if (file != null && file.contains('.json')){
-				noteActions.push(file.replace('.json', ''));
+		if (FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/') != null){
+			for (file in FileSystem.readDirectory('mods/' + Modding.curLoaded + '/scripts/notes/')){
+				if (file != null && file.contains('.json')){
+					noteActions.push(file.replace('.json', ''));
+				}
 			}
 		}
 
-		var instructionsNote:FlxText = new FlxText(10, 80, 0, "Note Scripts");
+		var instructionsNote:FlxText = new FlxText(10, 90, 0, "Note Scripts");
 
-		var noteActionDropdown = new FlxUIDropDownMenu(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(noteActions, true), function(lol:String)
+		noteActionDropdown = new FlxUIDropDownMenu(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(noteActions, true), function(lol:String)
 		{	
 			if (curSelectedNote != null)
-				curSelectedNote[4] = noteActions[Std.parseInt(lol)];
+				curSelectedNote[4] = noteActionDropdown.selectedLabel;
+
+			updateGrid();
 		});
 
 		tab_group_note.add(stepperSusLength);
@@ -1250,7 +1257,12 @@ class ChartingState extends MusicBeatState
 	{
 		if (curSelectedNote != null){
 			stepperSusLength.value = curSelectedNote[2];
-			stepperCharID.value = curSelectedNote[3];	
+			stepperCharID.value = curSelectedNote[3];
+
+			if (curSelectedNote[4] != null)
+				noteActionDropdown.selectedLabel = curSelectedNote[4];
+			else
+				noteActionDropdown.selectedLabel = "";
 		}
 	}
 
@@ -1308,8 +1320,10 @@ class ChartingState extends MusicBeatState
 			var daNoteInfo = i[1];
 			var daStrumTime = i[0];
 			var daSus = i[2];
+			var daSinger = i[3];
+			var daType = i[4];
 
-			var note:Note = new Note(daStrumTime, daNoteInfo % 4);
+			var note:Note = new Note(daStrumTime, daNoteInfo % 4, null, daSinger, daType);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
@@ -1405,6 +1419,8 @@ class ChartingState extends MusicBeatState
 		{
 			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus]);
 		}
+
+		noteActionDropdown.selectedLabel = "";
 
 		Engine.debugPrint('' + noteStrum);
 		Engine.debugPrint('' + curSection);

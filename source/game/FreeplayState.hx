@@ -38,7 +38,10 @@ class FreeplayState extends MusicBeatState
     var uiItems:FlxGroup = new FlxGroup();
 
     var itemsLength:Int = 0;
-    var curSelected:Int = 0;
+
+    var curSelected:Int = 1;
+    var lastSelected:Int = 0;
+
     var selectedWeek:WeekData;
     var selectedModID:String;
 
@@ -66,13 +69,14 @@ class FreeplayState extends MusicBeatState
         add(menuItems);
         add(playIcons);
 
+        // too lazy to rename this correctly
         var leftBar = new FlxSprite(FlxG.width - 256, 0).makeGraphic(256, FlxG.height, FlxColor.BLACK);
         leftBar.alpha = 0.75;
         leftBar.scrollFactor.set(0, 0);
         uiItems.add(leftBar);
 
-        scoreText = new FlxText(FlxG.width - 256, 5, 0, "", 32);
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+        scoreText = new FlxText(FlxG.width - 256, 5, leftBar.width, "", 32);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
         scoreText.scrollFactor.set(0, 0);
 
         uiItems.add(scoreText);
@@ -103,16 +107,15 @@ class FreeplayState extends MusicBeatState
         }
 
         if (curSelected <= 0)
-            curSelected = 1;
-        else if (curSelected > itemsLength)
             curSelected = itemsLength;
+        else if (curSelected > itemsLength)
+            curSelected = 1;
 
         if (controls.UP_P)
             Engine.debugPrint(curSelected + ' ' + itemsLength);
 
         for (item in menuItems){
-
-            if (item != null && curSelected == item.ID + 1){
+            if (item != null && curSelected == item.ID + 1 && lastSelected != curSelected){
                 camFollow.y = item.y + 32;
 
                 if (item.type.toLowerCase() == 'week')
@@ -121,10 +124,33 @@ class FreeplayState extends MusicBeatState
                     scoreText.text = 'SCORE: ' + Highscore.getScore(item.text);
                 else
                     scoreText.text = 'SCORE: N/A';
+
+                if (item.modID != null){
+                    scoreText.text += '\nMOD: ' + Modding.retrieveModName(item.modID);
+                }
+
+                if (item.weekData != null && item.weekData.songs != null){
+                    var i:Int = 0;
+                    var suffix:String = '';
+                    for (song in item.weekData.songs){
+                        if (i >= 16){
+                            scoreText.text += '\nAnd ' + Std.string(item.weekData.songs.length - i) + ' more...';
+                            break;
+                        }
+                        else if (i == 0)
+                            suffix = '\nSONGS\n'
+                        else
+                            suffix = '';
+
+                        scoreText.text += '\n' + suffix + '$song';
+                        i++;
+                    }
+                }
+
+                lastSelected = curSelected;
             }
 
             if (item != null && curSelected == item.ID + 1 && controls.ACCEPT){
-
                 if (item.type.toLowerCase() == 'week'){
                     selectedWeek = item.weekData;
                     selectedModID = item.modID;
@@ -222,7 +248,13 @@ class FreeplayState extends MusicBeatState
         if (FlxG.keys.justPressed.ESCAPE == true){
             if (inSongMenu){
                 generateMenu(getMenu('weeks', true));
-                curSelected = 0;
+                
+                for (week in menuItems.members){
+                    if (week != null && week.weekData != null && week.weekData.name == selectedWeek.name && week.modID == selectedModID){
+                        curSelected = menuItems.members.indexOf(week) + 1;
+                        break;
+                    }
+                }
             }
             else
                 FlxG.switchState(new MainMenuState());

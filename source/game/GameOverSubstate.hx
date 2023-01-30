@@ -63,6 +63,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (controls.BACK)
 		{
 			FlxG.sound.music.stop();
+			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 
 			FlxG.switchState(new FreeplayState());
 		}

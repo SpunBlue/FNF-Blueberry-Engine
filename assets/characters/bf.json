@@ -126,6 +126,15 @@
 			"name": "deathConfirm",
 			"fps": 24,
 			"xmlanim": "BF Dead confirm"
+		},  
+		{
+			"offsets": [
+				-5,
+				0
+			],
+			"name": "hit",
+			"fps": 24,
+			"xmlanim": "BF hit0"
 		}
 	],
 	"antialiasing": true,
