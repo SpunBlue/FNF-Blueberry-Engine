@@ -1,9 +1,5 @@
 package;
 
-import sys.FileSystem;
-import lime.utils.Assets;
-import engine.modding.Hscript;
-import engine.modding.Modding;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.math.FlxMath;
@@ -14,6 +10,10 @@ import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
 import engine.Engine;
+import sys.FileSystem;
+import lime.utils.Assets;
+import engine.modding.Hscript;
+import engine.modding.Modding;
 
 class MusicBeatState extends FlxUIState
 {
