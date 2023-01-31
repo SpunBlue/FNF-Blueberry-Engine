@@ -129,12 +129,21 @@
 		},
         {
 			"offsets": [
-				-5,
-				0
+				-15,
+				20
 			],
 			"name": "hit",
 			"fps": 24,
 			"xmlanim": "BF hit0"
+		},
+		{
+			"offsets": [
+				-5,
+				0
+			],
+			"name": "dodge",
+			"fps": 24,
+			"xmlanim": "boyfriend dodge0"
 		}
 	],
 	"antialiasing": true,
