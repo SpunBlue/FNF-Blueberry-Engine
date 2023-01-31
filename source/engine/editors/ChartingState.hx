@@ -172,6 +172,7 @@ class ChartingState extends MusicBeatState
 				needsVoices: true,
 				player1: 'bf',
 				player2: 'dad',
+				gfVersion: 'gf',
 				speed: 1,
 				validScore: false,
 				events: []
@@ -326,8 +327,15 @@ class ChartingState extends MusicBeatState
 		{
 			_song.player2 = characters[Std.parseInt(character)];
 		});
+		player2DropDown.selectedLabel = _song.player2;
 
-		var stageDropDown = new FlxUIDropDownMenu(10, 150, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+		var gfVersionDropDown = new FlxUIDropDownMenu(10, 150, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		{
+			_song.gfVersion = characters[Std.parseInt(character)];
+		});
+		gfVersionDropDown.selectedLabel = _song.gfVersion;
+
+		var stageDropDown = new FlxUIDropDownMenu(140, 150, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 		{
 			_song.stage = stages[Std.parseInt(stage)];
 		});
@@ -339,8 +347,6 @@ class ChartingState extends MusicBeatState
 
 		ui_videoIntroName = new FlxUIInputText(10, check_mute_inst.y + 60, 120, "", 8);
 		ui_videoOutroName = new FlxUIInputText(10, check_mute_inst.y + 120, 120, "", 8);
-
-		player2DropDown.selectedLabel = _song.player2;
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.add(text1);
@@ -361,6 +367,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stageDropDown);
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
+		tab_group_song.add(gfVersionDropDown);
 		tab_group_song.add(ui_videoIntroName);
 		tab_group_song.add(ui_videoOutroName);
 
