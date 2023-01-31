@@ -976,6 +976,12 @@ class PlayState extends MusicBeatState
 					else
 						startCountdown();
 				}
+				if (FileSystem.exists(Modding.getFilePath(SONG.song.toLowerCase() + '.hx', "scripts/cutscenes/"))){
+					script.loadScript("cutscenes/" + SONG.song.toLowerCase(), true);
+				}
+				if (Assets.exists(Paths.hx("scripts/cutscenes/" + SONG.song.toLowerCase()))){
+					script.loadScript("scripts/cutscenes/" + SONG.song.toLowerCase(), false);
+				}
 		}
 
 		var events:Array<Events> = [];
