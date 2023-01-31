@@ -85,8 +85,8 @@ class PlayState extends MusicBeatState
 	public static var gf:Character;
 	public static var boyfriend:Boyfriend;
 
-	private var notes:FlxTypedGroup<Note>;
-	private var unspawnNotes:Array<Note> = [];
+	public var notes:FlxTypedGroup<Note>;
+	public var unspawnNotes:Array<Note> = [];
 
 	private var strumLine:FlxSprite;
 	private var curSection:Int = 0;
@@ -212,14 +212,15 @@ class PlayState extends MusicBeatState
 			isSingle = true;
 		}
 
-		if (FileSystem.exists(Modding.getFilePath(SONG.script + '.hx', "scripts/"))){
-		    script.loadScript(SONG.script, true);
+		if (FileSystem.exists(Modding.getFilePath(SONG.song.toLowerCase() + '.hx', "scripts/"))){
+		    script.loadScript(SONG.song.toLowerCase(), true);
 		}
 
-		if (Assets.exists(Paths.hx("scripts/" + SONG.script))){
-		    script.loadScript("scripts/" + SONG.script, false);
+		if (Assets.exists(Paths.hx("scripts/" + SONG.song.toLowerCase()))){
+		    script.loadScript("scripts/" + SONG.song.toLowerCase(), false);
 		}
 
+		script.interp.variables.set("camFollow",camFollow);
 		script.call('create');
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -277,7 +278,6 @@ class PlayState extends MusicBeatState
 			vocals2 = new FlxSound();
 		}
 
-		
 		if (Modding.modLoaded)
 			inst = Modding.retrieveAudio('Inst', 'songs/' + PlayState.SONG.song);
 		else
@@ -634,6 +634,7 @@ class PlayState extends MusicBeatState
 					if (object.antialiasing != null)
 						stageObject.antialiasing = object.antialiasing;
 
+					stageObject.alpha = object.alpha;
 					stageObject.flipX = object.flipX;
 					stageObject.flipY = object.flipY;
 
@@ -1463,6 +1464,9 @@ class PlayState extends MusicBeatState
 			});
 
 			strumLineNotes.add(babyArrow);
+
+			script.call('generateStaticArrows', [player]);
+			script.interp.variables.set("babyArrow",babyArrow);
 		}
 	}
 
