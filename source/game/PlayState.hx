@@ -150,7 +150,7 @@ class PlayState extends MusicBeatState
 	public var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	public var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 
-	public var script = new Hscript();
+	public static var script = new Hscript();
 
 	public static var campaignScore:Int = 0;
 

@@ -75,11 +75,11 @@ class Note extends FlxSprite
 		}
 
 		if (FileSystem.exists(Modding.getFilePath(specialType + '.hx', "scripts/notes/"))){
-			PlayState.instance.script.loadScript("notes/" + specialType, true);
+			PlayState.script.loadScript("notes/" + specialType, true);
 		}
 
 		if (Assets.exists(Paths.hx("scripts/notes/" + specialType))){
-			PlayState.instance.script.loadScript("scripts/notes/" + specialType, false);
+			PlayState.script.loadScript("scripts/notes/" + specialType, false);
 		}
 
 		if (noteJson != null && noteJson.image != null && noteJson.xml != null){
