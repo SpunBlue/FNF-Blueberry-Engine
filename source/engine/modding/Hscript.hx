@@ -11,6 +11,7 @@ import hscript.Parser;
 import hscript.Interp;
 import sys.io.File;
 import sys.FileSystem;
+import game.PlayState;
 import engine.modding.Modding;
 
 using StringTools;
@@ -48,7 +49,17 @@ class Hscript
         interp.variables.set("Assets",Assets);
         interp.variables.set("Modding",Modding);
         interp.variables.set("FileSystem",FileSystem);
-		interp.variables.set("PlayState",game.PlayState);
+		interp.variables.set("PlayState",PlayState);
+
+		interp.variables.set("boyfriend",PlayState.boyfriend);
+		interp.variables.set("dad",PlayState.dad);
+		interp.variables.set("gf",PlayState.gf);
+
+		interp.variables.set("boyfriendGroup",PlayState.boyfriendGroup);
+		interp.variables.set("dadGroup",PlayState.dadGroup);
+		interp.variables.set("gfGroup",PlayState.gfGroup);
+
+        interp.allowStaticVariables = interp.allowPublicVariables = true;
 
         interp.variables.set("trace", function(value:Dynamic) {
             trace(value);
@@ -95,6 +106,14 @@ class Hscript
 	public function loadScript(key:String, isMod:Bool = true){
 		if (isMod == true)
 		    script = parser.parseString(Modding.retrieveContent(key + '.hx', 'scripts'));
+	    else
+			script = parser.parseString(Assets.getText(Paths.hx(key)));
+		interp.execute(script);
+	}
+
+	public function loadScriptStage(key:String, isMod:Bool = true){
+		if (isMod == true)
+		    script = parser.parseString(Modding.retrieveContent(key + '.hx', 'data/stages'));
 	    else
 			script = parser.parseString(Assets.getText(Paths.hx(key)));
 		interp.execute(script);

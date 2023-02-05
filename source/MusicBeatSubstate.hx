@@ -1,14 +1,40 @@
 package;
 
+import sys.FileSystem;
+import lime.utils.Assets;
+import engine.modding.Hscript;
 import Conductor.BPMChangeEvent;
+import engine.modding.Modding;
 import flixel.FlxG;
 import flixel.FlxSubState;
 import engine.Engine;
 
 class MusicBeatSubstate extends FlxSubState
 {
-	public function new()
+	public var scripts = new Hscript();
+
+	public var scriptsAllowed:Bool = true;
+
+	public var scriptName:String = null;
+
+	public function new(scriptsAllowed:Bool = true, ?scriptName:String)
 	{
+		this.scriptsAllowed = #if SOFTCODED_STATES scriptsAllowed #else false #end;
+		this.scriptName = scriptName;
+
+		var className = Type.getClassName(Type.getClass(this));
+		var scriptName = this.scriptName != null ? this.scriptName : className.substr(className.lastIndexOf(".")+1);
+
+		if (FileSystem.exists(Modding.getFilePath(scriptName + '.hx', "scripts/substates/"))){
+		    scripts.loadScript("substates/" + scriptName, true);
+		}
+
+		if (Assets.exists(Paths.hx("scripts/substates/" + scriptName))){
+		    scripts.loadScript("scripts/substates/" + scriptName, false);
+		}
+
+		scripts.call('create');
+
 		super();
 	}
 
@@ -33,6 +59,7 @@ class MusicBeatSubstate extends FlxSubState
 		if (oldStep != curStep && curStep > 0)
 			stepHit();
 
+		scripts.call("update", [elapsed]);
 
 		super.update(elapsed);
 	}
@@ -57,10 +84,13 @@ class MusicBeatSubstate extends FlxSubState
 	{
 		if (curStep % 4 == 0)
 			beatHit();
+
+		scripts.call("stepHit");
 	}
 
 	public function beatHit():Void
 	{
 		//do literally nothing dumbass
+		scripts.call("beatHit");
 	}
 }

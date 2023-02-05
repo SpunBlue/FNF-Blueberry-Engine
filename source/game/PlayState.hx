@@ -81,12 +81,12 @@ class PlayState extends MusicBeatState
 	private var vocals2:FlxSound;
 	private var inst:FlxSoundAsset;
 
-	public var dad:Character;
-	public var gf:Character;
-	public var boyfriend:Boyfriend;
+	public static var dad:Character;
+	public static var gf:Character;
+	public static var boyfriend:Boyfriend;
 
-	private var notes:FlxTypedGroup<Note>;
-	private var unspawnNotes:Array<Note> = [];
+	public var notes:FlxTypedGroup<Note>;
+	public var unspawnNotes:Array<Note> = [];
 
 	private var strumLine:FlxSprite;
 	private var curSection:Int = 0;
@@ -138,36 +138,41 @@ class PlayState extends MusicBeatState
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var evilTrail:FlxTrail;
 
-	var talking:Bool = true;
-	var songScore:Int = 0;
-	var scoreTxt:FlxText;
+	public var talking:Bool = true;
+	public var songScore:Int = 0;
+	public var scoreTxt:FlxText;
 
-	public var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
-	public var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
-	public var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
+	public static var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
+	public static var dadGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
+	public static var gfGroup:FlxTypedGroup<Character> = new FlxTypedGroup();
 
 	public var layer0:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	public var layer1:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 	public var layer2:FlxTypedGroup<StageObject> = new FlxTypedGroup();
 
-	public var script = new Hscript();
+	public static var script = new Hscript();
 
 	public static var campaignScore:Int = 0;
 
-	var defaultCamZoom:Float = 1.05;
-	var defaultHudZoom:Float = 1;
+	public var defaultCamZoom:Float = 1.05;
+	public var defaultHudZoom:Float = 1;
 
 	// how big to stretch the pixel art assets
 	public static var daPixelZoom:Float = 6;
 
-	var inCutscene:Bool = false;
+	public var inCutscene:Bool = false;
 
-	var shits:Int = 0; var bads:Int = 0; var goods:Int = 0; var sicks:Int = 0;
-	var songHits:Int = 0; var songMisses:Int = 0;
+	public var shits:Int = 0;
+	public var bads:Int = 0;
+	public var goods:Int = 0;
+	public var sicks:Int = 0;
+
+	public var songHits:Int = 0;
+	public var songMisses:Int = 0;
 
 	var daDRPCText:String = 'hi';
 
-	var songScrollSpeed:Float = 1;
+	public var songScrollSpeed:Float = 1;
 
 	private var midScrollOffset:Int = -280;
 
@@ -207,14 +212,15 @@ class PlayState extends MusicBeatState
 			isSingle = true;
 		}
 
-		if (FileSystem.exists(Modding.getFilePath(SONG.script + '.hx', "scripts/"))){
-		    script.loadScript(SONG.script, true);
+		if (FileSystem.exists(Modding.getFilePath(SONG.song.toLowerCase() + '.hx', "scripts/"))){
+		    script.loadScript(SONG.song.toLowerCase(), true);
 		}
 
-		if (Assets.exists(Paths.hx("scripts/" + SONG.script))){
-		    script.loadScript("scripts/" + SONG.script, false);
+		if (Assets.exists(Paths.hx("scripts/" + SONG.song.toLowerCase()))){
+		    script.loadScript("scripts/" + SONG.song.toLowerCase(), false);
 		}
 
+		script.interp.variables.set("camFollow",camFollow);
 		script.call('create');
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -272,7 +278,6 @@ class PlayState extends MusicBeatState
 			vocals2 = new FlxSound();
 		}
 
-		
 		if (Modding.modLoaded)
 			inst = Modding.retrieveAudio('Inst', 'songs/' + PlayState.SONG.song);
 		else
@@ -629,6 +634,7 @@ class PlayState extends MusicBeatState
 					if (object.antialiasing != null)
 						stageObject.antialiasing = object.antialiasing;
 
+					stageObject.alpha = object.alpha;
 					stageObject.flipX = object.flipX;
 					stageObject.flipY = object.flipY;
 
@@ -660,22 +666,30 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		var gfVersion:String = 'gf';
-
-		switch (curStage)
-		{
-			case 'limo':
-				gfVersion = 'gf-car';
-			case 'mall' | 'mallEvil':
-				gfVersion = 'gf-christmas';
-			case 'school':
-				gfVersion = 'gf-pixel';
-			case 'schoolEvil':
-				gfVersion = 'gf-pixel';
+		if (FileSystem.exists(Modding.getFilePath(curStage + '.hx', "data/stages/"))){
+		    script.loadScriptStage(curStage, true);
 		}
 
-		if (curStage == 'limo')
-			gfVersion = 'gf-car';
+		if (Assets.exists(Paths.hx("data/stages/" + curStage))){
+		    script.loadScriptStage("data/stages/" + curStage, false);
+		}
+
+		var gfVersion:String = SONG.gfVersion;
+		if(gfVersion == null || gfVersion.length < 1)
+		{
+			switch (curStage)
+			{
+				case 'limo':
+					gfVersion = 'gf-car';
+				case 'mall' | 'mallEvil':
+					gfVersion = 'gf-christmas';
+				case 'school' | 'schoolEvil':
+					gfVersion = 'gf-pixel';
+				default:
+					gfVersion = 'gf';
+			}
+			SONG.gfVersion = gfVersion; //Fix for the Chart Editor
+		}
 
 		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
@@ -962,6 +976,12 @@ class PlayState extends MusicBeatState
 					else
 						startCountdown();
 				}
+				if (FileSystem.exists(Modding.getFilePath(SONG.song.toLowerCase() + '.hx', "scripts/cutscenes/"))){
+					script.loadScript("cutscenes/" + SONG.song.toLowerCase(), true);
+				}
+				if (Assets.exists(Paths.hx("scripts/cutscenes/" + SONG.song.toLowerCase()))){
+					script.loadScript("scripts/cutscenes/" + SONG.song.toLowerCase(), false);
+				}
 		}
 
 		var events:Array<Events> = [];
@@ -1202,7 +1222,7 @@ class PlayState extends MusicBeatState
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
-        script.call('startCountdown');
+        script.call('startSong');
 
 		if (!paused){
 			FlxG.sound.playMusic(inst, 1, false);
@@ -1450,6 +1470,9 @@ class PlayState extends MusicBeatState
 			});
 
 			strumLineNotes.add(babyArrow);
+
+			script.call('generateStaticArrows', [player]);
+			script.interp.variables.set("babyArrow",babyArrow);
 		}
 	}
 

@@ -73,7 +73,15 @@ class Note extends FlxSprite
 				noteJson = Json.parse(File.getContent(Paths.json("notes/" + specialType)));
 			}
 		}
-		
+
+		if (FileSystem.exists(Modding.getFilePath(specialType + '.hx', "scripts/notes/"))){
+			PlayState.script.loadScript("notes/" + specialType, true);
+		}
+
+		if (Assets.exists(Paths.hx("scripts/notes/" + specialType))){
+			PlayState.script.loadScript("scripts/notes/" + specialType, false);
+		}
+
 		if (noteJson != null && noteJson.image != null && noteJson.xml != null){
 			var spriteAntialiasing:Bool = true;
 			var spriteScale:Float = 0;

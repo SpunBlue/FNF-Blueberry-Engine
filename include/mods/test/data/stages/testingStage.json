@@ -12,6 +12,7 @@
         "playOn": "beat",
         "isAnimated": true,
 		"isDistraction": true,
+        "alpha": 1,
         "layer": 0
     }],
 
