@@ -2200,9 +2200,7 @@ class PlayState extends MusicBeatState
 				if (engine.OptionsData.downScroll == false ? daNote.y <= strumLine.y : daNote.y >= strumLine.y){
 					if (daNote.noteJson != null && daNote.noteJson.onHit != null){
 						if ((daNote.noteJson.onHit.instaKill == false ||daNote.noteJson.onHit.instaKill == null) && daNote.noteJson.onHit.health > 0){
-							if ((daNote.noteJson.onMiss != null && daNote.noteJson.onMiss.instaKill == false && daNote.noteJson.onMiss.health > 0) || daNote.noteJson.onMiss == null){
-								goodNoteHit(daNote);
-							}
+							goodNoteHit(daNote);
 						}
 					}
 					else{

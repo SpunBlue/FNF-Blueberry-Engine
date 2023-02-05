@@ -246,6 +246,9 @@ class TitleState extends MusicBeatState
 			#end
 		}
 
+		if (FlxG.keys.justPressed.TAB)
+			FlxG.switchState(new engine.editors.ChartingState());
+		
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
 			titleText.animation.play('press');
