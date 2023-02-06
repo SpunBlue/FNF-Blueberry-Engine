@@ -43,6 +43,11 @@ class OptionsMenu extends MusicBeatState {
 	    ['Distractions',"Toggle Distractions",'distractions'],
 	    ['Disable Outdated Screen',"Toggle Outdated Screen",'disableOutdatedScreen']
     ];
+
+	public static var moddingOptions:Array<Dynamic> = [ //display name, description, save variable name
+	    ['Preload Mods',"Preload Mods before Song Starts - HIGH MEMORY USAGE!!!",'preloadMods']
+    ];
+
     var sections:Array<Dynamic> = [
 		['Keybinds','default'],
 		['Gameplay','default'],
@@ -161,12 +166,14 @@ class OptionsMenu extends MusicBeatState {
 		switch (theOptionGroup.toLowerCase())
 		{
 			default:
-				optionSelectionProperties = [2, 1, 1, 2];
+				optionSelectionProperties = [2, 1, 1, 1];
 				curMenu = 'default';
 			case 'gameplay':
 				optionSelectionProperties = [0, 0, 0, 0, 0, 0, 0];
 			case 'graphics':
 				optionSelectionProperties = [0, 0, 0, 0, 0];
+			case 'modding':
+				optionSelectionProperties = [0];
 		}
 
 		if (sectionGeneration)
@@ -219,7 +226,11 @@ class OptionsMenu extends MusicBeatState {
 					case 'graphics':
 						curMenu = 'graphics';
 						curOptions = graphicsOptions;
+					case 'modding':
+						curMenu = 'modding';
+						curOptions = moddingOptions;
 				}
+
 				generateOptions(curMenu,false);
 				curSelected = 0;
 
@@ -228,8 +239,6 @@ class OptionsMenu extends MusicBeatState {
 				switch(optionsGroup.members[curSelected].text.toLowerCase()){
 					case 'keybinds':
 						FlxG.switchState(new KeybindsState());
-					case 'modding':
-						FlxG.sound.play(Paths.sound('badnoise3', 'shared'));
 				}
 			default:
 				Engine.debugPrint('error lmao');

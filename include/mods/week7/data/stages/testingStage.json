@@ -1,0 +1,20 @@
+{
+    "objects": [{
+        "image": "teststage/reallyBadStage.png",
+        "xmlPath": "teststage/reallyBadStage.xml",
+        "position": [-256, -256],
+        "scrollFactor": [1, 1],
+        "xmlanim": "animation0",
+        "name": "stageAnimation",
+        "fps": 24,
+        "loop": false,
+        "indices-REMOVETHISDASH": [],
+        "playOn": "beat",
+        "isAnimated": true,
+		"isDistraction": true,
+        "alpha": 1,
+        "layer": 0
+    }],
+
+    "disableAntialiasing": false
+}

@@ -43,8 +43,9 @@ class Note extends FlxSprite
 	public static var RED_NOTE:Int = 3;
 
 	public var noteJson:NoteJson; // Json Data
+	public var noteType:String; // Type of Note
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?singer:Int = -1, ?specialType:String, ?sustainNote:Bool = false, ?noteType:String = '')
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?singer:Int = -1, ?specialType:String, ?sustainNote:Bool = false)
 	{
 		super();
 
@@ -62,6 +63,8 @@ class Note extends FlxSprite
 		this.strumTime = strumTime;
 
 		this.noteData = noteData;
+		
+		this.noteType = specialType;
 
 		var daStage:String = PlayState.curStage;
 
@@ -282,6 +285,7 @@ typedef NoteJson = {
 	var ?onDadSustain:NoteActions; // don't include if you want to perform regular events.
 	var ?onMiss:NoteActions; // don't include if you want to perform regular events.
 	var ?allowScoring:Bool;
+	var ?allowBotHit:Bool;
 	var ?scoreOnSick:Int;
 	var ?scoreOnGood:Int;
 	var ?scoreOnBad:Int;

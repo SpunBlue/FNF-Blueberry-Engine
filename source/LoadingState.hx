@@ -1,5 +1,7 @@
 package;
 
+import engine.OptionsData;
+import engine.modding.Modding;
 import lime.utils.AssetCache;
 import game.PlayState;
 import lime.app.Promise;
@@ -22,17 +24,20 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 	inline static var MIN_TIME = 1.0;
 	
 	var target:FlxState;
-	var stopMusic = false;
 	var callbacks:MultiCallback;
 	
 	var funkay:FlxSprite;
 	var scale:Float = 1;
+
+	var modID:String;
 	
-	function new(target:FlxState, stopMusic:Bool)
+	function new(target:FlxState, ?modID:String)
 	{
 		super();
 		this.target = target;
-		this.stopMusic = stopMusic;
+
+		if (modID != null)
+			this.modID = modID;
 	}
 	
 	override function create()
@@ -41,31 +46,51 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 		funkay.antialiasing = true;
 		funkay.scale.x = 1;
 		funkay.scale.y = 1;
-                funkay.screenCenter();
+        funkay.screenCenter();
 		funkay.updateHitbox();
 		add(funkay);
+
+		#if NO_PRELOAD_ALL
+			initSongsManifest().onComplete
+			(
+				function (lib)
+				{
+					checkLoadSong(getSongPath());
+					if (PlayState.SONG.needsVoices)
+						checkLoadSong(getVocalPath());
+					checkLibrary("shared");
+					if (PlayState.storyWeek > 0)
+						checkLibrary("week" + PlayState.storyWeek);
+					else
+						checkLibrary("tutorial");
+
+					callbacks = new MultiCallback(onLoad);
+					var introComplete = callbacks.add("introComplete");
+					
+					var fadeTime = 0.5;
+					FlxG.camera.fade(FlxG.camera.bgColor, fadeTime, true);
+					new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
+				}
+			);
+		#end
+
+		super.create();
 		
-		initSongsManifest().onComplete
-		(
-			function (lib)
-			{
-				callbacks = new MultiCallback(onLoad);
-				var introComplete = callbacks.add("introComplete");
-				checkLoadSong(getSongPath());
-				if (PlayState.SONG.needsVoices)
-					checkLoadSong(getVocalPath());
-				checkLibrary("shared");
-				if (PlayState.storyWeek > 0)
-					checkLibrary("week" + PlayState.storyWeek);
-				else
-					checkLibrary("tutorial");
-				
-				var fadeTime = 0.5;
-				FlxG.camera.fade(FlxG.camera.bgColor, fadeTime, true);
-				new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
-			}
-		);
+		var timer:FlxTimer = new FlxTimer();
+		timer.start(1.25, function(timer:FlxTimer):Void {
+			if (modID != null && modID != '')
+				Modding.preloadMod(modID);
+
+			callbacks = new MultiCallback(onLoad);
+			var introComplete = callbacks.add("introComplete");
+
+			var fadeTime = 0.5;
+			FlxG.camera.fade(FlxG.camera.bgColor, fadeTime, true);
+			new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
+		});
 	}
+
+
 	
 	function checkLoadSong(path:String)
 	{
@@ -120,8 +145,7 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 	
 	function onLoad()
 	{
-		if (stopMusic && FlxG.sound.music != null)
-			FlxG.sound.music.stop();
+		FlxG.sound.music.stop();
 		
 		FlxG.switchState(target);
 	}
@@ -136,26 +160,11 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 		return Paths.voices(PlayState.SONG.song);
 	}
 	
-	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
-	{
-		FlxG.switchState(getNextState(target, stopMusic));
-	}
-	
-	static function getNextState(target:FlxState, stopMusic = false):FlxState
+	inline static public function loadAndSwitchState(target:FlxState, modID:String)
 	{
 		Paths.setCurrentLevel("week" + PlayState.storyWeek);
-		#if NO_PRELOAD_ALL
-		var loaded = isSoundLoaded(getSongPath())
-			&& (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath()))
-			&& isLibraryLoaded("shared");
-		
-		if (!loaded)
-			return new LoadingState(target, stopMusic);
-		#end
-		if (stopMusic && FlxG.sound.music != null)
-			FlxG.sound.music.stop();
-		
-		return target;
+
+		FlxG.switchState(new LoadingState(target, modID));
 	}
 	
 	#if NO_PRELOAD_ALL

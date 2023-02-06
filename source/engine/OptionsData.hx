@@ -1,5 +1,6 @@
 package engine;
 
+import engine.optionsMenu.OptionsMenu;
 import flixel.FlxG;
 
 class OptionsData
@@ -13,8 +14,11 @@ class OptionsData
     public static var distractions = true;
     public static var disableOutdatedScreen = false;
 
+    public static var preloadMods:Bool = true;
+
     public static var gameplayOptions = engine.optionsMenu.OptionsMenu.gameplayOptions;
     public static var graphicsOptions = engine.optionsMenu.OptionsMenu.graphicsOptions;
+    public static var moddingOptions = OptionsMenu.moddingOptions;
 
     public static function saveFromArray(array:Array<Dynamic>)
     {
@@ -39,11 +43,13 @@ class OptionsData
     {
         saveFromArray(gameplayOptions);
         saveFromArray(graphicsOptions);
+        saveFromArray(moddingOptions);
     }
 
     public static function loadData()
     {
         loadFromArray(gameplayOptions);
         loadFromArray(graphicsOptions);
+        loadFromArray(moddingOptions);
     }
 }

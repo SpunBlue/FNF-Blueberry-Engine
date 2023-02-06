@@ -1,5 +1,6 @@
 package game;
 
+import engine.OptionsData;
 import engine.editors.ChartingState;
 import engine.Engine;
 import engine.modding.Stages;
@@ -23,7 +24,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Charter', 'Animation Debug'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Charter'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -33,7 +34,7 @@ class PauseSubState extends MusicBeatSubstate
 		super();
 
 		if (Modding.modLoaded){
-			menuItems.push('Reload Data');
+			//menuItems.push('Reload Data');
 			menuItems.push('Exit to menu');
 		}
 		else
@@ -61,8 +62,12 @@ class PauseSubState extends MusicBeatSubstate
 				levelInfo.text = '';
 			}
 
-			if (i < 21)
-				levelInfo.text += PlayState.songPlaylist[i].songName.toString().toUpperCase() + breaker;
+			if (i < 21){
+				if (i > 0)
+					levelInfo.text += PlayState.songPlaylist[i].songName.toString().toUpperCase() + breaker;
+				else
+					levelInfo.text += '> ' + PlayState.songPlaylist[i].songName.toString().toUpperCase() + ' <' + breaker;
+			}
 			else if (i == 21){
 				var lol:Int = PlayState.songPlaylist.length - i;
 				levelInfo.text += 'And $lol more...';
@@ -135,7 +140,6 @@ class PauseSubState extends MusicBeatSubstate
 					close();
 				case "Restart Song":
 					Stages.reset();
-
 					FlxG.resetState();
 				case "Exit to menu":
 					Stages.reset();
@@ -148,11 +152,6 @@ class PauseSubState extends MusicBeatSubstate
 				case "Animation Debug":
 					Stages.reset();
 					FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
-				case 'Reload Data':
-					Engine.resetModding(false);
-					Modding.preloadData(Modding.curLoaded);
-
-					FlxG.resetState();
 			}
 		}
 

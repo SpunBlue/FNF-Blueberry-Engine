@@ -14,8 +14,9 @@ class HealthIcon extends FlxSprite
 	public var sprTracker:FlxObject;
 	var sprOff:Int = 0;
 	var sprYOff:Int = 0;
+	var isPlayer:Bool = false;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
+	public function new(?char:String, isPlayer:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
 	{
 		super();
 
@@ -25,9 +26,24 @@ class HealthIcon extends FlxSprite
 		Engine.debugPrint('char: $char');
 
 		antialiasing = true;
+		this.isPlayer = isPlayer;
 
+		if (char != null)
+			changeIcon(char);
+		scrollFactor.set();
+	}
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (sprTracker != null)
+			setPosition(sprTracker.x + (sprTracker.width + 10) + sprOff, (sprTracker.y - 30) + sprYOff);
+	}
+
+	public function changeIcon(char:String) {
 		if (FileSystem.exists(Modding.getFilePath('icon-$char.png', 'images/icons'))){
-			loadGraphic(Modding.retrieveImage('icon-$char', 'images/icons', 'IconIMGASSET'), true, 150, 150);
+			loadGraphic(Modding.retrieveImage('icon-$char', 'images/icons'), true, 150, 150);
 
 			animation.add('$char', [0, 1], 0, false, isPlayer);
 
@@ -67,16 +83,8 @@ class HealthIcon extends FlxSprite
 				animation.play(char);
 			else
 				animation.play('face');
-	
-			scrollFactor.set();
 		}
-	}
 
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-
-		if (sprTracker != null)
-			setPosition(sprTracker.x + (sprTracker.width + 10) + sprOff, (sprTracker.y - 30) + sprYOff);
+		updateHitbox();
 	}
 }

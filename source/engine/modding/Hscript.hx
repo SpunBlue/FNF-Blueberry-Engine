@@ -1,5 +1,7 @@
 package engine.modding;
 
+import flixel.FlxCamera;
+import engine.modding.Stages.StageObject;
 import flixel.FlxG;
 import flixel.tweens.FlxTween;
 import flixel.FlxSprite;
@@ -43,6 +45,7 @@ class Hscript
 		interp.variables.set("FlxSprite",FlxSprite);
 		interp.variables.set("FlxText",FlxText);
 		interp.variables.set("FlxTween",FlxTween);
+		interp.variables.set("FlxCamera",FlxCamera);
         interp.variables.set("File",File);
 		interp.variables.set("Paths",Paths);
 		interp.variables.set("CoolUtil",CoolUtil);
@@ -50,14 +53,7 @@ class Hscript
         interp.variables.set("Modding",Modding);
         interp.variables.set("FileSystem",FileSystem);
 		interp.variables.set("PlayState",PlayState);
-
-		interp.variables.set("boyfriend",PlayState.boyfriend);
-		interp.variables.set("dad",PlayState.dad);
-		interp.variables.set("gf",PlayState.gf);
-
-		interp.variables.set("boyfriendGroup",PlayState.boyfriendGroup);
-		interp.variables.set("dadGroup",PlayState.dadGroup);
-		interp.variables.set("gfGroup",PlayState.gfGroup);
+		interp.variables.set("StageObject", StageObject);
 
         interp.allowStaticVariables = interp.allowPublicVariables = true;
 

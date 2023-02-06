@@ -1,5 +1,7 @@
 package;
 
+import game.TitleState;
+import engine.editors.ChartingState;
 import game.MainMenuState;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -67,7 +69,7 @@ class OutdatedSubState extends MusicBeatState
 		if (controls.BACK)
 		{
 			leftState = true;
-			FlxG.switchState(new MainMenuState());
+			TitleState.jumpToMainMenu();
 		}
 		super.update(elapsed);
 	}
