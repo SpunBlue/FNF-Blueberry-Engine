@@ -211,6 +211,7 @@ The JSON file should be in the following format:
             "flipX": false,
             "flipY": false,
             "size": 1,
+            "alpha": 1,
             "blend": "blendName",
             "antialiasing": true
         },
@@ -239,12 +240,13 @@ The JSON file should be in the following format:
 	* "indices" is an array of integers that defines the frames of the animation to play.
 	* "playOn" is a string value that specifies when the animation should start playing.
 	* "isAnimated" is a boolean value that specifies whether the object is animated or not.
-	* "layer" is an integer that sets the layer on which the object is displayed, 0 = behind all, 1 = infront of GF, 2 = infront of dad & bf
+	* "layer" is an integer that sets the layer on which the object is displayed, 0 = behind all, 1 = infront of GF, 2 = infront of dad & bf.
 	* "isDistraction" is a boolean value that specifies whether the object is a distraction or not.
-	* "scale" is an array of floats that sets the scaling factor of the object
+	* "scale" is an array of floats that sets the scaling factor of the object.
 	* "flipX" is a boolean value that controls whether the object is flipped horizontally or not.
 	* "flipY" is a boolean value that controls whether the object is flipped vertically or not.
-	* "size" is a float value that sets the size of the object
+	* "size" is a float value that sets the size of the object.
+	* "alpha" is the visbility of the object.
 	* "blend" is a string value that sets the blending mode of the object.
 	* "antialiasing" is a boolean value that enables or disables antialiasing for the object.
 * "disableAntialiasing" is a boolean value that enables or disables antialiasing for the stage.
