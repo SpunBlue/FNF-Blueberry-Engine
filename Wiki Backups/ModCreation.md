@@ -32,16 +32,32 @@ Here is an example of the structure of the JSON file:
     "weeks": [
         {
             "name": "Week 1",
-            "songs": ["song1", "song2", "song3"],
+            "songs": [
+                "Tutorial",
+                "Bopeebo",
+                "Fresh",
+                "Dadbattle"
+            ],
+    
+            "icon": "dad",
+            "iconIsJson": false,
             "week": 1,
-            "icon": "characterName"
+            "color": "0xff9271fd"
         },
+    
         {
             "name": "Week 2",
-            "songs": ["song1", "song2", "song3"],
+            "songs": [
+                "Spookeez",
+                "South",
+                "Monster"
+            ],
+    
+            "icon": "spooky",
+            "iconIsJson": false,
             "week": 2,
-            "icon": "characterName"
-        }
+            "color": "0xff223344"
+        },
     ]
 }
 ```
@@ -51,6 +67,7 @@ Here is an example of the structure of the JSON file:
 	* "songs" is an array of strings that contains the chart names of the songs that are in that week. These chart names should match the names of the chart files in the "charts" directory.
 	* "week" is the number of the week. This can be any number greater than 6. However, the number isn't important and can just be made -1 if you so choose.
 	* "icon" is the name of the character that will be used as the icon for the week. This should match the name of the character or the character's JSON file in the "characters" directory minus the JSON prefix.
+	* "color" is the color that will be displayed on the Background.
 
 Once you have created your JSON file, you will need to place it in the "weeks" directory. If you are creating a mod, this directory should be located in the "data/weeks" directory.
 
@@ -374,10 +391,92 @@ The JSON file should have the following format:
     * "playAnimationDAD" play an Animation on the currently selected Boyfriend.
     * "instaKill" Kills the player instantly.
 * "allowScoring" Allows scoring of the note.
+* "allowBotHit" Allows hitting on Bot Mode.
 * "scoreOnSick" Score for the note when you get a Sick. (Don't inclue for default)
 * "scoreOnGood" Score for the note when you get a Good. (Don't inclue for default)
 * "scoreOnBad" Score for the note when you get a Bad. (Don't inclue for default)
 * "scoreOnShit" Score for the note when you get a Shit. (Don't inclue for default)
+
+## Hscript
+HaxeLib Hscript is a scripting engine that runs scripts in-game. Scripts are loaded by making a Script file in "mods/[User's Mod Name]/scripts/[Song Name].hx".
+
+The script should be in the following format:
+```
+var testText:FlxText;
+
+function createPost()
+{
+    testText = new FlxText(64, 24, 0, "TEST MOD - EXAMPLE SCRIPT", 24);
+    testText.cameras = [camHUD];
+    testText.scrollFactor.set();
+    FlxG.state.add(testText);
+}
+```
+
+### Variables Available for Scripts
+* Int - An integer data type.
+* String - A string data type.
+* Float - A floating-point data type.
+* Array - An array data type.
+* Bool - A boolean data type.
+* Dynamic - A dynamic data type.
+* Math - A class for mathematical functions.
+* Main - A reference to the main class.
+* FlxMath - A class for mathematical functions in the Flixel engine.
+* Std - A class for standard Haxe functions.
+* StringTools - A class for string manipulation functions.
+* FlxG - A class for accessing global game data in the Flixel engine.
+* FlxSound - A class for playing sound in the Flixel engine.
+* FlxSprite - A class for displaying 2D graphics in the Flixel engine.
+* FlxText - A class for displaying text in the Flixel engine.
+* FlxTween - A class for tweening in the Flixel engine.
+* FlxCamera - A class for managing camera movement in the Flixel engine.
+* File - A class for accessing the file system.
+* Paths - A class for accessing the paths in the file system.
+* CoolUtil - A class with utility functions.
+* Assets - A class for accessing game assets.
+* Modding - A class for modding functionality.
+* FileSystem - A class for accessing the file system.
+* PlayState - A reference to the play state.
+* StageObject - A class for stage objects.
+
+### Additional Variables for Scripts used in PlayState
+* boyfriend - A reference to the boyfriend object.
+* dad - A reference to the dad object.
+* gf - A reference to the girlfriend object.
+* boyfriendGroup - A reference to the group of boyfriend objects.
+* dadGroup - A reference to the group of dad objects.
+* gfGroup - A reference to the group of girlfriend objects.
+* stageLayer0 - A reference to the first layer of the stage.
+* stageLayer1 - A reference to the second layer of the stage.
+* stageLayer2 - A reference to the third layer of the stage.
+* camFollow - A reference to the camera following object.
+* camHUD - A reference to the HUD camera.
+* camGame - A reference to the game camera.
+* inCutscene - A boolean indicating if a cutscene is playing.
+
+### Valid Functions for Scripts
+* create - Runs at the beginning of the create function.
+* createPost - Runs after everything in the create function has been ran.
+* update - Runs at the beginning of the Update function.
+* updatePost - Runs after everything in the update function has been ran.
+
+### Valid Functions for Scripts in PlayState
+* startCountdown - Runs at song count down.
+* startSong - Runs at the start of the song.
+* generateStaticArrows - Runs at the generateStaticArrows function.
+* dadNoteHit - Runs when the Dad hits a Note.
+* endSong - Runs at the end of the Song
+* popUpScore - If you see this, It's 6 AM and I'm fucking tired.
+* noteMiss - Runs when the Player misses a Note.
+* goodNoteHit - Runs when the Player hits a Note.
+* stepHit - Runs on every Step.
+* beatHit - Runs on every Beat.
+
+### Notes
+
+Information on everything supported is not currently available, for more information read the Source Code.
+You can access Variables within the Variable as long as they are Public Variables and or Public Static Variables.
 
 ## Bonus Information!
 

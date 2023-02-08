@@ -11,7 +11,8 @@
     
             "icon": "dad",
             "iconIsJson": false,
-            "week": 1
+            "week": 1,
+            "color": "0xff9271fd"
         },
     
         {
@@ -24,7 +25,8 @@
     
             "icon": "spooky",
             "iconIsJson": false,
-            "week": 2
+            "week": 2,
+            "color": "0xff223344"
         },
     
         {
@@ -37,7 +39,8 @@
     
             "icon": "pico",
             "iconIsJson": false,
-            "week": 3
+            "week": 3,
+            "color": "0xFF941653"
         },
     
         {
@@ -50,7 +53,8 @@
     
             "icon": "mom",
             "iconIsJson": false,
-            "week": 4
+            "week": 4,
+            "color": "0xFFfc96d7"
         },
     
         {
@@ -63,7 +67,8 @@
     
             "icon": "parents-christmas",
             "iconIsJson": false,
-            "week": 5
+            "week": 5,
+            "color": "0xFFa0d1ff"
         },
     
         {
@@ -76,7 +81,8 @@
     
             "icon": "senpai",
             "iconIsJson": false,
-            "week": 6
+            "week": 6,
+            "color": "0xffff78bf"
         }
     ]
 }

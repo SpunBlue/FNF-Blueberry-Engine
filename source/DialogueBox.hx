@@ -217,6 +217,7 @@ class DialogueBox extends FlxSpriteGroup
 					new FlxTimer().start(1.2, function(tmr:FlxTimer)
 					{
 						finishThing();
+						PlayState.inCutscene = false;
 						kill();
 					});
 				}

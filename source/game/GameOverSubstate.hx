@@ -1,5 +1,6 @@
 package game;
 
+import engine.modding.Modding;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSubState;
@@ -105,7 +106,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
-					LoadingState.loadAndSwitchState(new PlayState());
+					LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded);
 				});
 			});
 		}

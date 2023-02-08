@@ -686,7 +686,7 @@ class Character extends FlxSprite
 		if (isMod == true){
 			charJson = Json.parse(Modding.retrieveContent('$curCharacter.json', 'data/characters'));
 
-			frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(charJson.image, 'images/characters', 'CharIMGASSET'),
+			frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(charJson.image, 'images/characters'),
 			Modding.retrieveContent(charJson.image + '.xml', 'images/characters'));
 		}
 		else{

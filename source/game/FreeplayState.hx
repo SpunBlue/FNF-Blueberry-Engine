@@ -35,6 +35,9 @@ class FreeplayState extends MusicBeatState
 {  
     var menuItems:FlxTypedGroup<MenuItem> = new FlxTypedGroup();
     var playIcons:FlxTypedGroup<HealthIcon> = new FlxTypedGroup();
+
+    static var generatedWeeksMenu:Array<MItemInf> = null;
+
     var uiItems:FlxGroup = new FlxGroup();
 
     var itemsLength:Int = 0;
@@ -50,13 +53,16 @@ class FreeplayState extends MusicBeatState
     var camFollow:FlxSprite;
     var scoreText:FlxText;
 
+    var bg:FlxSprite;
+
     override function create(){
         allowCamBeat = true;
 
         super.create();
 
-        var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+        bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
         bg.scrollFactor.set(0, 0);
+        bg.color = FlxColor.fromRGB(79, 134, 247);
 		add(bg);
 
         camFollow = new FlxSprite().makeGraphic(32, 32, FlxColor.WHITE);
@@ -115,6 +121,11 @@ class FreeplayState extends MusicBeatState
             Engine.debugPrint(curSelected + ' ' + itemsLength);
 
         for (item in menuItems){
+            if (item != null && curSelected == item.ID + 1){
+                if (bg.color != item.targetColor)
+                    bg.color = FlxColor.interpolate(bg.color, item.targetColor, 0.045);
+            }
+
             if (item != null && curSelected == item.ID + 1 && lastSelected != curSelected){
                 camFollow.y = item.y + 32;
 
@@ -197,7 +208,6 @@ class FreeplayState extends MusicBeatState
                         PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
                     }
                     else{
-                        Modding.preloadData(PlayState.songPlaylist[0].modID);
                         Modding.modLoaded = true;
                         Modding.curLoaded = PlayState.songPlaylist[0].modID;
 
@@ -212,7 +222,7 @@ class FreeplayState extends MusicBeatState
                     Engine.debugPrint('CUR WEEK' + PlayState.storyWeek);
                     Engine.debugPrint('PLAYLIST: ' + PlayState.songPlaylist);
         
-                    LoadingState.loadAndSwitchState(new PlayState());
+                    LoadingState.loadAndSwitchState(new PlayState(), PlayState.songPlaylist[0].modID);
                 }
                 else if (item.type.toLowerCase() == 'song'){
                     var poop:String = item.text.toLowerCase();
@@ -224,7 +234,6 @@ class FreeplayState extends MusicBeatState
                         PlayState.SONG = Song.loadFromJson(poop, poop);
                     }
                     else{
-                        Modding.preloadData(item.modID);
                         Modding.modLoaded = true;
                         Modding.curLoaded = item.modID;
 
@@ -235,7 +244,7 @@ class FreeplayState extends MusicBeatState
 
                     PlayState.storyWeek = selectedWeek.week;
 
-                    LoadingState.loadAndSwitchState(new PlayState());
+                    LoadingState.loadAndSwitchState(new PlayState(), selectedModID);
                 }
             }
 
@@ -247,14 +256,7 @@ class FreeplayState extends MusicBeatState
 
         if (FlxG.keys.justPressed.ESCAPE == true){
             if (inSongMenu){
-                generateMenu(getMenu('weeks', true));
-                
-                for (week in menuItems.members){
-                    if (week != null && week.weekData != null && week.weekData.name == selectedWeek.name && week.modID == selectedModID){
-                        curSelected = menuItems.members.indexOf(week) + 1;
-                        break;
-                    }
-                }
+                generateMenu(getMenu('weeks'));
             }
             else
                 FlxG.switchState(new MainMenuState());
@@ -267,81 +269,76 @@ class FreeplayState extends MusicBeatState
 
         switch (type.toLowerCase()){
             case 'weeks':
-                thismenu.push({type:'playall', string: 'Play All'});
-                thismenu.push({type:'shuffle', string: 'Shuffle'});
-
-                var vanillaweeks:WeekJson = Json.parse(File.getContent(Paths.json('weeks', 'preload')));
+                if (generatedWeeksMenu == null || generatedWeeksMenu == []){
+                    generatedWeeksMenu = [];
+                    generatedWeeksMenu.push({type:'playall', string: 'Play All'});
+                    generatedWeeksMenu.push({type:'shuffle', string: 'Shuffle'});
         
-                for (week in vanillaweeks.weeks){
-                    thismenu.push({type:'week', weekData: week, string: week.name});
-                }
-        
-                for (mod in Modding.loadedMods){
-                    if (FileSystem.isDirectory('mods/$mod/weeks') == true){
-                        for (weekJson in FileSystem.readDirectory('mods/$mod/weeks/')){
-                            if (weekJson != null && weekJson.contains('.json')){
-                                var finalWeeks:WeekJson = Json.parse(File.getContent('mods/$mod/weeks/' + weekJson));
-        
-                                for (week in finalWeeks.weeks){
-                                    thismenu.push({type:'week', weekData: week, string: week.name, modID: mod});
+                    var vanillaweeks:WeekJson = Json.parse(File.getContent(Paths.json('weeks', 'preload')));
+                
+                    for (week in vanillaweeks.weeks){
+                        generatedWeeksMenu.push({type:'week', weekData: week, string: week.name});
+                    }
+                
+                    for (mod in Modding.loadedMods){
+                        if (FileSystem.isDirectory('mods/$mod/weeks') == true){
+                            for (weekJson in FileSystem.readDirectory('mods/$mod/weeks/')){
+                                if (weekJson != null && weekJson.contains('.json')){
+                                    var finalWeeks:WeekJson = Json.parse(File.getContent('mods/$mod/weeks/' + weekJson));
+                
+                                    for (week in finalWeeks.weeks){
+                                        generatedWeeksMenu.push({type:'week', weekData: week, string: week.name, modID: mod});
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
+                thismenu = generatedWeeksMenu;
+        
                 if (willLoadMenu)
                     inSongMenu = false;
             case 'songs':
                 thismenu.push({type:'playall', string: 'Play All'});
                 thismenu.push({type:'shuffle', string: 'Shuffle'});
-
+        
                 for (song in selectedWeek.songs){
                     thismenu.push({type: 'song', string: song, modID: selectedModID});
                 }
-
+        
                 if (willLoadMenu)
                     inSongMenu = true;
         }
 
         return thismenu;
-    }
+    }      
 
     function generateMenu(items:Array<MItemInf>){
-        for (member in menuItems.members){
-            if (member != null){
-                menuItems.remove(member);
-                member.kill();
-            }
-        }
-
-        for (member in playIcons){
-            if (member != null){
-                playIcons.remove(member);
-                member.kill();
-            }
-        }
-
+        menuItems.clear();
+        playIcons.clear();
         var v:Int = 0;
-
+    
         for (item in items){
-            var weekData = item.weekData;
-
-            var newItem:MenuItem = new MenuItem(32, (72 * v) + 32, item.string, item.type, item.weekData, item.modID);
+            var newItem = new MenuItem(32, (72 * v) + 32, item.string, item.type, item.weekData, item.modID);
             menuItems.add(newItem);
             newItem.ID = v;
             v++;
-
+    
             if (item.type == 'week' && item.weekData != null){
-                if (item.modID != null || item.modID != '')
+                if (item.modID != null && item.modID != '')
                     Modding.curLoaded = item.modID;
+    
+                if (item.weekData.color != null)
+                    newItem.targetColor = Std.parseInt(item.weekData.color);
+    
+                var icon = new HealthIcon(item.weekData.icon, false, 0, 24);
 
-                var icon = new HealthIcon(weekData.icon, false, 0, 24 );
                 icon.sprTracker = newItem;
                 icon.scrollFactor.set(1, 1);
                 icon.setGraphicSize(Std.int(icon.width * 0.6));
                 icon.updateHitbox();
-    
+
                 playIcons.add(icon);
 
                 if (Modding.curLoaded != null || Modding.curLoaded != '')
@@ -351,12 +348,13 @@ class FreeplayState extends MusicBeatState
 
         itemsLength = v;
     }
+    
 
     function randomizeSongs(arr:Array<SongData>) {
         var randomizedArray = arr;
         var currentIndex = randomizedArray.length;
         var temporaryValue:Dynamic;
-        var randomIndex: Int;
+        var randomIndex:Int;
     
         // While there remain elements to shuffle...
         while (currentIndex > 0) {
@@ -387,6 +385,7 @@ typedef WeekData =
 	var icon:String;
     var iconIsJson:Bool;
 	var ?isMod:Bool;
+    var ?color:String;
 }
 
 typedef MItemInf ={
@@ -400,6 +399,7 @@ class MenuItem extends FlxText{
     public var weekData:WeekData;
     public var type:String;
     public var modID:String;
+    public var targetColor:FlxColor = FlxColor.fromRGB(79, 134, 247); 
 
     public function new(x:Float, y:Float, text:String, type:String, ?weekData:WeekData, ?modID:String, size:Int = 64, facing:FlxTextAlign = LEFT){
         super(x, y);

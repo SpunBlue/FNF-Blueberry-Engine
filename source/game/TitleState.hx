@@ -58,6 +58,8 @@ class TitleState extends MusicBeatState
 
 		Highscore.load();
 
+		Modding.init();
+
 		super.create();
 
 		#if desktop
@@ -67,8 +69,6 @@ class TitleState extends MusicBeatState
 			DiscordClient.shutdown();
 		 });
 		#end
-
-		Modding.init();
 
 		startIntro();
 	}
@@ -246,6 +246,9 @@ class TitleState extends MusicBeatState
 			#end
 		}
 
+		if (FlxG.keys.justPressed.TAB)
+			FlxG.switchState(new engine.editors.ChartingState());
+		
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
 			titleText.animation.play('press');
@@ -257,7 +260,7 @@ class TitleState extends MusicBeatState
 			// FlxG.sound.music.stop();
 
 			#if debug
-			FlxG.switchState(new MainMenuState());
+			jumpToMainMenu();
 			#else
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
@@ -280,12 +283,12 @@ class TitleState extends MusicBeatState
 						if (!OptionsData.disableOutdatedScreen) {
 							FlxG.switchState(new OutdatedSubState());
 						} else {
-							FlxG.switchState(new MainMenuState());
+							jumpToMainMenu();
 						}
 					}
 					else
 					{
-						FlxG.switchState(new MainMenuState());
+						jumpToMainMenu();
 					}
 				}
 
@@ -306,6 +309,10 @@ class TitleState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+	}
+
+	public static function jumpToMainMenu(){
+		FlxG.switchState(new MainMenuState());
 	}
 
 	function createCoolText(textArray:Array<String>)
