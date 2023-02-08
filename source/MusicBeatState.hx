@@ -90,7 +90,7 @@ class MusicBeatState extends FlxUIState
 
 		super.update(elapsed);
 
-		script.call("updatePost", [elapsed]);
+		scripts.call("updatePost", [elapsed]);
 	}
 
 	private function updateBeat():Void

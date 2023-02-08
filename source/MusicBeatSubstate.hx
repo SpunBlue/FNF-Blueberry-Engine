@@ -65,7 +65,7 @@ class MusicBeatSubstate extends FlxSubState
 
 		super.update(elapsed);
 
-		script.call("updatePost", [elapsed]);
+		scripts.call("updatePost", [elapsed]);
 	}
 
 	private function updateCurStep():Void
