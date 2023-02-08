@@ -42,6 +42,8 @@ class MusicBeatState extends FlxUIState
 		scripts.call('create');
 
 		super();
+
+		scripts.call('createPost');
 	}
 
 	private var lastBeat:Float = 0;
@@ -64,7 +66,10 @@ class MusicBeatState extends FlxUIState
 		FlxSprite.defaultAntialiasing = true;
 
 		scripts.call('create');
+
 		super.create();
+
+		scripts.call('createPost');
 	}
 
 	override function update(elapsed:Float)
@@ -84,6 +89,8 @@ class MusicBeatState extends FlxUIState
 		scripts.call("update", [elapsed]);
 
 		super.update(elapsed);
+
+		script.call("updatePost", [elapsed]);
 	}
 
 	private function updateBeat():Void

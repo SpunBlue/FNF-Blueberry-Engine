@@ -36,6 +36,8 @@ class MusicBeatSubstate extends FlxSubState
 		scripts.call('create');
 
 		super();
+
+		scripts.call('createPost');
 	}
 
 	private var lastBeat:Float = 0;
@@ -62,6 +64,8 @@ class MusicBeatSubstate extends FlxSubState
 		scripts.call("update", [elapsed]);
 
 		super.update(elapsed);
+
+		script.call("updatePost", [elapsed]);
 	}
 
 	private function updateCurStep():Void

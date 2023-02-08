@@ -231,6 +231,7 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("stageLayer2",layer2);
 
 		script.interp.variables.set("inCutscene",inCutscene);
+		script.interp.variables.set("gfVersion",SONG.gfVersion);
 
 		perfectMode = OptionsData.botplay;
 
@@ -998,7 +999,7 @@ class PlayState extends MusicBeatState
 					add(doof);
 					inCutscene = true;
 				}
-				
+
 				if (FileSystem.exists(Modding.getFilePath(SONG.song.toLowerCase() + '.hx', "scripts/cutscenes/"))){
 					script.loadScript("cutscenes/" + SONG.song.toLowerCase(), true);
 					inCutscene = true;
