@@ -55,6 +55,7 @@ class Hscript
 		interp.variables.set("Paths",Paths);
         interp.variables.set("Assets",Assets);
         interp.variables.set("Modding",Modding);
+        interp.variables.set("BGSprite",BGSprite);
 		interp.variables.set("CoolUtil",CoolUtil);
 		interp.variables.set("Conductor",Conductor);
 		interp.variables.set("PlayState",PlayState);
