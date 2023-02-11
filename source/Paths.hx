@@ -70,11 +70,6 @@ class Paths
 		return getPath('data/$key.json', TEXT, library);
 	}
 
-	inline static public function hx(key:String, ?library:String)
-	{
-		return getPath('data/$key.hx', TEXT, library);
-	}
-
 	static public function sound(key:String, ?library:String)
 	{
 		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
@@ -90,9 +85,9 @@ class Paths
 		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
 	}
 
-	inline static public function voices(song:String, ?ext:String = '')
+	inline static public function voices(song:String)
 	{
-		return 'songs:assets/songs/${song.toLowerCase()}/Voices$ext.$SOUND_EXT';
+		return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
 	}
 
 	inline static public function inst(song:String)
@@ -118,10 +113,5 @@ class Paths
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
-	}
-
-	inline static public function video(key:String)
-	{
-		return 'assets/videos/$key.mp4';
 	}
 }

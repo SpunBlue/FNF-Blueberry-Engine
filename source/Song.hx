@@ -1,6 +1,5 @@
 package;
 
-import engine.modding.Modding;
 import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
@@ -11,47 +10,26 @@ using StringTools;
 typedef SwagSong =
 {
 	var song:String;
-	var stage:String;
 	var notes:Array<SwagSection>;
 	var bpm:Float;
 	var needsVoices:Bool;
-	var ?seperatedVocalTracks:Bool;
 	var speed:Float;
+
 	var player1:String;
 	var player2:String;
-	var gfVersion:String;
 	var validScore:Bool;
-	var ?events:Array<Events>;
-	var ?introVideo:String;
-	var ?outroVideo:String;
-}
-
-typedef Events = {
-	var name:String;
-	var ?ms:Float;
-	var ?var1:String;
-	var ?var2:String;
-	var ?var3:String;
-	var ?var4:String;
-	var ?var5:String;
 }
 
 class Song
 {
 	public var song:String;
-	public var stage:String;
 	public var notes:Array<SwagSection>;
 	public var bpm:Float;
 	public var needsVoices:Bool = true;
-	public var seperatedVocalTracks:Bool = false;
 	public var speed:Float = 1;
-	public var events:Array<Events> = [];
-	public var introVideo:String;
-	public var outroVideo:String;
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
-	public var gfVersion:String = 'gf';
 
 	public function new(song, notes, bpm)
 	{
@@ -62,7 +40,7 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		var rawJson = Assets.getText(Paths.json('charts/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
+		var rawJson = Assets.getText(Paths.json(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
 
 		while (!rawJson.endsWith("}"))
 		{
@@ -70,34 +48,29 @@ class Song
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
 
+		// FIX THE CASTING ON WINDOWS/NATIVE
+		// Windows???
+		// trace(songData);
+
+		// trace('LOADED FROM JSON: ' + songData.notes);
+		/* 
+			for (i in 0...songData.notes.length)
+			{
+				trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
+				// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
+			}
+
+				daNotes = songData.notes;
+				daSong = songData.song;
+				daBpm = songData.bpm; */
+
 		return parseJSONshit(rawJson);
-	}
-
-	public static function loadModChart(jsonInput:String, ?folder:String):SwagSong{
-        var rawJson = Modding.retrieveContent('$jsonInput.json', 'data/charts/$folder').toString();
-
-		while (!rawJson.endsWith("}"))
-		{
-			rawJson = rawJson.substr(0, rawJson.length - 1);
-		}
-
-        return parseJSONshit(rawJson);
-    }
-
-	private static function onLoadJson(swagShit:Dynamic)
-	{
-		if(swagShit.gfVersion == null)
-		{
-			swagShit.gfVersion = swagShit.player3;
-			swagShit.player3 = null;
-		}
 	}
 
 	public static function parseJSONshit(rawJson:String):SwagSong
 	{
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;
 		swagShit.validScore = true;
-		onLoadJson(swagShit);
 		return swagShit;
 	}
 }
