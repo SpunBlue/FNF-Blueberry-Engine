@@ -15,6 +15,7 @@ import sys.io.File;
 import sys.FileSystem;
 import game.PlayState;
 import engine.modding.Modding;
+import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
 
@@ -54,33 +55,9 @@ class Hscript
         interp.variables.set("FileSystem",FileSystem);
 		interp.variables.set("PlayState",PlayState);
 		interp.variables.set("StageObject", StageObject);
+		interp.variables.set("FlxAtlasFrames", FlxAtlasFrames);
 
         interp.allowStaticVariables = interp.allowPublicVariables = true;
-
-        interp.variables.set("trace", function(value:Dynamic) {
-            trace(value);
-        });
-
-        interp.variables.set("import", function(class_name:String) {
-            var classes = class_name.split(".");
-
-            if(Type.resolveClass(class_name) != null)
-                interp.variables.set(classes[classes.length - 1], Type.resolveClass(class_name));
-            else if(Type.resolveEnum(class_name) != null)
-            {
-                var enum_new = {};
-                var good_enum = Type.resolveEnum(class_name);
-
-                for(constructor in good_enum.getConstructors())
-                {
-                    Reflect.setField(enum_new, constructor, good_enum.createByName(constructor));
-                }
-
-                interp.variables.set(classes[classes.length - 1], enum_new);
-            }
-            else
-                trace(class_name + " isn't a valid class or enum!");
-        });
 	}
 
 	public function call(funcName:String, ?args:Array<Dynamic>):Dynamic{
