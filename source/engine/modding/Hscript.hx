@@ -1,11 +1,10 @@
 package engine.modding;
 
-import flixel.FlxCamera;
-import engine.modding.Stages.StageObject;
 import flixel.FlxG;
-import flixel.tweens.FlxTween;
 import flixel.FlxSprite;
+import flixel.FlxCamera;
 import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
 import flixel.system.FlxSound;
 import flixel.math.FlxMath;
 import lime.utils.Assets;
@@ -15,6 +14,7 @@ import sys.io.File;
 import sys.FileSystem;
 import game.PlayState;
 import engine.modding.Modding;
+import engine.modding.Stages.StageObject;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
@@ -38,15 +38,17 @@ class Hscript
 		interp.variables.set("Dynamic",Dynamic);
 		interp.variables.set("Math",Math);
 		interp.variables.set("Main",Main);
-		interp.variables.set("FlxMath",FlxMath);
 		interp.variables.set("Std",Std);
-		interp.variables.set("StringTools",StringTools);
+
 		interp.variables.set("FlxG",FlxG);
-		interp.variables.set("FlxSound",FlxSound);
-		interp.variables.set("FlxSprite",FlxSprite);
 		interp.variables.set("FlxText",FlxText);
+		interp.variables.set("FlxMath",FlxMath);
 		interp.variables.set("FlxTween",FlxTween);
 		interp.variables.set("FlxCamera",FlxCamera);
+		interp.variables.set("FlxSound",FlxSound);
+		interp.variables.set("FlxSprite",FlxSprite);
+		interp.variables.set("FlxAtlasFrames", FlxAtlasFrames);
+
         interp.variables.set("File",File);
 		interp.variables.set("Paths",Paths);
 		interp.variables.set("CoolUtil",CoolUtil);
@@ -55,7 +57,7 @@ class Hscript
         interp.variables.set("FileSystem",FileSystem);
 		interp.variables.set("PlayState",PlayState);
 		interp.variables.set("StageObject", StageObject);
-		interp.variables.set("FlxAtlasFrames", FlxAtlasFrames);
+		interp.variables.set("StringTools",StringTools);
 
         interp.allowStaticVariables = interp.allowPublicVariables = true;
 	}
