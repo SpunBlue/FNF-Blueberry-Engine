@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.system.FlxSound;
 import flixel.math.FlxMath;
@@ -43,6 +44,7 @@ class Hscript
 		interp.variables.set("FlxG",FlxG);
 		interp.variables.set("FlxText",FlxText);
 		interp.variables.set("FlxMath",FlxMath);
+		interp.variables.set("FlxEase",FlxEase);
 		interp.variables.set("FlxTween",FlxTween);
 		interp.variables.set("FlxCamera",FlxCamera);
 		interp.variables.set("FlxSound",FlxSound);
@@ -51,11 +53,12 @@ class Hscript
 
         interp.variables.set("File",File);
 		interp.variables.set("Paths",Paths);
-		interp.variables.set("CoolUtil",CoolUtil);
         interp.variables.set("Assets",Assets);
         interp.variables.set("Modding",Modding);
-        interp.variables.set("FileSystem",FileSystem);
+		interp.variables.set("CoolUtil",CoolUtil);
+		interp.variables.set("Conductor",Conductor);
 		interp.variables.set("PlayState",PlayState);
+        interp.variables.set("FileSystem",FileSystem);
 		interp.variables.set("StageObject", StageObject);
 		interp.variables.set("StringTools",StringTools);
 

@@ -178,6 +178,8 @@ class PlayState extends MusicBeatState
 
 	var isSingle:Bool = false;
 
+	public var objectMap:Map<String, StageObject> = new Map<String, StageObject>();
+
 	// Why did I put this here?
 	public static var validEvents:Array<Dynamic> = [
 		["None", "Variable 1", "Variable 2", "Variable 3", "Variable 4", "Variable 5", "Information"],
@@ -225,7 +227,7 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("boyfriendGroup",boyfriendGroup);
 		script.interp.variables.set("dadGroup",dadGroup);
 		script.interp.variables.set("gfGroup",gfGroup);
-		
+
 		script.interp.variables.set("stageLayer0",layer0);
 		script.interp.variables.set("stageLayer1",layer1);
 		script.interp.variables.set("stageLayer2",layer2);
@@ -259,8 +261,6 @@ class PlayState extends MusicBeatState
 
 		persistentUpdate = true;
 		persistentDraw = true;
-
-		script.call('create');
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial');
@@ -642,7 +642,7 @@ class PlayState extends MusicBeatState
 					var imageName = object.image;
 					if (imageName.endsWith(".png"))
 						imageName = imageName.substr(0, imageName.length - 4);
-					
+
 					if (object.xmlPath == null || object.xmlPath == '') {
 						stageObject.loadGraphic(Modding.retrieveImage(imageName, 'images'));
 					}
@@ -671,15 +671,18 @@ class PlayState extends MusicBeatState
 
 					if (object.isAnimated){
 						if (object.indices == null)
-							stageObject.animation.addByPrefix(object.name, object.xmlanim, object.fps, object.loop);
+							stageObject.animation.addByPrefix(object.animName, object.xmlanim, object.fps, object.loop);
 						else{
-							stageObject.animation.addByIndices(object.name, object.xmlanim, object.indices, "", object.fps, object.loop);
+							stageObject.animation.addByIndices(object.animName, object.xmlanim, object.indices, "", object.fps, object.loop);
 
 							if (stageDebug)
-								Engine.debugPrint('Added animation by Indices in ' + object.name);
+								Engine.debugPrint('Added animation by Indices in ' + object.animName);
 						}
 					}
-					
+
+					if (object.name != null && stageObject != null)
+						objectMap.set(object.name, stageObject);
+
 					switch(object.layer){
 						case 0:
 							layer0.add(stageObject);
@@ -692,7 +695,7 @@ class PlayState extends MusicBeatState
 					}
 
 					if (object.isAnimated)
-						stageObject.animation.play(object.name, true);
+						stageObject.animation.play(object.animName, true);
 				}
 			}
 		}
@@ -704,6 +707,14 @@ class PlayState extends MusicBeatState
 		if (Assets.exists(Paths.hx("data/stages/" + curStage))){
 		    script.loadScriptStage("data/stages/" + curStage, false);
 		}
+
+		script.interp.variables.set("getObject", function(object:String)
+		{
+			var gottenObject:StageObject = objectMap.get(object);
+			return gottenObject;
+		});
+
+		script.call('create');
 
 		if (SONG.gfVersion == null)
 		{

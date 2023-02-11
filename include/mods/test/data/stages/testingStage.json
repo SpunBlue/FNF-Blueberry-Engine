@@ -1,11 +1,12 @@
 {
     "objects": [{
+        "name": "stageStage",
         "image": "teststage/reallyBadStage.png",
         "xmlPath": "teststage/reallyBadStage.xml",
         "position": [-256, -256],
         "scrollFactor": [1, 1],
         "xmlanim": "animation0",
-        "name": "stageAnimation",
+        "animName": "stageAnimation",
         "fps": 24,
         "loop": false,
         "indices-REMOVETHISDASH": [],

@@ -14,8 +14,8 @@ class Stages{
         if (stageJson == null)
             stageJson = Json.parse(Modding.retrieveContent(stage + '.json', 'data/stages'));
 
-        if (stageJson.name != null)
-            stageName = stageJson.name;
+        if (stageJson.stageName != null)
+            stageName = stageJson.stageName;
         else
             stageName = stage;
 
@@ -42,7 +42,7 @@ class StageObject extends FlxSprite{
 }
 
 typedef StageObjectJson = {
-    var ?name:String;
+    var ?stageName:String;
     var objects:Array<StageObj>;
     var ?disableAntialiasing:Bool;
     var ?camZoom:Float;
@@ -52,12 +52,13 @@ typedef StageObjectJson = {
 }
 
 typedef StageObj = {
+    var name:String;
     var image:String;
     var ?xmlPath:String;
     var ?position:Array<Float>;
     var ?scrollFactor:Array<Float>;
     var xmlanim:String;
-    var name:String;
+    var animName:String;
     var fps:Int;
     var ?loop:Bool;
     var ?indices:Array<Int>;
