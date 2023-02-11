@@ -30,14 +30,17 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 	var scale:Float = 1;
 
 	var modID:String;
+	var allowPreload:Bool = true;
 	
-	function new(target:FlxState, ?modID:String)
+	function new(target:FlxState, ?modID:String, enablePreload:Bool = true)
 	{
 		super();
 		this.target = target;
 
 		if (modID != null)
 			this.modID = modID;
+
+		allowPreload = enablePreload;
 	}
 	
 	override function create()
@@ -64,6 +67,9 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 					else
 						checkLibrary("tutorial");
 
+					if (modID != null && modID != '' && allowPreload)
+						Modding.preloadMod(modID);
+
 					callbacks = new MultiCallback(onLoad);
 					var introComplete = callbacks.add("introComplete");
 					
@@ -72,13 +78,10 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 					new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
 				}
 			);
-		#end
-
-		super.create();
-		
+		#else
 		var timer:FlxTimer = new FlxTimer();
 		timer.start(1.25, function(timer:FlxTimer):Void {
-			if (modID != null && modID != '')
+			if (modID != null && modID != '' && allowPreload)
 				Modding.preloadMod(modID);
 
 			callbacks = new MultiCallback(onLoad);
@@ -88,6 +91,9 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 			FlxG.camera.fade(FlxG.camera.bgColor, fadeTime, true);
 			new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
 		});
+		#end
+
+		super.create();
 	}
 
 
@@ -160,11 +166,11 @@ class LoadingState extends MusicBeatState // yoinked this from sublime trol
 		return Paths.voices(PlayState.SONG.song);
 	}
 	
-	inline static public function loadAndSwitchState(target:FlxState, modID:String)
+	inline static public function loadAndSwitchState(target:FlxState, modID:String, allowPreload:Bool = true)
 	{
 		Paths.setCurrentLevel("week" + PlayState.storyWeek);
 
-		FlxG.switchState(new LoadingState(target, modID));
+		FlxG.switchState(new LoadingState(target, modID, allowPreload));
 	}
 	
 	#if NO_PRELOAD_ALL

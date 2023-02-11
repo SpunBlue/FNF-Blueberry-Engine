@@ -106,7 +106,12 @@ class GameOverSubstate extends MusicBeatSubstate
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
-					LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded);
+					var disablePre:Bool = false;
+
+					if (PlayState.songPlaylist != null && PlayState.songPlaylist != [])
+						disablePre = PlayState.songPlaylist[0].disablePreload;
+
+					LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded, !disablePre);
 				});
 			});
 		}

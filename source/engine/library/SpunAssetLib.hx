@@ -1,15 +1,12 @@
 package engine.library;
 
 import sys.io.File;
-import haxe.Unserializer;
-import haxe.Serializer;
 import openfl.media.Sound;
 import flixel.graphics.FlxGraphic;
 import haxe.io.Bytes;
 import lime.media.AudioBuffer;
 import openfl.display.BitmapData;
 import openfl.utils.ByteArray;
-import flixel.util.FlxSave;
 import haxe.io.Path;
 import sys.FileSystem;
 
@@ -29,26 +26,31 @@ class Assets{
      * set `path` to root folder of library.
      * @param path Root Folder of Library.
      */
-    public static function compileLibrary(path:String, ?preloadSpecific:Array<String>){
+    public static function compileLibrary(path:String/*, ?preloadSpecific:Array<String>*/){
         var dataMap:Array<Data> = [];
 
-        readDirectory(Path.directory(path), dataMap, preloadSpecific);
+        readDirectory(Path.directory(path), dataMap/*, preloadSpecific*/);
 
         var assetMap:AssetMap = new AssetMap(dataMap);
         return assetMap;
     }
 
-    private static function readDirectory(path:String, dataMap:Array<Data>, ?specified:Array<String>):Void{
+    private static function readDirectory(path:String, dataMap:Array<Data>/*, ?specified:Array<String>*/):Void{
         var dirs = FileSystem.readDirectory(path);
+
+        /*if (specified == null){
+            #if debug
+            trace('Specified is NULL!!!');
+            #end
+        }*/
 
         for (dir in dirs){
             if (dir != null){
                 var fullDir:String = Path.directory('$path/$dir/');
     
-                if (FileSystem.isDirectory(fullDir)){
-                    readDirectory(fullDir, dataMap, specified);
-                }
-                else if (specified != null && isInArray(fullDir, specified) || (specified == null || specified == []))
+                if (FileSystem.isDirectory(fullDir))
+                    readDirectory(fullDir, dataMap);
+                else
                     addPreload(fullDir, dataMap);
             }
         }
@@ -57,7 +59,7 @@ class Assets{
     private static function isInArray(path:String, inArray:Array<String>):Bool {
         path = path.toLowerCase();
     
-        var filteredData = inArray.filter(function(string) return string.toLowerCase() == path);
+        var filteredData = inArray.filter(function(string) { return string.toLowerCase() == path; });
     
         if (filteredData.length > 0) {
             inArray.remove(filteredData[0]);
@@ -99,7 +101,7 @@ class AssetMap{
 }
 
 class AssetLibrary{
-    private var map:Array<Data> = [];
+    public var map:Array<Data> = [];
 
     /**
      * Load a Asset Library from a `AssetMap`
@@ -115,7 +117,7 @@ class AssetLibrary{
     /**
      * Change the current Asset Map
      * @param assetMap 
-     * @see `Assets.getLibrary`
+     * @see `Assets.compileLibrary`
      */
     public function changeLibrary(assetMap:AssetMap){
         map = assetMap.assMap;

@@ -177,7 +177,7 @@ class FreeplayState extends MusicBeatState
                     if (inSongMenu){
                         for (item in menuItems.members){
                             if (item != null && item.type.toLowerCase() == 'song'){
-                                PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: mod, week:selectedWeek.week});
+                                PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: mod, week:selectedWeek.week, disablePreload: selectedWeek.disablePreload});
                                 Engine.debugPrint(item.text);
                             }
                         }
@@ -186,7 +186,7 @@ class FreeplayState extends MusicBeatState
                         for (item in menuItems.members){
                             if (item != null && item.type.toLowerCase() == 'week'){
                                 for (i in 0...item.weekData.songs.length){
-                                    PlayState.songPlaylist.push({songName: item.weekData.songs[i], modID: item.modID, week:item.weekData.week});
+                                    PlayState.songPlaylist.push({songName: item.weekData.songs[i], modID: item.modID, week:item.weekData.week, disablePreload: item.weekData.disablePreload});
                                     Engine.debugPrint(item.text);
                                 }
                             }
@@ -222,7 +222,7 @@ class FreeplayState extends MusicBeatState
                     Engine.debugPrint('CUR WEEK' + PlayState.storyWeek);
                     Engine.debugPrint('PLAYLIST: ' + PlayState.songPlaylist);
         
-                    LoadingState.loadAndSwitchState(new PlayState(), PlayState.songPlaylist[0].modID);
+                    LoadingState.loadAndSwitchState(new PlayState(), PlayState.songPlaylist[0].modID, !PlayState.songPlaylist[0].disablePreload);
                 }
                 else if (item.type.toLowerCase() == 'song'){
                     var poop:String = item.text.toLowerCase();
@@ -240,11 +240,11 @@ class FreeplayState extends MusicBeatState
                         PlayState.SONG = Song.loadModChart(poop, poop);
                     }
                     
-                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: selectedModID, week:selectedWeek.week});
+                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: selectedModID, week:selectedWeek.week, disablePreload: selectedWeek.disablePreload});
 
                     PlayState.storyWeek = selectedWeek.week;
 
-                    LoadingState.loadAndSwitchState(new PlayState(), selectedModID);
+                    LoadingState.loadAndSwitchState(new PlayState(), selectedModID, !selectedWeek.disablePreload);
                 }
             }
 
@@ -386,6 +386,7 @@ typedef WeekData =
     var iconIsJson:Bool;
 	var ?isMod:Bool;
     var ?color:String;
+    var ?disablePreload:Bool;
 }
 
 typedef MItemInf ={

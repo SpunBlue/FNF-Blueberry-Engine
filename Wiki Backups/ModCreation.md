@@ -1,6 +1,8 @@
 # How to create Mods!
 A lot of the stuff is self-explanatory, like adding charts and adding songs. So I will not be explaining how to do this since you can easily look inside the "Test" mod preloaded in the "mods" Directory.
 
+Keep in mind that this page gets updated immediately when I add something so I recommend just looking at the backup of this page in the latest version.
+
 ## The first step
 You must create a JSON file that contains the Mods information.
 
@@ -68,6 +70,7 @@ Here is an example of the structure of the JSON file:
 	* "week" is the number of the week. This can be any number greater than 6. However, the number isn't important and can just be made -1 if you so choose.
 	* "icon" is the name of the character that will be used as the icon for the week. This should match the name of the character or the character's JSON file in the "characters" directory minus the JSON prefix.
 	* "color" is the color that will be displayed on the Background.
+	* "disablePreload" disables Mod Preloading, good for when your mod is too big and consumes too much memory, Preloading is enabled by default.
 
 Once you have created your JSON file, you will need to place it in the "weeks" directory. If you are creating a mod, this directory should be located in the "data/weeks" directory.
 
@@ -116,7 +119,7 @@ The file should have the following format:
 
 Once the JSON file has been created and the corresponding image and XML files have been placed in the correct directories, the character can be selected in the charter and added to the game.
 
-## How to add custom Dialogue
+## How to add Custom Dialogue
 To add a custom dialogue box, you need to create a JSON file named "dialogue.json" in the same folder as the chart you want the dialogue box to appear in.
 
 The file should have the following structure:
@@ -303,8 +306,9 @@ In addition to the events added through the charter, you can also add a JSON fil
 
 Keep in mind that all variables for the events are Strings.
 
-## How to add Custom Notes
-Custom notes can be added to the game by creating a new JSON file and placing it in the "scripts/notes" folder within the mod directory.
+## How to add Custom Action Notes
+Custom action notes can be added to the game by creating a new JSON file and placing it in the "scripts/notes" folder within the mod directory.
+These are not to be confused with Custom Notes.
 
 The JSON file should have the following format:
 

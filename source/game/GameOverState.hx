@@ -75,7 +75,13 @@ class GameOverState extends FlxTransitionableState
 			FlxG.sound.music.fadeOut(0.5, 0, function(twn:FlxTween)
 			{
 				FlxG.sound.music.stop();
-				LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded);
+				
+				var disablePre:Bool = false;
+
+				if (PlayState.songPlaylist != null && PlayState.songPlaylist != [])
+					disablePre = PlayState.songPlaylist[0].disablePreload;
+
+				LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded, !disablePre);
 			});
 		}
 		super.update(elapsed);

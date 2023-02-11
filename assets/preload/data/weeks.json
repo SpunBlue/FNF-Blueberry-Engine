@@ -70,7 +70,6 @@
             "week": 5,
             "color": "0xFFa0d1ff"
         },
-    
         {
             "name": "Week 6",
             "songs": [
@@ -83,6 +82,19 @@
             "iconIsJson": false,
             "week": 6,
             "color": "0xffff78bf"
+        },
+        {
+            "name": "Week 7",
+            "songs": [
+                "Ugh",
+                "Guns",
+                "Stress"
+            ],
+    
+            "icon": "tankman",
+            "iconIsJson": false,
+            "week": 7,
+            "color": "0xfff6b604"
         }
     ]
 }

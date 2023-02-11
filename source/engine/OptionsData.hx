@@ -14,7 +14,7 @@ class OptionsData
     public static var distractions = true;
     public static var disableOutdatedScreen = false;
 
-    public static var preloadMods:Bool = true;
+    public static var preloadMods:Bool = false; // Off by default, uses way too much memory.
 
     public static var gameplayOptions = engine.optionsMenu.OptionsMenu.gameplayOptions;
     public static var graphicsOptions = engine.optionsMenu.OptionsMenu.graphicsOptions;
@@ -41,6 +41,10 @@ class OptionsData
 
     public static function dumpData()
     {
+        #if android
+        preloadMods = false;
+        #end
+
         saveFromArray(gameplayOptions);
         saveFromArray(graphicsOptions);
         saveFromArray(moddingOptions);
@@ -48,6 +52,10 @@ class OptionsData
 
     public static function loadData()
     {
+        #if android
+        preloadMods = false;
+        #end
+
         loadFromArray(gameplayOptions);
         loadFromArray(graphicsOptions);
         loadFromArray(moddingOptions);

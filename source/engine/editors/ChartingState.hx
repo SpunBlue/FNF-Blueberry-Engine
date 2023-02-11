@@ -1474,7 +1474,13 @@ class ChartingState extends MusicBeatState
 	function loadJson(song:String):Void
 	{
 		PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
-		LoadingState.loadAndSwitchState(new ChartingState(), Modding.curLoaded);
+
+		var disablePre:Bool = false;
+
+		if (PlayState.songPlaylist != null && PlayState.songPlaylist != [])
+			disablePre = PlayState.songPlaylist[0].disablePreload;
+
+		LoadingState.loadAndSwitchState(new ChartingState(), Modding.curLoaded, !disablePre);
 	}
 
 	function loadAutosave():Void

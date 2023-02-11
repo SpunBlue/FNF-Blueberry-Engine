@@ -71,6 +71,7 @@ class Modding {
     /**
      * Preloads the Mod ID in the `mod` Argument.
      * @param mod Any Mod ID (Mod Folder)
+     * @param specified Specified Paths to Preload
      */
     public static function preloadMod(mod:String){
         if (OptionsData.preloadMods)

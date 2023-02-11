@@ -1,5 +1,8 @@
 package game;
 
+import flixel.math.FlxAngle;
+import BGSprite;
+import TankmenBG;
 import Note.NoteActions;
 import Note.NoteJson;
 import engine.modding.Hscript;
@@ -138,6 +141,12 @@ class PlayState extends MusicBeatState
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var evilTrail:FlxTrail;
 
+	var tankmanRun:FlxTypedGroup<TankmenBG>;
+	var gfCutsceneLayer:FlxGroup;
+	var bfTankCutsceneLayer:FlxGroup;
+	var tankWatchtower:BGSprite;
+	var tankGround:BGSprite;
+
 	public var talking:Bool = true;
 	public var songScore:Int = 0;
 	public var scoreTxt:FlxText;
@@ -201,6 +210,7 @@ class PlayState extends MusicBeatState
 	public static var cameraList:Array<FlxCamera> = [];
 
 	var rpcTimer:FlxTimer = new FlxTimer();
+	var foregroundSprites:FlxTypedGroup<BGSprite>;
 
 	override public function create()
 	{	
@@ -265,7 +275,7 @@ class PlayState extends MusicBeatState
 			SONG = Song.loadFromJson('tutorial');
 
 		if (SONG.events != null){
-			for (event in SONG.events){ // For some reason if I made songEvents = SONG.events it will manipulate SONG.events even though I specified "songEvents"
+			for (event in SONG.events){
 				if (event != null)
 					songEvents.push(event);
 			}
@@ -347,6 +357,8 @@ class PlayState extends MusicBeatState
 					curStage = 'school';
 				case 'thorns':
 					curStage = 'schoolEvil';
+				case 'ugh' | 'guns' | 'stress':
+					curStage = 'tank';
 				default:
 					curStage = 'stage';
 			}
@@ -370,6 +382,8 @@ class PlayState extends MusicBeatState
 			Engine.debugPrint('Stage is null or is equal to "stage"');
 			isCustomStage = false;
 		}
+
+		foregroundSprites = new FlxTypedGroup<BGSprite>();
 
 		if (!isCustomStage){
 			switch (curStage)
@@ -610,6 +624,79 @@ class PlayState extends MusicBeatState
 					bg.scrollFactor.set(0.8, 0.9);
 					bg.scale.set(6, 6);
 					add(bg);
+				
+				case 'tank':
+					defaultCamZoom = 0.90;
+
+					var bg:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0);
+					add(bg);
+
+					var tankSky:BGSprite = new BGSprite('tankClouds', FlxG.random.int(-700, -100), FlxG.random.int(-20, 20), 0.1, 0.1);
+					tankSky.active = true;
+					tankSky.velocity.x = FlxG.random.float(5, 15);
+					add(tankSky);
+
+					var tankMountains:BGSprite = new BGSprite('tankMountains', -300, -20, 0.2, 0.2);
+					tankMountains.setGraphicSize(Std.int(tankMountains.width * 1.2));
+					tankMountains.updateHitbox();
+					add(tankMountains);
+
+					var tankBuildings:BGSprite = new BGSprite('tankBuildings', -200, 0, 0.30, 0.30);
+					tankBuildings.setGraphicSize(Std.int(tankBuildings.width * 1.1));
+					tankBuildings.updateHitbox();
+					add(tankBuildings);
+
+					var tankRuins:BGSprite = new BGSprite('tankRuins', -200, 0, 0.35, 0.35);
+					tankRuins.setGraphicSize(Std.int(tankRuins.width * 1.1));
+					tankRuins.updateHitbox();
+					add(tankRuins);
+
+					var smokeLeft:BGSprite = new BGSprite('smokeLeft', -200, -100, 0.4, 0.4, ['SmokeBlurLeft'], true);
+					add(smokeLeft);
+
+					var smokeRight:BGSprite = new BGSprite('smokeRight', 1100, -100, 0.4, 0.4, ['SmokeRight'], true);
+					add(smokeRight);
+
+					// tankGround.
+
+					tankWatchtower = new BGSprite('tankWatchtower', 100, 50, 0.5, 0.5, ['watchtower gradient color']);
+					add(tankWatchtower);
+
+					tankGround = new BGSprite('tankRolling', 300, 300, 0.5, 0.5, ['BG tank w lighting'], true);
+					add(tankGround);
+					// tankGround.active = false;
+
+					tankmanRun = new FlxTypedGroup<TankmenBG>();
+					add(tankmanRun);
+
+					var tankGround:BGSprite = new BGSprite('tankGround', -420, -150);
+					tankGround.setGraphicSize(Std.int(tankGround.width * 1.15));
+					tankGround.updateHitbox();
+					add(tankGround);
+
+					moveTank();
+
+					// smokeLeft.screenCenter();
+
+					var fgTank0:BGSprite = new BGSprite('tank0', -500, 650, 1.7, 1.5, ['fg']);
+					foregroundSprites.add(fgTank0);
+
+					var fgTank1:BGSprite = new BGSprite('tank1', -300, 750, 2, 0.2, ['fg']);
+					foregroundSprites.add(fgTank1);
+
+					// just called 'foreground' just cuz small inconsistency no bbiggei
+					var fgTank2:BGSprite = new BGSprite('tank2', 450, 940, 1.5, 1.5, ['foreground']);
+					foregroundSprites.add(fgTank2);
+
+					var fgTank4:BGSprite = new BGSprite('tank4', 1300, 900, 1.5, 1.5, ['fg']);
+					foregroundSprites.add(fgTank4);
+
+					var fgTank5:BGSprite = new BGSprite('tank5', 1620, 700, 1.5, 1.5, ['fg']);
+					foregroundSprites.add(fgTank5);
+
+					var fgTank3:BGSprite = new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']);
+					foregroundSprites.add(fgTank3);
+				
 				case 'void':
 					// don't make anything lol
 			}
@@ -724,6 +811,29 @@ class PlayState extends MusicBeatState
 		gf = new Character(400, 130, SONG.gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
 
+		switch (SONG.gfVersion){
+			case 'pico-speaker':
+				gf.x -= 50;
+				gf.y -= 150;
+
+				var tempTankman:TankmenBG = new TankmenBG(20, 500, true);
+				tempTankman.strumTime = 10;
+				tempTankman.resetShit(20, 600, true);
+				tankmanRun.add(tempTankman);
+
+				for (i in 0...TankmenBG.animationNotes.length)
+				{
+					if (FlxG.random.bool(16))
+					{
+						var tankman:TankmenBG = tankmanRun.recycle(TankmenBG);
+						// new TankmenBG(500, 200 + FlxG.random.int(50, 100), TankmenBG.animationNotes[i][1] < 2);
+						tankman.strumTime = TankmenBG.animationNotes[i][0];
+						tankman.resetShit(500, 200 + FlxG.random.int(50, 100), TankmenBG.animationNotes[i][1] < 2);
+						tankmanRun.add(tankman);
+					}
+				}
+		}
+
 		dad = new Character(100, 100, SONG.player2);
 
 		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
@@ -765,7 +875,7 @@ class PlayState extends MusicBeatState
 
 					evilTrail = new FlxTrail(dad, null, 4, 24, 0.3, 0.069);
 				case 'tankman':
-					dad.y += 150;
+					dad.y += 180;
 			}
 		}
 		else if (dad.jsonData.position != null){
@@ -789,6 +899,19 @@ class PlayState extends MusicBeatState
 			case 'school' | 'schoolEvil':
 				boyfriend.x += 200;
 				boyfriend.y += 220;
+			case "tank":
+				gf.y += 10;
+				gf.x -= 30;
+				boyfriend.x += 40;
+				boyfriend.y += 0;
+				dad.y += 60;
+				dad.x -= 80;
+
+				if (SONG.gfVersion != 'pico-speaker')
+				{
+					gf.x -= 170;
+					gf.y -= 75;
+				}
 		}
 
 		switch(SONG.gfVersion){
@@ -820,6 +943,7 @@ class PlayState extends MusicBeatState
 		add(boyfriendGroup);
 
 		add(layer2);
+		add(foregroundSprites);
 
 		if (Stages.stageJson != null){
 			if (Stages.stageJson.bfPosition != null && Stages.stageJson.bfPosition != []){
@@ -1595,6 +1719,8 @@ class PlayState extends MusicBeatState
 					}
 				}
 				// phillyCityLights.members[curLight].alpha -= (Conductor.crochet / 1000) * FlxG.elapsed;
+			case 'tank':
+				moveTank();
 		}
 		
 		// Event Runner
@@ -1915,22 +2041,21 @@ class PlayState extends MusicBeatState
 							}
 						}
 					}
-
-					/*
+					
 					if (SONG.song.toLowerCase() == 'ugh'){
 						switch(curStep){
 							case 60:
-								dadGroup.members[selectedDad].playAnim('tankUgh', true);
+								dadGroup.members[selection].playAnim('tankUgh', true);
 							case 444:
-								dadGroup.members[selectedDad].playAnim('tankUgh', true);
+								dadGroup.members[selection].playAnim('tankUgh', true);
 							case 524:
-								dadGroup.members[selectedDad].playAnim('tankUgh', true);
+								dadGroup.members[selection].playAnim('tankUgh', true);
 							case 828:
-								dadGroup.members[selectedDad].playAnim('tankUgh', true);
+								dadGroup.members[selection].playAnim('tankUgh', true);
 						}
 					}
 					else if(SONG.song.toLowerCase() == 'stress' && curStep == 736)
-						dadGroup.members[selectedDad].playAnim('tankTalk', true);*/
+						dadGroup.members[selection].playAnim('tankTalk', true);
 
 					dadStrums.forEach(function(spr:FlxSprite)
 					{
@@ -1948,7 +2073,7 @@ class PlayState extends MusicBeatState
 							spr.centerOffsets();
 					});
 
-					dadGroup.members[selectedDad].holdTimer = 0;
+					dadGroup.members[selection].holdTimer = 0;
 
 					script.call('dadNoteHit', []);
 
@@ -2111,7 +2236,7 @@ class PlayState extends MusicBeatState
 			FlxTransitionableState.skipNextTransOut = true;
 			prevCamFollow = camFollow;
 
-			LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded);
+			LoadingState.loadAndSwitchState(new PlayState(), Modding.curLoaded, !songPlaylist[0].disablePreload);
 		}
 	}
 
@@ -2737,6 +2862,25 @@ class PlayState extends MusicBeatState
 		});
 	}
 
+	function moveTank():Void
+	{
+		if (!inCutscene)
+		{
+			var daAngleOffset:Float = 1;
+			tankAngle += FlxG.elapsed * tankSpeed;
+			tankGround.angle = tankAngle - 90 + 15;
+
+			tankGround.x = tankX + Math.cos(FlxAngle.asRadians((tankAngle * daAngleOffset) + 180)) * 1500;
+			tankGround.y = 1300 + Math.sin(FlxAngle.asRadians((tankAngle * daAngleOffset) + 180)) * 1100;
+		}
+	}
+
+	var tankResetShit:Bool = false;
+	var tankMoving:Bool = false;
+	var tankAngle:Float = FlxG.random.int(-90, 45);
+	var tankSpeed:Float = FlxG.random.float(5, 7);
+	var tankX:Float = 400;
+
 	var trainMoving:Bool = false;
 	var trainFrameTiming:Float = 0;
 
@@ -2893,7 +3037,7 @@ class PlayState extends MusicBeatState
 			if (boyfriend != null){
 				if (boyfriend.animation.curAnim.name.startsWith("idle") || !boyfriend.animation.curAnim.name.startsWith("idle") && 
 					!boyfriend.animation.curAnim.name.startsWith("sing") && boyfriend.animation.curAnim.finished 
-					|| boyfriend.animation.curAnim.name.startsWith("sing") && boyfriend.animation.curAnim.finished)
+					|| perfectMode && boyfriend.animation.curAnim.name.startsWith("sing") && boyfriend.animation.curAnim.finished)
 				{
 					boyfriend.dance();
 				}
@@ -2920,6 +3064,11 @@ class PlayState extends MusicBeatState
 			boyfriendGroup.members[selectedBF].playAnim('hey', true);
 			dadGroup.members[selectedDad].playAnim('cheer', true);
 		}
+
+		foregroundSprites.forEach(function(spr:BGSprite)
+		{
+			spr.dance();
+		});
 
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
@@ -2980,6 +3129,8 @@ class PlayState extends MusicBeatState
 						trainCooldown = FlxG.random.int(-4, 0);
 						trainStart();
 					}
+				case 'tank':
+					tankWatchtower.dance();
 			}
 	
 			if (isHalloween && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
@@ -3200,4 +3351,5 @@ typedef SongData = {
 	var songName:String;
 	var ?week:Int;
 	var ?modID:String;
+	var ?disablePreload:Bool;
 }

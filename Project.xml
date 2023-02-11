@@ -98,7 +98,6 @@
 	<assets path="assets/characters"    library="characters"/>
 	
 	<assets path='include' rename='' embed='false'/>
-	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<!-- <template path='mods' /> -->
 	
 	<assets path="CHANGELOG.md" rename='changelog.txt'/>
