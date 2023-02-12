@@ -2829,19 +2829,19 @@ class PlayState extends MusicBeatState
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
-					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+					stageOBJ.animation.play(stageOBJ.stageObject.animName, true);
 		}
 
 		for (stageOBJ in layer1){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
-					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+					stageOBJ.animation.play(stageOBJ.stageObject.animName, true);
 		}
 		
 		for (stageOBJ in layer2){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'step')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
-					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+					stageOBJ.animation.play(stageOBJ.stageObject.animName, true);
 		}
 	}
 
@@ -2936,19 +2936,19 @@ class PlayState extends MusicBeatState
 		for (stageOBJ in layer0){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
-					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+					stageOBJ.animation.play(stageOBJ.stageObject.animName, true);
 		}
 
 		for (stageOBJ in layer1){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
-					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+					stageOBJ.animation.play(stageOBJ.stageObject.animName, true);
 		}
 		
 		for (stageOBJ in layer2){
 			if (stageOBJ != null && stageOBJ.stageObject.isAnimated && stageOBJ.stageObject.playOn.toLowerCase() == 'beat')
 				if (OptionsData.distractions == true || OptionsData.distractions == false && stageOBJ.stageObject.isDistraction == false)
-					stageOBJ.animation.play(stageOBJ.stageObject.name, true);
+					stageOBJ.animation.play(stageOBJ.stageObject.animName, true);
 		}
 
 		if (OptionsData.distractions){
