@@ -1,9 +1,8 @@
 package;
 
-import lime.math.RGBA;
-import engine.modding.Modding;
-import sys.FileSystem;
 import game.PlayState;
+import lime.math.RGBA;
+import sys.FileSystem;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
@@ -22,7 +21,6 @@ class DialogueBox extends FlxSpriteGroup
 
 	var curCharacter:String = '';
 
-	var dialogue:Alphabet;
 	var dialogueList:Array<DialogueShit> = [];
 	var json:DialogueShitJson;
 
@@ -73,11 +71,6 @@ class DialogueBox extends FlxSpriteGroup
 		box = new FlxSprite(-20 + xOff, 45 + yOff);
 		if (FileSystem.exists('assets/images/' + dialogueJson.boxImage + '.png') && FileSystem.exists('assets/images/' + dialogueJson.boxXML + '.xml')){
 			box.frames = Paths.getSparrowAtlas(dialogueJson.boxImage, 'shared');
-			box.animation.addByPrefix('normalOpen', dialogueJson.boxOpenAnimation, dialogueJson.fps, false);
-			box.animation.addByPrefix('normal', dialogueJson.boxIdleAnimation, dialogueJson.fps, true);
-		}
-		else if (Modding.modLoaded && FileSystem.exists(Modding.getFilePath(dialogueJson.boxImage, "images")) && FileSystem.exists(Modding.getFilePath(dialogueJson.boxXML, "images"))){
-			box.frames = FlxAtlasFrames.fromSparrow(Modding.retrieveImage(dialogueJson.boxImage, 'images'), Modding.retrieveContent(dialogueJson.boxXML, 'images'));
 			box.animation.addByPrefix('normalOpen', dialogueJson.boxOpenAnimation, dialogueJson.fps, false);
 			box.animation.addByPrefix('normal', dialogueJson.boxIdleAnimation, dialogueJson.fps, true);
 		}
@@ -154,8 +147,6 @@ class DialogueBox extends FlxSpriteGroup
 			dropText.font = 'Pixel Arial 11 Bold';
 			swagDialogue.font = 'Pixel Arial 11 Bold';
 		}
-
-		dialogue = new Alphabet(0, 80, "", false, true);
 		// dialogue.x = 90;
 		// add(dialogue);
 	}
@@ -190,9 +181,7 @@ class DialogueBox extends FlxSpriteGroup
 		}
 
 		if (FlxG.keys.justPressed.ANY  && dialogueStarted == true)
-		{
-			remove(dialogue);
-				
+		{				
 			FlxG.sound.play(Paths.sound('clickText'), 0.8);
 
 			if (dialogueList[1] == null && dialogueList[0] != null)
@@ -268,10 +257,7 @@ class DialogueBox extends FlxSpriteGroup
 				{
 					portraitLeft.visible = true;
 
-					if (Modding.modLoaded && FileSystem.exists(Modding.getFilePath(dialogueList[0].image + '.png', "images")))
-						portraitLeft.loadGraphic(Modding.getFilePath(dialogueList[0].image + '.png', "images"));
-					else
-						portraitLeft.loadGraphic(Paths.image(dialogueList[0].image));
+					portraitLeft.loadGraphic(Paths.image(dialogueList[0].image));
 
 					if (portraitLeft.flipX != false)
 						portraitLeft.flipX = false;
@@ -287,10 +273,7 @@ class DialogueBox extends FlxSpriteGroup
 				{
 					portraitRight.visible = true;
 
-					if (Modding.modLoaded && FileSystem.exists(Modding.getFilePath(dialogueList[0].image + '.png', "images")))
-						portraitRight.loadGraphic(Modding.getFilePath(dialogueList[0].image + '.png', "images"));
-					else
-						portraitRight.loadGraphic(Paths.image(dialogueList[0].image));
+					portraitRight.loadGraphic(Paths.image(dialogueList[0].image));
 
 					if (portraitRight.flipX != true)
 						portraitRight.flipX = true;

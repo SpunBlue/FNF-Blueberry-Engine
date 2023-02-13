@@ -1,6 +1,6 @@
 package game;
 
-import engine.Engine;
+import util.ui.PreferencesMenu.CheckboxThingie;
 import game.PlayState.SongData;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup;
@@ -8,7 +8,6 @@ import flixel.ui.FlxButton.FlxTypedButton;
 import sys.io.File;
 import haxe.Json;
 import sys.FileSystem;
-import engine.modding.Modding;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
@@ -40,6 +39,8 @@ class FreeplayState extends MusicBeatState
 
     var uiItems:FlxGroup = new FlxGroup();
 
+	var loopCheck:Checkbox;
+
     var itemsLength:Int = 0;
 
     var curSelected:Int = 1;
@@ -68,7 +69,7 @@ class FreeplayState extends MusicBeatState
         camFollow = new FlxSprite().makeGraphic(32, 32, FlxColor.WHITE);
         camFollow.screenCenter();
 
-        FlxG.camera.follow(camFollow, null, 0.06);
+        FlxG.camera.follow(camFollow, null, CoolUtil.camLerpShit(0.06));
 
         generateMenu(getMenu('weeks'));
 
@@ -84,10 +85,25 @@ class FreeplayState extends MusicBeatState
         scoreText = new FlxText(FlxG.width - 256, 5, leftBar.width, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
         scoreText.scrollFactor.set(0, 0);
-
         uiItems.add(scoreText);
 
+		// todo: make work
+		#if debug
+		loopCheck = new Checkbox(0, 0, PlayState.inLoopMode);
+		loopCheck.setPosition(FlxG.width - loopCheck.width, FlxG.height - loopCheck.height);
+		uiItems.add(loopCheck);
+
+		var loopText:FlxText = new FlxText(0, 0, "Loop", 32);
+		loopText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
+		loopText.scrollFactor.set(0, 0);
+		loopText.setPosition(loopCheck.x - loopText.width, loopCheck.y + (loopText.height / 2));
+		uiItems.add(loopText);
+		#end
+
         add(uiItems);
+
+		if (PlayState.songPlaylist != [])
+			PlayState.songPlaylist = [];
     }
 
     override function update(elapsed:Float){
@@ -95,18 +111,26 @@ class FreeplayState extends MusicBeatState
 
         super.update(elapsed);
 
+		#if debug
+		if (FlxG.mouse.justPressed && FlxG.mouse.overlaps(loopCheck)){
+			loopCheck.value = !loopCheck.value;
+
+			PlayState.inLoopMode = loopCheck.value;
+		}
+		#end
+
         if (PlayState.songPlaylist != [])
             PlayState.songPlaylist = [];
 
         if (Conductor.bpm != 102)
             Conductor.changeBPM(102);
 
-        if (curSelected >= 1 && controls.DOWN_P){
+        if (curSelected >= 1 && controls.UI_DOWN_P){
             FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
             curSelected++;
         }
-        else if(curSelected <= itemsLength && controls.UP_P){
+        else if(curSelected <= itemsLength && controls.UI_UP_P){
             FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
             curSelected--;
@@ -117,8 +141,8 @@ class FreeplayState extends MusicBeatState
         else if (curSelected > itemsLength)
             curSelected = 1;
 
-        if (controls.UP_P)
-            Engine.debugPrint(curSelected + ' ' + itemsLength);
+        /*if (controls.UI_UP_P)
+            Engine.debugPrint(curSelected + ' ' + itemsLength);*/
 
         for (item in menuItems){
             if (item != null && curSelected == item.ID + 1){
@@ -137,7 +161,7 @@ class FreeplayState extends MusicBeatState
                     scoreText.text = 'SCORE: N/A';
 
                 if (item.modID != null){
-                    scoreText.text += '\nMOD: ' + Modding.retrieveModName(item.modID);
+                    //scoreText.text += '\nMOD: ' + Modding.retrieveModName(item.modID);
                 }
 
                 if (item.weekData != null && item.weekData.songs != null){
@@ -178,7 +202,7 @@ class FreeplayState extends MusicBeatState
                         for (item in menuItems.members){
                             if (item != null && item.type.toLowerCase() == 'song'){
                                 PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: mod, week:selectedWeek.week});
-                                Engine.debugPrint(item.text);
+                                //Engine.debugPrint(item.text);
                             }
                         }
                     }
@@ -187,64 +211,38 @@ class FreeplayState extends MusicBeatState
                             if (item != null && item.type.toLowerCase() == 'week'){
                                 for (i in 0...item.weekData.songs.length){
                                     PlayState.songPlaylist.push({songName: item.weekData.songs[i], modID: item.modID, week:item.weekData.week});
-                                    Engine.debugPrint(item.text);
+                                    //Engine.debugPrint(item.text);
                                 }
                             }
                         }
                     }
 
                     if (item.type.toLowerCase() == 'shuffle'){
-                        PlayState.inShuffleMode = true;
-
                         PlayState.songPlaylist = randomizeSongs(PlayState.songPlaylist);
                     }
-                    else
-                        PlayState.inShuffleMode = false;
-        
-                    if (PlayState.songPlaylist[0].modID == null){
-                        Modding.modLoaded = false;
-                        Modding.curLoaded = "";
 
-                        PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
-                    }
-                    else{
-                        Modding.modLoaded = true;
-                        Modding.curLoaded = PlayState.songPlaylist[0].modID;
-
-                        PlayState.SONG = Song.loadModChart(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
-                    }
+					PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
 
                     PlayState.isValidWeek = true;
 
                     if (PlayState.songPlaylist[0].week != null)
                         PlayState.storyWeek = PlayState.songPlaylist[0].week;
                     
-                    Engine.debugPrint('CUR WEEK' + PlayState.storyWeek);
-                    Engine.debugPrint('PLAYLIST: ' + PlayState.songPlaylist);
+                   // Engine.debugPrint('CUR WEEK' + PlayState.storyWeek);
+                   // Engine.debugPrint('PLAYLIST: ' + PlayState.songPlaylist);
         
-                    LoadingState.loadAndSwitchState(new PlayState(), PlayState.songPlaylist[0].modID);
+                    LoadingState.loadAndSwitchState(new PlayState());
                 }
                 else if (item.type.toLowerCase() == 'song'){
                     var poop:String = item.text.toLowerCase();
         
-                    if (item.modID == null){
-                        Modding.modLoaded = false;
-                        Modding.curLoaded = "";
-
-                        PlayState.SONG = Song.loadFromJson(poop, poop);
-                    }
-                    else{
-                        Modding.modLoaded = true;
-                        Modding.curLoaded = item.modID;
-
-                        PlayState.SONG = Song.loadModChart(poop, poop);
-                    }
+					PlayState.SONG = Song.loadFromJson(poop, poop);
                     
                     PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: selectedModID, week:selectedWeek.week});
 
                     PlayState.storyWeek = selectedWeek.week;
 
-                    LoadingState.loadAndSwitchState(new PlayState(), selectedModID);
+                    LoadingState.loadAndSwitchState(new PlayState());
                 }
             }
 
@@ -280,7 +278,7 @@ class FreeplayState extends MusicBeatState
                         generatedWeeksMenu.push({type:'week', weekData: week, string: week.name});
                     }
                 
-                    for (mod in Modding.loadedMods){
+                    /*for (mod in Modding.loadedMods){
                         if (FileSystem.isDirectory('mods/$mod/weeks') == true){
                             for (weekJson in FileSystem.readDirectory('mods/$mod/weeks/')){
                                 if (weekJson != null && weekJson.contains('.json')){
@@ -292,7 +290,7 @@ class FreeplayState extends MusicBeatState
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
 
                 thismenu = generatedWeeksMenu;
@@ -326,8 +324,8 @@ class FreeplayState extends MusicBeatState
             v++;
     
             if (item.type == 'week' && item.weekData != null){
-                if (item.modID != null && item.modID != '')
-                    Modding.curLoaded = item.modID;
+                /*if (item.modID != null && item.modID != '')
+                    Modding.curLoaded = item.modID;*/
     
                 if (item.weekData.color != null)
                     newItem.targetColor = Std.parseInt(item.weekData.color);
@@ -341,8 +339,8 @@ class FreeplayState extends MusicBeatState
 
                 playIcons.add(icon);
 
-                if (Modding.curLoaded != null || Modding.curLoaded != '')
-                    Modding.curLoaded = null;
+                /*if (Modding.curLoaded != null || Modding.curLoaded != '')
+                    Modding.curLoaded = null;*/
             }
         }
 
@@ -350,7 +348,7 @@ class FreeplayState extends MusicBeatState
     }
     
 
-    function randomizeSongs(arr:Array<SongData>) {
+    public function randomizeSongs(arr:Array<SongData>) {
         var randomizedArray = arr;
         var currentIndex = randomizedArray.length;
         var temporaryValue:Dynamic;
@@ -373,6 +371,61 @@ class FreeplayState extends MusicBeatState
     
 }
 
+class Checkbox extends FlxSprite
+{
+	public var value:Bool = false;
+	private var lastValue:Bool = false;
+
+	public function new(x:Float, y:Float, daValue:Bool = false)
+	{
+		super(x, y);
+
+		frames = Paths.getSparrowAtlas('checkboxThingie');
+		animation.addByPrefix('static', 'Check Box unselected', 24, false);
+		animation.addByPrefix('checked', 'Check Box selecting animation', 24, false);
+
+		antialiasing = true;
+
+		setGraphicSize(Std.int(width * 0.7));
+		updateHitbox();
+		scrollFactor.set(0, 0);
+
+		this.value = daValue;
+
+		switch (value){
+			case true:
+				animation.play('checked', true);
+				offset.set(17, 70);
+			default:
+				animation.play('static', true);
+				offset.set(0, 0);
+		}
+	}
+
+	override function update(elapsed:Float)
+	{
+		if (value != lastValue){
+			switch (value)
+			{
+				case false:
+					animation.play('checked', true, true);
+				case true:
+					animation.play('checked', true);
+					offset.set(17, 70);
+			}
+
+			lastValue = value;
+		}
+
+		if (animation.curAnim.curFrame == 0 && animation.curAnim.reversed){
+			animation.play('static', true);
+			offset.set();
+		}
+
+		super.update(elapsed);
+	}
+}
+
 typedef WeekJson = {
 	var weeks:Array<WeekData>;
 }
@@ -386,6 +439,7 @@ typedef WeekData =
     var iconIsJson:Bool;
 	var ?isMod:Bool;
     var ?color:String;
+    var ?disablePreload:Bool;
 }
 
 typedef MItemInf ={
