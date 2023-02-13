@@ -1899,9 +1899,6 @@ class PlayState extends MusicBeatState
 		switch (SONG.song.toLowerCase()){
 			default:
 				Engine.debugPrint('Continuing');
-			case 'stress':
-				playCutscene('kickstarterTrailer', true);
-				return;
 		}
 
 		songPlaylist.remove(songPlaylist[0]);

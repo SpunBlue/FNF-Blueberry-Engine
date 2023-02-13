@@ -325,17 +325,6 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		/* 
-			if (FlxG.keys.justPressed.R)
-			{
-				#if polymod
-				polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
-				trace('reinitialized');
-				#end
-			}
-
-		 */
-
 		if (camY == -1)
 			camY = camFollow.y;
 
