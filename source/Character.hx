@@ -1,5 +1,6 @@
 package;
 
+import game.PlayState;
 import Section.SwagSection;
 import flixel.FlxG;
 import flixel.FlxSprite;

@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxMath;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.FlxGame;
@@ -13,6 +14,8 @@ class MusicBeatState extends FlxUIState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
+
+	private var allowCamBeat:Bool = false;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -35,6 +38,9 @@ class MusicBeatState extends FlxUIState
 
 		if (oldStep != curStep && curStep >= 0)
 			stepHit();
+
+		if (allowCamBeat)
+			camera.zoom = FlxMath.lerp(camera.zoom, camera.initialZoom, 0.1);
 
 		super.update(elapsed);
 	}
@@ -68,6 +74,13 @@ class MusicBeatState extends FlxUIState
 
 	public function beatHit():Void
 	{
-		// do literally nothing dumbass
+		if (allowCamBeat){
+			camera.zoom += 0.01;
+	
+			if (curBeat % 4 == 0)
+			{
+				camera.zoom += 0.05;
+			}
+		}
 	}
 }

@@ -1,9 +1,8 @@
 package;
 
-import ui.AtlasText;
+import game.PlayState;
 import lime.math.RGBA;
 import sys.FileSystem;
-import PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;

@@ -13,6 +13,7 @@ import openfl.events.NetStatusEvent;
 import openfl.media.Video;
 import openfl.net.NetConnection;
 import openfl.net.NetStream;
+import game.TitleState;
 
 class Main extends Sprite
 {
@@ -23,7 +24,7 @@ class Main extends Sprite
 	#if web
 	var framerate:Int = 60; // How many frames per second the game should run at.
 	#else
-	var framerate:Int = 144; // How many frames per second the game should run at.
+	var framerate:Int = 128; // How many frames per second the game should run at.
 
 	#end
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.

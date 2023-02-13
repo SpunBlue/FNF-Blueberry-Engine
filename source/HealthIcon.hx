@@ -1,5 +1,6 @@
 package;
 
+import game.PlayState;
 import flixel.FlxSprite;
 
 using StringTools;
@@ -12,11 +13,18 @@ class HealthIcon extends FlxSprite
 	public var sprTracker:FlxSprite;
 
 	var char:String = '';
+
+	var sprOff:Int = 0;
+	var sprYOff:Int = 0;
+	
 	var isPlayer:Bool = false;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false)
+	public function new(?char:String, isPlayer:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
 	{
 		super();
+
+		sprOff = sprOffset;
+		sprYOff = sprYOffset;
 
 		this.isPlayer = isPlayer;
 
@@ -59,6 +67,6 @@ class HealthIcon extends FlxSprite
 		super.update(elapsed);
 
 		if (sprTracker != null)
-			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
+			setPosition(sprTracker.x + (sprTracker.width + 10) + sprOff, (sprTracker.y - 30) + sprYOff);
 	}
 }

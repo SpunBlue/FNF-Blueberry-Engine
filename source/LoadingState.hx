@@ -1,5 +1,6 @@
 package;
 
+import game.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
