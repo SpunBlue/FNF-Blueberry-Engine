@@ -1,8 +1,8 @@
 package;
 
-import game.PlayState;
 import lime.math.RGBA;
 import sys.FileSystem;
+import game.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;

@@ -1,5 +1,6 @@
 package game;
 
+import engine.modding.SpunModLib.ModAssets;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSubState;
@@ -17,32 +18,35 @@ class GameOverSubstate extends MusicBeatSubstate
 	var stageSuffix:String = "";
 	var randomGameover:Int = 1;
 
+	public var fallback:Bool = false;
+
 	public function new(x:Float, y:Float)
 	{
 		var daStage = PlayState.curStage;
-		var daBf:String = '';
-		switch (daStage)
-		{
-			case 'school' | 'schoolEvil':
+		var daBf:String = 'bf';
+
+		switch(daStage.toLowerCase()){
+			case 'school' | 'schoolevil':
 				stageSuffix = '-pixel';
-				daBf = 'bf-pixel-dead';
-			default:
-				daBf = 'bf';
 		}
 
-		var daSong = PlayState.SONG.song.toLowerCase();
-
-		switch (daSong)
-		{
-			case 'stress':
-				daBf = 'bf-holding-gf-dead';
-		}
+		daBf = PlayState.SONG.player1;
 
 		super();
 
 		Conductor.songPosition = 0;
 
 		bf = new Boyfriend(x, y, daBf);
+
+		if (bf.animation.exists('firstDeath'))
+			bf.playAnim('firstDeath');
+		else{
+			if (!bf.animation.exists('singDOWNmiss'))
+				bf.playAnim('idle');
+			else
+				bf.playAnim('singDOWNmiss');
+			fallback = true;
+		}
 		add(bf);
 
 		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
@@ -83,7 +87,6 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (controls.BACK)
 		{
 			PlayState.deathCounter = 0;
-			PlayState.seenCutscene = false;
 			FlxG.sound.music.stop();
 
 			FlxG.switchState(new FreeplayState());
@@ -149,7 +152,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (!isEnding)
 		{
 			isEnding = true;
-			bf.playAnim('deathConfirm', true);
+			if (bf.animation.exists('deathConfirm'))
+				bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music('gameOverEnd' + stageSuffix));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)

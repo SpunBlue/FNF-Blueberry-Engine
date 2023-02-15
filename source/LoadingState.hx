@@ -1,5 +1,6 @@
 package;
 
+import engine.Engine;
 import game.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -92,7 +93,7 @@ class LoadingState extends MusicBeatState
 
 	function checkLibrary(library:String)
 	{
-		trace(Assets.hasLibrary(library));
+		Engine.debugPrint(Assets.hasLibrary(library));
 		if (Assets.getLibrary(library) == null)
 		{
 			@:privateAccess
@@ -149,7 +150,7 @@ class LoadingState extends MusicBeatState
 
 		#if debug
 		if (FlxG.keys.justPressed.SPACE)
-			trace('fired: ' + callbacks.getFired() + " unfired:" + callbacks.getUnfired());
+			Engine.debugPrint('fired: ' + callbacks.getFired() + " unfired:" + callbacks.getUnfired());
 		#end
 	}
 
@@ -329,7 +330,7 @@ class MultiCallback
 	inline function log(msg):Void
 	{
 		if (logId != null)
-			trace('$logId: $msg');
+			Engine.debugPrint('$logId: $msg');
 	}
 
 	public function getFired()

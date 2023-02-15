@@ -1,5 +1,6 @@
 package game;
 
+import engine.Engine;
 import Conductor.BPMChangeEvent;
 import Section.SwagSection;
 import Song.SwagSong;
@@ -184,7 +185,7 @@ class ChartingState extends MusicBeatState
 		check_voices.callback = function()
 		{
 			_song.needsVoices = check_voices.checked;
-			trace('CHECKED!');
+			Engine.debugPrint('CHECKED!');
 		};
 
 		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, "Mute Instrumental (in editor)", 100);
@@ -483,9 +484,9 @@ class ChartingState extends MusicBeatState
 
 		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
 		{
-			trace(curStep);
-			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
-			trace('DUMBSHIT');
+			Engine.debugPrint(curStep);
+			Engine.debugPrint((_song.notes[curSection].lengthInSteps) * (curSection + 1));
+			Engine.debugPrint('DUMBSHIT');
 
 			if (_song.notes[curSection + 1] == null)
 			{
@@ -512,7 +513,7 @@ class ChartingState extends MusicBeatState
 						}
 						else
 						{
-							trace('tryin to delete note...');
+							Engine.debugPrint('tryin to delete note...');
 							deleteNote(note);
 						}
 					}
@@ -695,9 +696,9 @@ class ChartingState extends MusicBeatState
 		{
 			if (curSelectedNote[3] != null)
 			{
-				trace('ALT NOTE SHIT');
+				Engine.debugPrint('ALT NOTE SHIT');
 				curSelectedNote[3] = !curSelectedNote[3];
-				trace(curSelectedNote[3]);
+				Engine.debugPrint(curSelectedNote[3]);
 			}
 			else
 				curSelectedNote[3] = true;
@@ -748,7 +749,7 @@ class ChartingState extends MusicBeatState
 
 	function changeSection(sec:Int = 0, ?updateMusic:Bool = true):Void
 	{
-		trace('changing section' + sec);
+		Engine.debugPrint('changing section' + sec);
 
 		if (_song.notes[sec] != null)
 		{
@@ -863,7 +864,7 @@ class ChartingState extends MusicBeatState
 				{
 					if (_song.notes[sec].sectionNotes[notesse][2] == null)
 					{
-						trace('SUS NULL');
+						Engine.debugPrint('SUS NULL');
 						_song.notes[sec].sectionNotes[notesse][2] = 0;
 					}
 				}
@@ -974,8 +975,8 @@ class ChartingState extends MusicBeatState
 			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteAlt]);
 		}
 
-		trace(noteStrum);
-		trace(curSection);
+		Engine.debugPrint(noteStrum);
+		Engine.debugPrint(curSection);
 
 		updateGrid();
 		updateNoteUI();
@@ -1009,7 +1010,7 @@ class ChartingState extends MusicBeatState
 
 				if (sec != null && sec == i)
 				{
-					trace('swag loop??');
+					Engine.debugPrint('swag loop??');
 					break;
 				}
 			}
@@ -1020,7 +1021,7 @@ class ChartingState extends MusicBeatState
 
 	function loadLevel():Void
 	{
-		trace(_song.notes);
+		Engine.debugPrint(_song.notes);
 	}
 
 	function getNotes():Array<Dynamic>

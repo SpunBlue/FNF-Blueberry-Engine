@@ -1,0 +1,59 @@
+{
+    "imagePath": "characters/tankmanCaptain.png",
+    "xmlPath": "characters/tankmanCaptain.xml",
+    "Position": [0, 180],
+    "CamPosition": [0, 0],
+    "animations": [
+        {
+            "prefix": "Tankman Idle Dance",
+            "name": "idle",
+            "fps": 24,
+            "indices": [],
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "Tankman Right Note",
+            "name": "singLEFT",
+            "fps": 24,
+            "indices": [],
+            "offsets": [100, -14]
+        },
+        {
+            "prefix": "Tankman Note Left",
+            "name": "singRIGHT",
+            "fps": 24,
+            "indices": [],
+            "offsets": [-1, -7]
+        },
+        {
+            "prefix": "Tankman DOWN note",
+            "name": "singDOWN",
+            "fps": 24,
+            "indices": [],
+            "offsets": [98, -90]
+        },
+        {
+            "prefix": "Tankman UP note",
+            "name": "singUP",
+            "fps": 24,
+            "indices": [],
+            "offsets": [24, 56]
+        },
+        {
+            "prefix": "PRETTY GOOD",
+            "name": "singDOWN-alt",
+            "fps": 24,
+            "indices": [],
+            "offsets": [98, -90]
+        },
+        {
+            "prefix": "TANKMAN UGH",
+            "name": "singUP-alt",
+            "fps": 24,
+            "indices": [],
+            "offsets": [24, 56]
+        }
+    ],
+    "flipX": true,
+    "antialiasing": true
+}

@@ -2,6 +2,7 @@ package util.animate;
 
 // import animateAtlasPlayer.assets.AssetManager;
 // import animateAtlasPlayer.core.Animation;
+import engine.Engine;
 import util.animate.FlxSymbol.Parsed;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -107,7 +108,7 @@ class FlxAnimate extends FlxSymbol
 
 		var json:String = Description;
 
-		trace(json);
+		Engine.debugPrint(json);
 
 		if (Assets.exists(json))
 			json = Assets.getText(json);

@@ -1,5 +1,6 @@
 package;
 
+import game.GameOverSubstate;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -10,6 +11,7 @@ using StringTools;
 class Boyfriend extends Character
 {
 	// public var stunned:Bool = false;
+	var state:GameOverSubstate;
 
 	public function new(x:Float, y:Float, ?char:String = 'bf')
 	{
