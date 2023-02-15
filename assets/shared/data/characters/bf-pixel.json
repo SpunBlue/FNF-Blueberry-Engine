@@ -1,0 +1,96 @@
+{
+    "imagePath": "characters/bfPixel.png",
+    "xmlPath": "characters/bfPixel.xml",
+    "Position": [0, 0],
+    "CamPosition": [-100, 24],
+    "animations": [
+        {
+            "prefix": "BF IDLE",
+            "name": "idle",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF UP NOTE",
+            "name": "singUP",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF LEFT NOTE",
+            "name": "singLEFT",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF RIGHT NOTE",
+            "name": "singRIGHT",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF DOWN NOTE",
+            "name": "singDOWN",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF UP MISS",
+            "name": "singUPmiss",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF LEFT MISS",
+            "name": "singLEFTmiss",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF RIGHT MISS",
+            "name": "singRIGHTmiss",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF DOWN MISS",
+            "name": "singDOWNmiss",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF Dies pixel",
+            "name": "firstDeath",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "Retry Loop",
+            "name": "deathLoop",
+            "fps": 24,
+            "loop": true,
+            "indices": null,
+            "offsets": [-30, -12]
+        },
+        {
+            "prefix": "RETRY CONFIRM",
+            "name": "deathConfirm",
+            "fps": 24,
+            "indices": null,
+            "offsets": [-30, -12]
+        }
+    ],
+    "antialiasing": false,
+    "flipX": true,
+    "size": 6
+}

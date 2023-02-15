@@ -1,0 +1,44 @@
+{
+	"imagePath": "characters/Mom_Assets.png",
+	"xmlPath": "characters/Mom_Assets.xml",
+	"Position": [0, 0],
+	"CamPosition": [0, -100],
+	"animations": [
+		{
+			"prefix": "Mom Idle",
+			"name": "idle",
+			"fps": 24,
+			"indices": null,
+			"offsets": [0, 0]
+		},
+		{
+			"prefix": "Mom Up Pose",
+			"name": "singUP",
+			"fps": 24,
+			"indices": null,
+			"offsets": [14, 71]
+		},
+		{
+			"prefix": "MOM DOWN POSE",
+			"name": "singDOWN",
+			"fps": 24,
+			"indices": null,
+			"offsets": [20, -160]
+		},
+		{
+			"prefix": "Mom Left Pose",
+			"name": "singLEFT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [250, -23]
+		},
+		{
+			"prefix": "Mom Pose Left",
+			"name": "singRIGHT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [10, -60]
+		}
+	],
+	"antialiasing": true
+}

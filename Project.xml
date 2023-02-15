@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' Blueberry Engine" file="Funkin" packageName="com.SpunBlue.funkin" package="com.SpunBlue.funkin" main="Main" version="1.2.0" company="SpunBlue" />
+	<app title="Friday Night Funkin' Blueberry Engine" file="Funkin" packageName="com.spunblue.blueberryfnf" package="com.spunblue.blueberryfnf" main="Main" version="2.0.0" company="SpunBlue" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -18,7 +18,7 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" fps="128" background="#000000" hardware="true" vsync="false" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
@@ -40,6 +40,8 @@
 
 	<classpath name="source" />
 
+	<!-- <assets path='assets/preload/music' include="*mp4" embed='false' /> -->
+
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
 	
@@ -58,7 +60,6 @@
 		<library name="week5"    preload="true" />
 		<library name="week6"    preload="true" />
 		<library name="week7"    preload="true" />
-		<library name="characters" preload="true" />
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
@@ -72,32 +73,31 @@
 		<library name="week5"    preload="false" />
 		<library name="week6"    preload="false" />
 		<library name="week7"    preload="false" />
-		<library name="characters" preload="false" />
 	</section>
 	
-	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
-	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web"/>
-	<assets path="assets/shared"   library="shared"   exclude="*.mp3" unless="web"/>
-	<assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/>
-	<assets path="assets/tutorial" library="tutorial" exclude="*.mp3" unless="web"/>
-	<assets path="assets/week1"    library="week1"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week1"    library="week1"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/week2"    library="week2"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week2"    library="week2"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/week3"    library="week3"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week3"    library="week3"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/week4"    library="week4"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week4"    library="week4"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/week5"    library="week5"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week5"    library="week5"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/week6"    library="week6"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week6"    library="week6"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/week7"    library="week7"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week7"    library="week7"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/characters"    library="characters"/>
+	<assets path="assets/songs"    library="songs"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/songs"    library="songs"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/shared"   library="shared"   exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/shared"   library="shared"   exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/tutorial" library="tutorial" exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/tutorial" library="tutorial" exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week1"    library="week1"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week1"    library="week1"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week2"    library="week2"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week2"    library="week2"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week3"    library="week3"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week3"    library="week3"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week4"    library="week4"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week4"    library="week4"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week5"    library="week5"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week5"    library="week5"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week6"    library="week6"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week6"    library="week6"    exclude="*.fla|*.mp3" unless="web"/>
+	<assets path="assets/week7"    library="week7"    exclude="*.fla|*.ogg" if="web"/>
+	<assets path="assets/week7"    library="week7"    exclude="*.fla|*.mp3" unless="web"/>
 	
-	<assets path='include' rename='' embed='false'/>
+	<assets path='mods' rename='mods' embed='false'/>
+
 	<!-- <template path='mods' /> -->
 	
 	<assets path="CHANGELOG.md" rename='changelog.txt'/>
@@ -113,19 +113,23 @@
 	<haxelib name="flixel" />
 	<haxedev set='webgl' />
 
-	<haxelib name="hxCodec" if="desktop || android" />
-
-	<!-- Show debug traces for hxCodec -->
-	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
-
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
+	<haxelib name="hscript" />
 
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
-	<haxelib name="faxe" if='switch'/>
-	<haxelib name="hscript-improved" />
-	<haxelib name="discord_rpc" if="desktop"/>
+	<haxelib name="hxcpp-debug-server" if="desktop debug"/>
+
+	<haxelib name="hxCodec" if="desktop || android" />
+	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
+	
+	<!-- <haxelib name="flixel-animate" /> -->
+	<!-- <haxelib name="spinehaxe" /> -->
+	<!-- https://github.com/ninjamuffin99/Flixel-Animate-Atlas-Player -->
+
+
+	<!--<haxelib name="discord_rpc" if="cpp"/> --> <!-- foesn't work with neko -->
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
 	<!-- <haxelib name="markdown" /> -->
@@ -157,9 +161,6 @@
 	<!--Disable the Flixel sound management code-->
 	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
 
-	<!-- Comment this out to disable softcoded states and state scripting !-->
-	<haxedef name="SOFTCODED_STATES" />
-
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 
@@ -169,31 +170,32 @@
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
-    <!-- for logging -->
-	<haxedef name="hscriptPos" />
-
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
-
-	<!--weird issue with icons, can't get them working-->
-	<icon path="art/icon16.png" size="16" />
-    <icon path="art/icon16.png" size="24" />
-    <icon path="art/icon32.png" size="32" />
-    <icon path="art/icon32.png" size="40" />
-    <icon path="art/icon32.png" size="48" />
-    <icon path="art/icon64.png" size="64" />
-    <icon path="art/icon64.png" size="96" />
-    <icon path="art/icon64.png" size="128" />
-    <icon path="art/iconOG.png" size="256" />
 	
-	<!--<icon path="art/icon16.png" size='16'/>
+	<icon path="art/icon16.png" size='16'/>
 	<icon path="art/icon32.png" size='32'/>
 	<icon path="art/icon64.png" size='64'/>
-	<icon path="art/iconOG.png" />-->
+	<icon path="art/iconOG.png" />
 
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
-	<haxedef name="NG_LOGIN" if="newgrounds" />
+	
+	<haxedef name="CAN_OPEN_LINKS" unless="switch"/>
+	<haxedef name="CAN_CHEAT" if="switch debug"/>
+	
+	<!-- <haxedef name="CLEAR_INPUT_SAVE"/> -->
+	
+	<section if="newgrounds">
+		<!-- Enables Ng.core.verbose -->
+		<!-- <haxedef name="NG_VERBOSE" /> -->
+		
+		<!-- Enables a NG debug session, so medals don't permently unlock -->
+		<!-- <haxedef name="NG_DEBUG" /> -->
+		
+		<!-- pretends that the saved session Id was expired, forcing the reconnect prompt -->
+		<!-- <haxedef name="NG_FORCE_EXPIRED_SESSION" if="debug" /> -->
+	</section>
 	
 </project>

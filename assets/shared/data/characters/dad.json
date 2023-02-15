@@ -1,0 +1,45 @@
+{
+  "imagePath": "characters/DADDY_DEAREST.png",
+  "xmlPath": "characters/DADDY_DEAREST.xml",
+  "Position": [0, 0],
+  "CamPosition": [0, 0],
+  "animations": [
+    {
+      "prefix": "Dad idle dance",
+      "name": "idle",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 0]
+    },
+    {
+      "prefix": "Dad Sing Note UP",
+      "name": "singUP",
+      "fps": 24,
+      "indices": null,
+      "offsets": [-6, 50]
+    },
+    {
+      "prefix": "Dad Sing Note RIGHT",
+      "name": "singRIGHT",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 27]
+    },
+    {
+      "prefix": "Dad Sing Note DOWN",
+      "name": "singDOWN",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, -30]
+    },
+    {
+      "prefix": "Dad Sing Note LEFT",
+      "name": "singLEFT",
+      "fps": 24,
+      "indices": null,
+      "offsets": [-10, 10]
+    }
+  ],
+  "antialiasing": true,
+  "singHold": 6.1
+}

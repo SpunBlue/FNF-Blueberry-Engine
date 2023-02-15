@@ -1,0 +1,110 @@
+{
+	"imagePath": "characters/BOYFRIEND.png",
+	"xmlPath": "characters/BOYFRIEND.xml",
+	"Position": [0, 0],
+	"CamPosition": [0, -64],
+	"animations": [
+		{
+			"prefix": "BF idle dance",
+			"name": "idle",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-5, 0]
+		},
+		{
+			"prefix": "BF NOTE UP0",
+			"name": "singUP",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-29, 27]
+		},
+		{
+			"prefix": "BF NOTE LEFT0",
+			"name": "singLEFT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [12, -6]
+		},
+		{
+			"prefix": "BF NOTE RIGHT0",
+			"name": "singRIGHT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-38, -7]
+		},
+		{
+			"prefix": "BF NOTE DOWN0",
+			"name": "singDOWN",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-10, -50]
+		},
+		{
+			"prefix": "BF NOTE UP MISS",
+			"name": "singUPmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-29, 27]
+		},
+		{
+			"prefix": "BF NOTE LEFT MISS",
+			"name": "singLEFTmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [12, 24]
+		},
+		{
+			"prefix": "BF NOTE RIGHT MISS",
+			"name": "singRIGHTmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-30, 21]
+		},
+		{
+			"prefix": "BF NOTE DOWN MISS",
+			"name": "singDOWNmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-11, -19]
+		},
+		{
+			"prefix": "BF HEY",
+			"name": "hey",
+			"fps": 24,
+			"indices": null,
+			"offsets": [7, 4]
+		},
+		{
+			"prefix": "BF dies",
+			"name": "firstDeath",
+			"fps": 24,
+			"indices": null,
+			"offsets": [37, 11]
+		},
+		{
+			"prefix": "BF Dead Loop",
+			"name": "deathLoop",
+			"fps": 24,
+			"indices": null,
+            "loop": true,
+			"offsets": [37, 5]
+		},
+		{
+			"prefix": "BF Dead confirm",
+			"name": "deathConfirm",
+			"fps": 24,
+			"indices": null,
+			"offsets": [37, 69]
+		},
+		{
+			"prefix": "BF idle shaking",
+			"name": "scared",
+			"fps": 24,
+			"indices": null,
+            "offsets": [0, -4]
+        }
+    ],
+    "antialiasing": true,
+    "flipX": true
+}
+			

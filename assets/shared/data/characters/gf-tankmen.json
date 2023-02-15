@@ -1,0 +1,92 @@
+{
+  "imagePath": "characters/gfTankmen.png",
+  "xmlPath": "characters/gfTankmen.xml",
+  "Position": [
+    0,
+    0
+  ],
+  "CamPosition": [
+    0,
+    0
+  ],
+  "animations": [
+    {
+      "prefix": "GF Crying at Gunpoint",
+      "name": "sad",
+      "fps": 24,
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "offsets": [
+        -2, 
+        -21
+      ]
+    },
+    {
+      "prefix": "GF Dancing at Gunpoint",
+      "name": "danceLeft",
+      "fps": 24,
+      "indices": [
+        30,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "offsets": [
+        0,
+        -9
+      ]
+    },
+    {
+      "prefix": "GF Dancing at Gunpoint",
+      "name": "danceRight",
+      "fps": 24,
+      "indices": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "offsets": [
+        0,
+        -9
+      ]
+    }
+  ],
+  "antialiasing": true
+}

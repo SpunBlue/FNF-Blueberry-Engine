@@ -1,0 +1,53 @@
+{
+	"imagePath": "characters/momCar.png",
+	"xmlPath": "characters/momCar.xml",
+	"Position": [0, 0],
+	"CamPosition": [0, 0],
+	"animations": [
+		{
+			"prefix": "Mom Idle",
+			"name": "idle",
+			"fps": 24,
+			"indices": [],
+			"offsets": [0, 0]
+		},
+        {
+			"prefix": "Mom Idle",
+			"name": "idleHair",
+			"fps": 24,
+			"indices": [6, 7, 8, 9, 10, 11, 12, 13],
+            "loop": true,
+			"offsets": [0, 0]
+		},
+		{
+			"prefix": "Mom Up Pose",
+			"name": "singUP",
+			"fps": 24,
+			"indices": [],
+			"offsets": [14, 71]
+		},
+		{
+			"prefix": "MOM DOWN POSE",
+			"name": "singDOWN",
+			"fps": 24,
+			"indices": [],
+			"offsets": [20, -160]
+		},
+		{
+			"prefix": "Mom Pose Left",
+			"name": "singRIGHT",
+			"fps": 24,
+			"indices": [],
+			"offsets": [10, -60]
+		},
+		{
+			"prefix": "Mom Left Pose",
+			"name": "singLEFT",
+			"fps": 24,
+			"indices": [],
+			"offsets": [250, -23]
+		}
+	],
+    "loopAfterIdle": "idleHair",
+	"antialiasing": true
+}
