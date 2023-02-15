@@ -133,7 +133,6 @@ class Character extends FlxSprite
 
 		if (isPlayer)
 			flipX = !flipX;
-			
 	}
 
 	public function loadMappedAnims()
@@ -227,6 +226,10 @@ class Character extends FlxSprite
 	}
 
 	private var danced:Bool = false;
+
+	public function isDancing(){
+		return (animation.curAnim.name.startsWith('dance') || animation.curAnim.name == 'idle');
+	}
 
 	/**
 	 * FOR GF DANCING SHIT

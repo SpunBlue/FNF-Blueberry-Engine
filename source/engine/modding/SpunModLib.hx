@@ -114,6 +114,9 @@ class ModAssets{
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
      */
     public static function getAsset(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String):Dynamic{
+        if (additionDirOnFail == null)
+            additionDirOnFail = '';
+
         var fullPath:String = path;
         
         if (mod != null)
@@ -160,6 +163,43 @@ class ModAssets{
             case 'ogg' | 'wav' | 'mp3':
                 return Sound.fromFile(fullPath);
         }
+    }
+
+    /**
+     * Looks for an asset and returns `true` if found, looks in the `Mod` unless both `mod` and `modID` variables are null,
+     * If both are null or file could not be found, it will return an asset from the `assets` folder.
+     * @param path Path (images/test.png). Don't include root directory.
+     * @param mod Mod Data
+     * @param modID Mod ID, leave `mod` as `null` to use.
+     * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     */
+    public static function assetExists(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String):Bool{
+        if (additionDirOnFail == null)
+            additionDirOnFail = '';
+
+        var fullPath:String = path;
+        
+        if (mod != null)
+            fullPath = mod.rootDir + '/$path';
+        else if (modID != null){
+            var goofyMod:Mod = findMod(modID);
+
+            fullPath = goofyMod.rootDir + '/$path';
+        }
+
+        fullPath = Path.normalize(fullPath);
+
+        if (!FileSystem.exists(fullPath) || mod == null && modID == null)
+            fullPath = Path.normalize('assets/$additionDirOnFail/$path');
+
+        #if debug
+        trace('Checking for file: ' + fullPath);
+        #end
+
+        if (FileSystem.exists(fullPath))
+            return true;
+
+        return false;
     }
 }
 

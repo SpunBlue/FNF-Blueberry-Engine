@@ -1,24 +1,29 @@
-Dont Steal My Shit (DSMS) License
+Don't Steal My Shit (DSMS) License.
 
-Copyright (c) 2023 SpunBlue
+Copyright (c) SpunBlue 2023
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to use, copy,
-modify, and distribute the Software, subject to the following conditions:
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, and sublicense the Software,
+subject to the following conditions:
 
-1. The Software, or any modified version, may not be used in private applications.
-2. If the Software or any modified version is used outside of the root project, the
-    following notice must be included in all copies or substantial portions of the Software:
-    "Copyright (c) 2023 SpunBlue. Under license from 'FNF-Blueberry-Engine/source/modding'".
-3. The Software is provided without warranty of any kind, express or implied, including but
-    not limited to the warranties of merchantability, fitness for a particular purpose and
-    noninfringement.
+1. The Software cannot be used in private applications.
 
-If you modify this license to include your name and/or the name of your project, you may do
-so, but you may not remove or modify any of the other terms and conditions of this license.
+2. All users of the Software must give credit to the author, SpunBlue,
+   in any publication or distribution of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
-BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+3. The author, SpunBlue, and anyone designated by the author, has full
+   rights to use the Software for any purpose, including commercial and private
+   use, without attribution or payment to any third party.
+
+4. The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
