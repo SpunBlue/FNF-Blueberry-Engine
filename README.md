@@ -20,6 +20,7 @@ Q: Why did you do this?
 A: I'm too proud of my Modding Script(s) and I wanted it to be under a seperate license.
 
 Q: Is everything in [modutil](https://github.com/SpunBlue/FNF-Blueberry-Engine/tree/main/source/engine/modutil) under the DSMS License?
+:-
 A: No, It's not. Only the stuff located in [source/engine/modding](https://github.com/SpunBlue/FNF-Blueberry-Engine/blob/main/source/engine/modding) is under that License.
 
 Q: What will you do if the DSMS License Isn't legally binding or if you can't have multiple licenses?
