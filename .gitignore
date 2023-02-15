@@ -1,6 +1,5 @@
 export/
 .vscode/
-DONOTCOMPILE\
 APIStuff.hx
 .github/
 DONOTCOMPILE/

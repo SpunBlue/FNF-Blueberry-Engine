@@ -1,0 +1,72 @@
+{
+	"imagePath": "characters/mom_dad_christmas_assets.png",
+	"xmlPath": "characters/mom_dad_christmas_assets.xml",
+	"Position": [-500, 0],
+	"CamPosition": [-100, 0],
+	"animations": [
+		{
+			"prefix": "Parent Christmas Idle",
+			"name": "idle",
+			"fps": 24,
+			"indices": null,
+			"offsets": [0, 0]
+		},
+		{
+			"prefix": "Parent Up Note Dad",
+			"name": "singUP",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-47, 24]
+		},
+		{
+			"prefix": "Parent Down Note Dad",
+			"name": "singDOWN",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-31, -29]
+		},
+		{
+			"prefix": "Parent Left Note Dad",
+			"name": "singLEFT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-30, 16]
+		},
+		{
+			"prefix": "Parent Right Note Dad",
+			"name": "singRIGHT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-1, -23]
+		},
+		{
+			"prefix": "Parent Up Note Mom",
+			"name": "singUP-alt",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-47, 24]
+		},
+		{
+			"prefix": "Parent Down Note Mom",
+			"name": "singDOWN-alt",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-30, -27]
+		},
+		{
+			"prefix": "Parent Left Note Mom",
+			"name": "singLEFT-alt",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-30, 15]
+		},
+		{
+			"prefix": "Parent Right Note Mom",
+			"name": "singRIGHT-alt",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-1, -24]
+		}
+	],
+	"antialiasing": true
+}

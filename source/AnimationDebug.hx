@@ -1,5 +1,7 @@
 package;
 
+import game.PlayState;
+import sys.io.File;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -8,20 +10,22 @@ import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import openfl.events.Event;
+import openfl.events.IOErrorEvent;
+import openfl.net.FileReference;
+
+using StringTools;
 
 /**
 	*DEBUG MODE
  */
 class AnimationDebug extends FlxState
 {
-	var bf:Boyfriend;
-	var dad:Character;
 	var char:Character;
 	var textAnim:FlxText;
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
-	var isDad:Bool = true;
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
 
@@ -39,14 +43,10 @@ class AnimationDebug extends FlxState
 		gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		isDad = true;
-
-		dad = new Character(0, 0, daAnim);
-		dad.screenCenter();
-		dad.debugMode = true;
-		add(dad);
-
-		char = dad;
+		char = new Character(0, 0, daAnim);
+		char.screenCenter();
+		char.debugMode = true;
+		add(char);
 
 		dumbTexts = new FlxTypedGroup<FlxText>();
 		add(dumbTexts);
@@ -175,6 +175,67 @@ class AnimationDebug extends FlxState
 			char.playAnim(animList[curAnim]);
 		}
 
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			var outputString:String = "";
+
+			for (swagAnim in animList)
+			{
+				outputString += swagAnim + " " + char.animOffsets.get(swagAnim)[0] + " " + char.animOffsets.get(swagAnim)[1] + "\n";
+			}
+
+			outputString.trim();
+
+			File.saveContent("backup-LastOffsets.txt", outputString);
+			FlxG.switchState(new PlayState());
+		}
+
 		super.update(elapsed);
+	}
+
+	var _file:FileReference;
+
+	private function saveOffsets(saveString:String)
+	{
+		if ((saveString != null) && (saveString.length > 0))
+		{
+			_file = new FileReference();
+			_file.addEventListener(Event.COMPLETE, onSaveComplete);
+			_file.addEventListener(Event.CANCEL, onSaveCancel);
+			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			_file.save(saveString, daAnim + "Offsets.txt");
+		}
+	}
+
+	function onSaveComplete(_):Void
+	{
+		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+		_file.removeEventListener(Event.CANCEL, onSaveCancel);
+		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+		_file = null;
+		FlxG.log.notice("Successfully saved LEVEL DATA.");
+	}
+
+	/**
+	 * Called when the save file dialog is cancelled.
+	 */
+	function onSaveCancel(_):Void
+	{
+		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+		_file.removeEventListener(Event.CANCEL, onSaveCancel);
+		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+		_file = null;
+	}
+
+	/**
+	 * Called if there is an error while saving the gameplay recording.
+	 */
+	function onSaveError(_):Void
+	{
+		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+		_file.removeEventListener(Event.CANCEL, onSaveCancel);
+		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+		_file = null;
+		FlxG.log.error("Problem saving Level data");
 	}
 }

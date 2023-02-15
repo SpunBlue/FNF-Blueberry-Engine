@@ -1,0 +1,37 @@
+{
+	"imagePath": "characters/picoSpeaker.png",
+	"xmlPath": "characters/picoSpeaker.xml",
+	"Position": [0, 0],
+	"CamPosition": [0, 0],
+	"animations": [
+		{
+			"name": "shoot1",
+			"prefix": "Pico shoot 1",
+			"fps": 12,
+			"indices": null,
+			"offsets": [0, 0]
+		},
+		{
+			"name": "shoot2",
+			"prefix": "Pico shoot 2",
+			"fps": 12,
+			"indices": null,
+			"offsets": [-1, -128]
+		},
+		{
+			"name": "shoot3",
+			"prefix": "Pico shoot 3",
+			"fps": 12,
+			"indices": null,
+			"offsets": [412, -64]
+		},
+		{
+			"name": "shoot4",
+			"prefix": "Pico shoot 4",
+			"fps": 12,
+			"indices": null,
+			"offsets": [439, -19]
+		}
+	],
+	"antialiasing": true
+}
