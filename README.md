@@ -9,7 +9,7 @@ IF YOU MAKE A MOD AND DISTRIBUTE A MODIFIED / RECOMPILED VERSION, OPEN SOURCE YO
 [Blueberry Engine Discord](https://discord.gg/ct6VQqE6Mu)
 
 ## Licenses
-If you haven't noticed, there are 2 Licenses in this Repo. I'm not sure if this is allowed so if it isn't ignore everything except the Apache 2.0 License, especially if the other License(s) are not legally biding, I would consult with a legal professional but I'm pretty sure that requires money.
+If you haven't noticed, there are 2 Licenses in this Repo. I'm not sure if this is allowed so if it isn't ignore everything except the Apache 2.0 License, especially if the other License(s) are not legally binding, I would consult with a legal professional but I'm pretty sure that requires money.
 
 But if everything is good, the [Apache 2.0](https://github.com/SpunBlue/FNF-Blueberry-Engine/blob/main/LICENSE) License is used for all assets, source code, etc., Except for everything located in [source/engine/modding](https://github.com/SpunBlue/FNF-Blueberry-Engine/blob/main/source/engine/modding) which is all under the license of [DSMS](https://github.com/SpunBlue/FNF-Blueberry-Engine/blob/main/source/engine/modding/LICENSE) License.
 
