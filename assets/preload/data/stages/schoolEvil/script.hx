@@ -1,7 +1,7 @@
 var posX = 400;
 var posY = 200;
 
-function onCreate()
+function create()
 {
     var bg:FlxSprite = new FlxSprite(posX, posY);
     bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool');

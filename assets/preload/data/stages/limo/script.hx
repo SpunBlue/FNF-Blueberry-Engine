@@ -3,7 +3,7 @@ var fastCar:FlxSprite;
 var fastCarCanDrive:Bool = true;
 var grpLimoDancers:FlxTypedGroup<BackgroundDancer> = new FlxTypedGroup();
 
-function onCreate()
+function create()
 {
     var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset'));
     skyBG.scrollFactor.set(0.1, 0.1);

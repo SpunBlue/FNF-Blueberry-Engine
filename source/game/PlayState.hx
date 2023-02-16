@@ -325,7 +325,7 @@ class PlayState extends MusicBeatState
 
 		script.interp.variables.set("gfVersion", gfVersion);
 
-		script.call("onCreate"); // A lot of stuff here will not run or work properly.
+		script.call("create"); // A lot of stuff here will not run or work properly.
 
 		dad = new Character(100, 100, SONG.player2);
 

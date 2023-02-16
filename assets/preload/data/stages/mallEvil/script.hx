@@ -1,4 +1,4 @@
-function onCreate()
+function create()
 {
     var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG'));
     bg.antialiasing = true;

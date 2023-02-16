@@ -10,7 +10,7 @@ var tankAngle:Float = FlxG.random.int(-90, 45);
 
 var foregroundSprites:FlxTypedGroup<BGSprite> = new FlxTypedGroup();
 
-function onCreate()
+function create()
 {
     var bg:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0);
     add(bg);

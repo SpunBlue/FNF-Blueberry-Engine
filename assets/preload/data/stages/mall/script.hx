@@ -2,7 +2,7 @@ var santa:FlxSprite;
 var upperBoppers:FlxSprite;
 var bottomBoppers:FlxSprite;
 
-function onCreate()
+function create()
 {
     var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('christmas/bgWalls'));
     bg.antialiasing = true;

@@ -1,7 +1,7 @@
 var halloweenBG:FlxSprite;
 var isHalloween:Bool = false;
 
-function onCreate()
+function create()
 {
     halloweenLevel = true;
 

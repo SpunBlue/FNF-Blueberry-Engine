@@ -1,6 +1,6 @@
 var bgGirls:BackgroundGirls;
 
-function onCreate()
+function create()
 {
     var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky'));
     bgSky.scrollFactor.set(0.1, 0.1);

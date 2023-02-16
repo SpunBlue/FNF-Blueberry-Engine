@@ -13,7 +13,7 @@ var curLight:Int = 0;
 var lightFadeShader:BuildingShaders;
 var phillyCityLights:FlxTypedGroup<FlxSprite> = new FlxTypedGroup();
 
-function onCreate()
+function create()
 {
     var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky'));
     bg.scrollFactor.set(0.1, 0.1);
