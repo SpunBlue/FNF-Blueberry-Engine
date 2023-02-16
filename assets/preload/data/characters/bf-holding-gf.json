@@ -1,0 +1,102 @@
+{
+	"imagePath": "characters/bfAndGF.png",
+	"xmlPath": "characters/bfAndGF.xml",
+	"Position": [0, 0],
+	"CamPosition": [0, 0],
+	"animations": [
+		{
+			"prefix": "BF idle dance",
+			"name": "idle",
+			"fps": 24,
+			"indices": null,
+			"offsets": [0, 0]
+		},
+		{
+			"prefix": "BF NOTE DOWN0",
+			"name": "singDOWN",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-10, -10]
+		},
+		{
+			"prefix": "BF NOTE LEFT0",
+			"name": "singLEFT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [12, 7]
+		},
+		{
+			"prefix": "BF NOTE RIGHT0",
+			"name": "singRIGHT",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-41, 23]
+		},
+		{
+			"prefix": "BF NOTE UP0",
+			"name": "singUP",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-29, 10]
+		},
+		{
+			"prefix": "BF NOTE DOWN MISS",
+			"name": "singDOWNmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-10, -10]
+		},
+		{
+			"prefix": "BF NOTE LEFT MISS",
+			"name": "singLEFTmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [12, 7]
+		},
+		{
+			"prefix": "BF NOTE RIGHT MISS",
+			"name": "singRIGHTmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-41, 23]
+		},
+		{
+			"prefix": "BF NOTE UP MISS",
+			"name": "singUPmiss",
+			"fps": 24,
+			"indices": null,
+			"offsets": [-29, 10]
+		},
+		{
+			"prefix": "BF catches GF",
+			"name": "bfCatch",
+			"fps": 24,
+			"indices": null,
+			"offsets": [0, 0]
+		},
+		{
+			"prefix": "BF Dies with GF",
+			"name": "firstDeath",
+			"fps": 24,
+			"indices": null,
+			"offsets": [37, 14]
+        },
+		{
+			"prefix": "BF Dead with GF Loop",
+			"name": "deathLoop",
+			"fps": 24,
+			"indices": null,
+            "loop": true,
+			"offsets": [37, -3]
+        },
+        {
+			"prefix": "RETRY confirm holding gf",
+            "name": "deathConfirm",
+			"fps": 24,
+            "indices": null,
+            "offsets": [37, 28]
+        }
+    ],
+    "flipX": true,
+    "antialiasing": true
+}

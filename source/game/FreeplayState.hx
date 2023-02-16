@@ -36,6 +36,7 @@ class FreeplayState extends MusicBeatState
     var playIcons:FlxTypedGroup<HealthIcon> = new FlxTypedGroup();
 
     static var generatedWeeksMenu:Array<MItemInf> = null;
+	public static var loopList:Array<SongData> = [];
 
     var uiItems:FlxGroup = new FlxGroup();
 
@@ -87,8 +88,6 @@ class FreeplayState extends MusicBeatState
         scoreText.scrollFactor.set(0, 0);
         uiItems.add(scoreText);
 
-		// todo: make work
-		#if debug
 		loopCheck = new Checkbox(0, 0, PlayState.inLoopMode);
 		loopCheck.setPosition(FlxG.width - loopCheck.width, FlxG.height - loopCheck.height);
 		uiItems.add(loopCheck);
@@ -96,9 +95,8 @@ class FreeplayState extends MusicBeatState
 		var loopText:FlxText = new FlxText(0, 0, "Loop", 32);
 		loopText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
 		loopText.scrollFactor.set(0, 0);
-		loopText.setPosition(loopCheck.x - loopText.width, loopCheck.y + (loopText.height / 2));
+		loopText.setPosition(loopCheck.x - loopText.width, (loopCheck.y + (loopText.height / 2) + 38));
 		uiItems.add(loopText);
-		#end
 
         add(uiItems);
 
@@ -111,13 +109,11 @@ class FreeplayState extends MusicBeatState
 
         super.update(elapsed);
 
-		#if debug
 		if (FlxG.mouse.justPressed && FlxG.mouse.overlaps(loopCheck)){
 			loopCheck.value = !loopCheck.value;
 
 			PlayState.inLoopMode = loopCheck.value;
 		}
-		#end
 
         if (PlayState.songPlaylist != [])
             PlayState.songPlaylist = [];
@@ -217,13 +213,16 @@ class FreeplayState extends MusicBeatState
                         }
                     }
 
-                    if (item.type.toLowerCase() == 'shuffle'){
+                    if (item.type.toLowerCase() == 'shuffle')
                         PlayState.songPlaylist = randomizeSongs(PlayState.songPlaylist);
-                    }
+
+					loopList = [];
+
+					for (song in PlayState.songPlaylist){
+						loopList.push(song);
+					}
 
 					PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
-
-                    PlayState.isValidWeek = true;
 
                     if (PlayState.songPlaylist[0].week != null)
                         PlayState.storyWeek = PlayState.songPlaylist[0].week;
@@ -239,6 +238,12 @@ class FreeplayState extends MusicBeatState
 					PlayState.SONG = Song.loadFromJson(poop, poop);
                     
                     PlayState.songPlaylist.push({songName: item.text.toLowerCase(), modID: selectedModID, week:selectedWeek.week});
+
+					loopList = [];
+
+					for (song in PlayState.songPlaylist){
+						loopList.push(song);
+					}
 
                     PlayState.storyWeek = selectedWeek.week;
 

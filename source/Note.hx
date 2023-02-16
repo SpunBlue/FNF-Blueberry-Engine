@@ -1,5 +1,9 @@
 package;
 
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import engine.Engine;
 import game.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -46,7 +50,19 @@ class Note extends FlxSprite
 
 	public static var arrowColors:Array<Float> = [1, 1, 1, 1];
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
+	public var strumTrack:FlxSprite;
+	private var xOffset:Float;
+
+	var defaultAlpha:Float = 1;
+	public var hideNote:Bool = false;
+
+	public var style:String = '';
+
+	var inChart:Bool = false;
+
+	public var noteFuckingDying:Bool = false;
+
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:FlxSprite, ?style:String = '', ?inCharter:Bool = true)
 	{
 		super();
 
@@ -56,6 +72,10 @@ class Note extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 
+		this.style = style;
+
+		inChart = inCharter;
+
 		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
@@ -63,12 +83,25 @@ class Note extends FlxSprite
 
 		this.noteData = noteData;
 
-		var daStage:String = PlayState.curStage;
+		strumTrack = tracker;
 
-		switch (daStage)
+		updateStyle(style);
+	}
+
+	public function updateColors():Void
+	{
+		colorSwap.update(arrowColors[noteData]);
+	}
+
+	public function updateTracker(strumNote:FlxSprite){
+		strumTrack = strumNote;
+	}
+
+	public function updateStyle(style:String){
+		switch (style)
 		{
-			case 'school' | 'schoolEvil':
-				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
+			case 'pixel':
+				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels', 'week6'), true, 17, 17);
 
 				animation.add('greenScroll', [6]);
 				animation.add('redScroll', [7]);
@@ -77,7 +110,7 @@ class Note extends FlxSprite
 
 				if (isSustainNote)
 				{
-					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
+					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds', 'week6'), true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
 					animation.add('greenholdend', [6]);
@@ -92,6 +125,8 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
+
+				antialiasing = false;
 
 			default:
 				frames = Paths.getSparrowAtlas('NOTE_assets');
@@ -143,17 +178,20 @@ class Note extends FlxSprite
 				animation.play('redScroll');
 		}
 
-		// trace(prevNote);
+		// Engine.debugPrint(prevNote);
 
 		if (isSustainNote && prevNote != null)
 		{
+			if (prevNote.style != style)
+				prevNote.updateStyle(style);
+
 			noteScore * 0.2;
-			alpha = 0.6;
+			defaultAlpha = 0.6;
 
 			if (PreferencesMenu.getPref('downscroll'))
 				angle = 180;
 
-			x += width / 2;
+			xOffset += width / 2;
 
 			switch (noteData)
 			{
@@ -169,10 +207,10 @@ class Note extends FlxSprite
 
 			updateHitbox();
 
-			x -= width / 2;
+			xOffset -= width / 2;
 
 			if (PlayState.curStage.startsWith('school'))
-				x += 30;
+				xOffset += 30;
 
 			if (prevNote.isSustainNote)
 			{
@@ -194,14 +232,21 @@ class Note extends FlxSprite
 			}
 		}
 	}
-
-	public function updateColors():Void
-	{
-		colorSwap.update(arrowColors[noteData]);
-	}
-
+	
 	override function update(elapsed:Float)
 	{
+		if (strumTrack != null && !hideNote && !noteFuckingDying){
+			this.x = strumTrack.x + xOffset;
+			this.alpha = defaultAlpha;
+		}
+		else if (strumTrack == null && !hideNote)
+			hideNote = true;
+		
+		if (hideNote && !inChart && !noteFuckingDying){
+			this.x = 0;
+			this.alpha = 0;
+		}
+
 		super.update(elapsed);
 
 		if (mustPress)
@@ -233,11 +278,17 @@ class Note extends FlxSprite
 			if (strumTime <= Conductor.songPosition)
 				wasGoodHit = true;
 		}
+	}
 
-		if (tooLate)
-		{
-			if (alpha > 0.3)
-				alpha = 0.3;
-		}
+	/**
+	 * I had something more planned out, but I couldn't get it to work.
+	 * @param notes don't fucking worry about it dawg
+	 */
+	public function fuckNote(notes:FlxTypedGroup<Note>){
+		noteFuckingDying = true;
+
+		kill();
+		notes.remove(this, true);
+		destroy();
 	}
 }

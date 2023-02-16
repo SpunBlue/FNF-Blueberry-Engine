@@ -1,5 +1,9 @@
 package game;
 
+import engine.modding.SpunModLib.ModAssets;
+import engine.modutil.ModVariables;
+import engine.modding.SpunModLib.ModLib;
+import engine.Engine;
 import flixel.math.FlxMath;
 import util.ui.AtlasText;
 import flixel.FlxG;
@@ -89,48 +93,24 @@ class TitleState extends MusicBeatState
 		camFollow.alpha = 0;
 		FlxG.camera.follow(camFollow, null, CoolUtil.camLerpShit(0.06));
 
+		FlxSprite.defaultAntialiasing = true;
+
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('blueberryEngine', 'spunblue');
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
 		Highscore.load();
+		ModLib.readMods('mods/');
+
+		ModLib.default_setMod_callback = function(){
+			ModVariables.reset();
+		};
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
 		#elseif CHARTING
 		FlxG.switchState(new ChartingState());
-		/* 
-			#elseif web
-
-
-			if (!initialized)
-			{
-
-				video = new Video();
-				FlxG.stage.addChild(video);
-
-				var netConnection = new NetConnection();
-				netConnection.connect(null);
-
-				netStream = new NetStream(netConnection);
-				netStream.client = {onMetaData: client_onMetaData};
-				netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, netStream_onAsyncError);
-				netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnection_onNetStatus);
-				// netStream.addEventListener(NetStatusEvent.NET_STATUS) // netStream.play(Paths.file('music/kickstarterTrailer.mp4'));
-
-				overlay = new Sprite();
-				overlay.graphics.beginFill(0, 0.5);
-				overlay.graphics.drawRect(0, 0, 1280, 720);
-				overlay.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
-
-				overlay.buttonMode = true;
-				// FlxG.stage.addChild(overlay);
-
-			}
-		 */
-
-		// netConnection.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
 		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
@@ -159,7 +139,7 @@ class TitleState extends MusicBeatState
 
 	private function netStream_onAsyncError(event:AsyncErrorEvent):Void
 	{
-		trace("Error loading video");
+		Engine.debugPrint("Error loading video");
 	}
 
 	private function netConnection_onNetStatus(event:NetStatusEvent):Void
@@ -172,7 +152,7 @@ class TitleState extends MusicBeatState
 			startIntro();
 		}
 
-		trace(event.toString());
+		Engine.debugPrint(event.toString());
 	}
 
 	private function overlay_onMouseDown(event:MouseEvent):Void
@@ -232,7 +212,7 @@ class TitleState extends MusicBeatState
 		logoBl.shader = swagShader.shader;
 		// logoBl.shader = alphaShader.shader;
 
-		// trace();
+		// Engine.debugPrint();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
@@ -325,6 +305,17 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		/* 
+			if (FlxG.keys.justPressed.R)
+			{
+				#if polymod
+				polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
+				Engine.debugPrint('reinitialized');
+				#end
+			}
+
+		 */
+
 		if (camY == -1)
 			camY = camFollow.y;
 
@@ -333,7 +324,7 @@ class TitleState extends MusicBeatState
 
 		#if debug
 		if (FlxG.keys.justPressed.M)
-			trace('step: $curStep');
+			Engine.debugPrint('step: $curStep');
 		#end
 
 		if (FlxG.sound.music != null)
@@ -391,7 +382,7 @@ class TitleState extends MusicBeatState
 
 					if (version.trim() != onlineVersion)
 					{
-						trace('OLD VERSION!');
+						Engine.debugPrint('OLD VERSION!');
 						// FlxG.switchState(new OutdatedSubState());
 					}
 					else

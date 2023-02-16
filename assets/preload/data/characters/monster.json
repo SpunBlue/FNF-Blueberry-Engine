@@ -1,0 +1,44 @@
+{
+  "imagePath": "characters/Monster_Assets.png",
+  "xmlPath": "characters/Monster_Assets.xml",
+  "Position": [0, 100],
+  "CamPosition": [0, 0],
+  "animations": [
+    {
+      "prefix": "monster idle",
+      "name": "idle",
+      "fps": 24,
+      "indices": [],
+      "offsets": []
+    },
+    {
+      "prefix": "monster up note",
+      "name": "singUP",
+      "fps": 24,
+      "indices": [],
+      "offsets": [-20, 94]
+    },
+    {
+      "prefix": "monster down",
+      "name": "singDOWN",
+      "fps": 24,
+      "indices": [],
+      "offsets": [-50, -80]
+    },
+    {
+      "prefix": "Monster left note",
+      "name": "singLEFT",
+      "fps": 24,
+      "indices": [],
+      "offsets": [-30, 20]
+    },
+    {
+      "prefix": "Monster Right note",
+      "name": "singRIGHT",
+      "fps": 24,
+      "indices": [],
+      "offsets": [-51, 30]
+    }
+  ],
+  "antialiasing": true
+}

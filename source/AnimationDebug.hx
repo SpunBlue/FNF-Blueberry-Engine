@@ -1,5 +1,7 @@
 package;
 
+import game.PlayState;
+import sys.io.File;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -19,14 +21,11 @@ using StringTools;
  */
 class AnimationDebug extends FlxState
 {
-	var bf:Boyfriend;
-	var dad:Character;
 	var char:Character;
 	var textAnim:FlxText;
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
-	var isDad:Bool = true;
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
 
@@ -44,29 +43,11 @@ class AnimationDebug extends FlxState
 		gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		if (daAnim == 'bf')
-			isDad = false;
-
-		if (isDad)
-		{
-			dad = new Character(0, 0, daAnim);
-			dad.screenCenter();
-			dad.debugMode = true;
-			add(dad);
-
-			char = dad;
-			dad.flipX = false;
-		}
-		else
-		{
-			bf = new Boyfriend(0, 0);
-			bf.screenCenter();
-			bf.debugMode = true;
-			add(bf);
-
-			char = bf;
-			bf.flipX = false;
-		}
+		char = new Character(0, 0, daAnim);
+		char.screenCenter();
+		char.debugMode = true;
+		char.flipX = !char.flipX;
+		add(char);
 
 		dumbTexts = new FlxTypedGroup<FlxText>();
 		add(dumbTexts);
@@ -205,7 +186,9 @@ class AnimationDebug extends FlxState
 			}
 
 			outputString.trim();
-			saveOffsets(outputString);
+
+			File.saveContent("backup-LastOffsets.txt", outputString);
+			FlxG.switchState(new PlayState());
 		}
 
 		super.update(elapsed);

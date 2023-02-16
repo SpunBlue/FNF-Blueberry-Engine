@@ -1,5 +1,7 @@
 package util.ui;
 
+import engine.modding.SpunModLib.ModAssets;
+import engine.Engine;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -30,7 +32,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 
 		add(items = new TextMenuList());
 
-		//createPrefItem('naughtyness', 'censor-naughty', true);
+		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
 		createPrefItem('flashing menu', 'flashing-menu', true);
 		//createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
@@ -66,10 +68,10 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 
 	public static function initPrefs():Void
 	{
-		//preferenceCheck('censor-naughty', true);
+		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
 		preferenceCheck('flashing-menu', true);
-		//preferenceCheck('camera-zoom', true);
+		// preferenceCheck('camera-zoom', true);
 		preferenceCheck('debuglog', true);
 		preferenceCheck('fps-counter', true);
 		preferenceCheck('auto-pause', false);
@@ -98,7 +100,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 					prefToggle(prefString);
 
 				default:
-					trace('swag');
+					Engine.debugPrint('swag');
 			}
 		});
 
@@ -108,10 +110,10 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 				createCheckbox(prefString);
 
 			default:
-				trace('swag');
+				Engine.debugPrint('swag');
 		}
 
-		trace(Type.typeof(prefValue).getName());
+		Engine.debugPrint(Type.typeof(prefValue).getName());
 	}
 
 	function createCheckbox(prefString:String)
@@ -130,7 +132,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		daSwap = !daSwap;
 		preferences.set(prefName, daSwap);
 		checkboxes[items.selectedIndex].daValue = daSwap;
-		trace('toggled? ' + preferences.get(prefName));
+		Engine.debugPrint('toggled? ' + preferences.get(prefName));
 
 		switch (prefName)
 		{
@@ -166,11 +168,11 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		if (preferences.get(prefString) == null)
 		{
 			preferences.set(prefString, prefValue);
-			trace('set preference!');
+			Engine.debugPrint('set preference!');
 		}
 		else
 		{
-			trace('found preference: ' + preferences.get(prefString));
+			Engine.debugPrint('found preference: ' + preferences.get(prefString));
 		}
 	}
 }

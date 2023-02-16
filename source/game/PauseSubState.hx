@@ -1,5 +1,7 @@
 package game;
 
+import engine.modding.SpunModLib.ModAssets;
+import flixel.group.FlxGroup;
 import Controls.Control;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -27,6 +29,8 @@ class PauseSubState extends MusicBeatSubstate
 	var menuItems:Array<String> = [];
 	var curSelected:Int = 0;
 
+	var uiGroup:FlxGroup = new FlxGroup();
+
 	var pauseMusic:FlxSound;
 
 	var practiceText:FlxText;
@@ -37,7 +41,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		menuItems = pauseOG;
 
-		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
+		pauseMusic = new FlxSound().loadEmbedded(Paths.music('pause'), true, true);
 		pauseMusic.volume = 0;
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
 
@@ -81,25 +85,33 @@ class PauseSubState extends MusicBeatSubstate
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 		levelInfo.updateHitbox();
-		add(levelInfo);
+		uiGroup.add(levelInfo);
 
 		levelInfo.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
+
+		if (PlayState.inLoopMode){
+			var loopText:FlxText = new FlxText(20, 15 + 32, 0, "LOOPING", 32);
+			loopText.scrollFactor.set();
+			loopText.setFormat(Paths.font('vcr.ttf'), 32);
+			loopText.updateHitbox();
+			uiGroup.add(loopText);
+		}
 
 		var deathCounter:FlxText = new FlxText(20, 15 + 64, 0, "", 32);
 		deathCounter.text = "Blue balled: " + PlayState.deathCounter;
 		deathCounter.scrollFactor.set();
 		deathCounter.setFormat(Paths.font('vcr.ttf'), 32);
 		deathCounter.updateHitbox();
-		add(deathCounter);
+		uiGroup.add(deathCounter);
 
-		practiceText = new FlxText(20, 15 + 64 + 32, 0, "PRACTICE MODE", 32);
+		practiceText = new FlxText(20, 15 + 96, 0, "PRACTICE MODE", 32);
 		practiceText.scrollFactor.set();
 		practiceText.setFormat(Paths.font('vcr.ttf'), 32);
 		practiceText.updateHitbox();
 		practiceText.visible = PlayState.practiceMode;
-		add(practiceText);
+		uiGroup.add(practiceText);
 
 		levelInfo.alpha = 0;
 		deathCounter.alpha = 0;
@@ -112,6 +124,8 @@ class PauseSubState extends MusicBeatSubstate
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
+
+		add(uiGroup);
 
 		regenMenu();
 
@@ -179,7 +193,6 @@ class PauseSubState extends MusicBeatSubstate
 				case "Restart Song":
 					FlxG.resetState();
 				case "Exit to menu":
-					PlayState.seenCutscene = false;
 					PlayState.deathCounter = 0;
 					FlxG.switchState(new FreeplayState());
 			}
