@@ -41,7 +41,7 @@ function onCreate()
     resetFastCar();
     add(fastCar);
 
-    add(limo);
+    layer2.add(limo);
 }
 
 function resetFastCar():Void

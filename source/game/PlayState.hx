@@ -115,6 +115,10 @@ class PlayState extends MusicBeatState
 	public var camHUD:FlxCamera;
 	public var camGame:FlxCamera;
 
+	public var layer1:FlxTypedGroup<FlxBasic>;
+	public var layer2:FlxTypedGroup<FlxBasic>;
+	public var layer3:FlxTypedGroup<FlxBasic>;
+
 	var dialogue:DialogueShitJson;
 
 	var talking:Bool = true;
@@ -233,6 +237,10 @@ class PlayState extends MusicBeatState
 			curStage = 'stage';
 		}
 
+		layer1 = new FlxTypedGroup<FlxBasic>();
+		layer2 = new FlxTypedGroup<FlxBasic>();
+		layer3 = new FlxTypedGroup<FlxBasic>();
+
 		tankmanRun = new FlxTypedGroup<TankmenBG>();
 
 		// Stage shit
@@ -243,6 +251,10 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("TankmenBG", TankmenBG);
 		script.interp.variables.set("BGSprite", BGSprite);
 		script.interp.variables.set("curStage", curStage);
+
+		script.interp.variables.set("layer1", layer1);
+		script.interp.variables.set("layer2", layer2);
+		script.interp.variables.set("layer3", layer3);
 
 		// Beat shit
 		script.interp.variables.set("curBeat", curBeat);
@@ -367,10 +379,16 @@ class PlayState extends MusicBeatState
 		if (dad.curCharacter == gf.curCharacter)
 			gf.visible = false;
 
+        add(layer1);
+
 		add(gf);
+
+        add(layer2);
 
 		add(dad);
 		add(boyfriend);
+
+        add(layer3);
 
 		if (dialogue != null){
 			doof = new DialogueBox(false, dialogue);
