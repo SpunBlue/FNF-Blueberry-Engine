@@ -1216,9 +1216,6 @@ class PlayState extends MusicBeatState
 					gfSpeed = 2;
 				case 112:
 					gfSpeed = 1;
-				case 163:
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new TitleState());
 			}
 		}
 
@@ -1228,10 +1225,9 @@ class PlayState extends MusicBeatState
 			{
 				case 128, 129, 130:
 					vocals.volume = 0;
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new PlayState());
 			}
 		}
+
 		// better streaming of shit
 
 		if (!inCutscene && !_exiting)
@@ -2028,6 +2024,18 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		if (curSong.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200 && camZooming && FlxG.camera.zoom < 1.35)
+		{
+			FlxG.camera.zoom += 0.015;
+			camHUD.zoom += 0.03;
+		}
+
+		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+		{
+			FlxG.camera.zoom += 0.015;
+			camHUD.zoom += 0.03;
+		}
+
 		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
 		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
 
@@ -2047,7 +2055,7 @@ class PlayState extends MusicBeatState
 		{
 			dad.dance();
 		}
-		
+
 		if (curBeat % 8 == 7 && curSong == 'Bopeebo')
 		{
 			boyfriend.playAnim('hey', true);
