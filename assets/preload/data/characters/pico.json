@@ -2,7 +2,7 @@
 	"imagePath": "characters/Pico_FNF_assetss.png",
 	"xmlPath": "characters/Pico_FNF_assetss.xml",
 	"Position": [0, 300],
-	"CamPosition": [0, 90],
+	"CamPosition": [0, 0],
 	"animations": [
 		{
 			"prefix": "Pico Idle Dance",
