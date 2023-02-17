@@ -125,7 +125,7 @@ class PlayState extends MusicBeatState
 	var songScore:Int = 0;
 	var scoreTxt:FlxText;
 
-	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+	public var noteSplashGroup:FlxTypedGroup<NoteSplash>;
 
 	public var tankmanRun:FlxTypedGroup<TankmenBG>;
 
@@ -181,6 +181,9 @@ class PlayState extends MusicBeatState
 		camGame = new SwagCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
+
+		script.interp.variables.set("camHUD", camHUD);
+		script.interp.variables.set("camGame", camGame);
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
@@ -403,14 +406,6 @@ class PlayState extends MusicBeatState
 		/*if (PreferencesMenu.getPref('downscroll'))
 			daNote.strumTrack.y = FlxG.height - 150; // 150 just random ass number lol*/
 
-		// fake notesplash cache type deal so that it loads in the graphic?
-
-		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-
-		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
-		grpNoteSplashes.add(noteSplash);
-		noteSplash.alpha = 0.1;
-
 		var s:String = '';
 
 		switch (SONG.song.toLowerCase()){
@@ -421,7 +416,8 @@ class PlayState extends MusicBeatState
 		generateStaticArrows(s, PreferencesMenu.getPref('middle-scroll'));
 		add(strumLineNotes);
 
-		add(grpNoteSplashes);
+		noteSplashGroup = new FlxTypedGroup<NoteSplash>();
+		add(noteSplashGroup);
 
 		generateSong(s);
 
@@ -479,7 +475,7 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
-		grpNoteSplashes.cameras = [camHUD];
+		noteSplashGroup.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -1370,13 +1366,6 @@ class PlayState extends MusicBeatState
 							dad.playAnim('singRIGHT' + altAnim, true);
 					}
 
-
-					if (!daNote.isSustainNote && daNote.alpha != 0){
-						var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-						noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-						grpNoteSplashes.add(noteSplash);
-					}
-
 					if (cpuStrums != null){
 						cpuStrums.forEach(function(spr:FlxSprite)
 						{
@@ -1591,10 +1580,7 @@ class PlayState extends MusicBeatState
 			score = 200;
 		}
 		else{
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-			// new NoteSplash(daNote.x, daNote.y, daNote.noteData);
-			grpNoteSplashes.add(noteSplash);
+			spawnNoteSplash(daNote.noteData);
 		}
 
 		// Only add the score if you're not on practice mode
@@ -1989,6 +1975,16 @@ class PlayState extends MusicBeatState
 				note.destroy();
 			}
 		}
+	}
+
+	public inline function spawnNoteSplash(noteData:Int) {
+		var staticNote:FlxSprite = playerStrums.members[noteData];
+		createNoteSplash(staticNote.x, staticNote.y, noteData);
+	}
+
+	public inline function createNoteSplash(x:Float, y:Float, noteData:Int) {
+		var splash:NoteSplash = new NoteSplash(x, y, noteData);
+		noteSplashGroup.add(splash);
 	}
 
 	override function stepHit()

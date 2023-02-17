@@ -19,6 +19,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import hscript.Interp;
@@ -59,6 +60,7 @@ class Hscript
 		interp.variables.set("FlxTimer", FlxTimer);
 		interp.variables.set("FlxAngle", FlxAngle);
 		interp.variables.set("FlxGraphic", FlxGraphic);
+		interp.variables.set("FlxEase", FlxEase);
 		interp.variables.set("FlxTween", FlxTween);
 		interp.variables.set("FlxCamera", FlxCamera);
 		interp.variables.set("File", File);
