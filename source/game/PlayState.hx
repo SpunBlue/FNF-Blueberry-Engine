@@ -182,9 +182,6 @@ class PlayState extends MusicBeatState
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 
-		script.interp.variables.set("camHUD", camHUD);
-		script.interp.variables.set("camGame", camGame);
-
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
 
@@ -273,6 +270,9 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("gf", gf);
 
 		// Goofy Ahhh functions
+		script.interp.variables.set("camHUD", camHUD);
+		script.interp.variables.set("camGame", camGame);
+
 		script.interp.variables.set("add", function(value:Dynamic)
 		{
 			add(value);
