@@ -2,7 +2,7 @@
 	"imagePath": "characters/Mom_Assets.png",
 	"xmlPath": "characters/Mom_Assets.xml",
 	"Position": [0, 0],
-	"CamPosition": [0, -100],
+	"CamPosition": [0, 0],
 	"animations": [
 		{
 			"prefix": "Mom Idle",

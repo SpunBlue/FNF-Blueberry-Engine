@@ -2,7 +2,7 @@
 	"imagePath": "characters/bfCar.png",
 	"xmlPath": "characters/bfCar.xml",
 	"Position": [0, 0],
-	"CamPosition": [-300, 0],
+	"CamPosition": [-150, 0],
 	"animations": [
 		{
 			"prefix": "BF idle dance",

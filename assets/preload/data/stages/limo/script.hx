@@ -38,10 +38,13 @@ function create()
 
     fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
 
+    layer2.add(limo);
+}
+
+function createPost()
+{
     resetFastCar();
     add(fastCar);
-
-    layer2.add(limo);
 }
 
 function resetFastCar():Void
