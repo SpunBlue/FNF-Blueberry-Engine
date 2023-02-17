@@ -122,8 +122,12 @@ class PlayState extends MusicBeatState
 	var dialogue:DialogueShitJson;
 
 	var talking:Bool = true;
-	var songScore:Int = 0;
-	var scoreTxt:FlxText;
+
+	public var songHits:Int = 0;
+	public var songMisses:Int = 0;
+	public var songScore:Int = 0;
+
+	public var scoreTxt:FlxText;
 
 	public var noteSplashGroup:FlxTypedGroup<NoteSplash>;
 
@@ -190,6 +194,8 @@ class PlayState extends MusicBeatState
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
+
+		songMisses = 0;
 
 		var modID:String = null;
 
@@ -462,8 +468,8 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt = new FlxText(healthBarBG.x - 105, (FlxG.height * 0.9) + 36, 800, "", 22);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
@@ -540,9 +546,7 @@ class PlayState extends MusicBeatState
 
 		#if discord_rpc
 		rpcTimer.start(3, function(timer:FlxTimer){
-			//var newText:String = 'Score: $songScore - Accuracy: ' + calculateRatingPercent() + ' - Misses: $songMisses - Combo: $combo';
-
-			var newText:String = 'Score $songScore';
+			var newText:String = 'Score: $songScore - Accuracy: ' + calculateRatingPercent() + ' - Misses: $songMisses - Combo: $combo';
 
 			if (OptionsData.botplay == true)
 				newText += ' - Botplay is Enabled';
@@ -1091,7 +1095,7 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.ALT)
 			replaceArrows('pixel', false, true);
 
-		scoreTxt.text = "Score:" + songScore;
+		scoreTxt.text = 'Score: $songScore - Accuracy: ' + calculateRatingPercent() + ' - Misses: $songMisses - Combo: $combo';
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1733,6 +1737,24 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	function calculateRatingPercent():String{
+		var ratingPercent = songScore / ((songHits + songMisses) * 350);
+
+		if(!Math.isNaN(ratingPercent) && ratingPercent < 0)
+			ratingPercent = 0;
+
+		//FlxG.log.add('Rating Percent: ' + ratingPercent);
+		var rPercent:Float = FlxMath.roundDecimal(ratingPercent * 100, 2);
+
+		if (FlxG.keys.anyJustPressed([X]))
+			trace('' + ratingPercent);
+
+		if (Math.isNaN(ratingPercent))
+			return '???%';
+		else
+			return '$rPercent%';
+	}
+
 	var cameraRightSide:Bool = false;
 
 	/**
@@ -1906,6 +1928,8 @@ class PlayState extends MusicBeatState
 	{
 		script.call("noteMiss", [direction]);
 
+		songMisses++;
+
 		health -= 0.1;
 		killCombo();
 
@@ -1938,6 +1962,7 @@ class PlayState extends MusicBeatState
 			{
 				combo += 1;
 				popUpScore(note.strumTime, note);
+				songHits++;
 			}
 
 			if (note.noteData >= 0)
