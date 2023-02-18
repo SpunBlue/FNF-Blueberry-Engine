@@ -410,6 +410,9 @@ class PlayState extends MusicBeatState
 
 		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
 		grpNoteSplashes.add(noteSplash);
+		
+		add(grpNoteSplashes);
+		noteSplash.kill();
 
 		var s:String = '';
 
@@ -420,9 +423,6 @@ class PlayState extends MusicBeatState
 		
 		generateStaticArrows(s, PreferencesMenu.getPref('middle-scroll'), PreferencesMenu.getPref('downscroll'));
 		add(strumLineNotes);
-
-		add(grpNoteSplashes);
-		noteSplash.kill();
 
 		generateSong(s);
 
@@ -475,7 +475,7 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
-		scoreTxt = new FlxText(0, healthBar.y + 24, FlxG.width, "", 20);
+		scoreTxt = new FlxText(0, healthBar.y + 32, FlxG.width, "", 20);
 		scoreTxt.setFormat(Paths.font("PhantomMuff.ttf"), 24, FlxColor.WHITE, CENTER);
 		scoreTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2);
 		scoreTxt.antialiasing = true;
