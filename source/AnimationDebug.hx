@@ -191,6 +191,9 @@ class AnimationDebug extends FlxState
 			FlxG.switchState(new PlayState());
 		}
 
+		if (FlxG.keys.justPressed.F)
+			char.flipX = !char.flipX;
+
 		super.update(elapsed);
 	}
 

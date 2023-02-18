@@ -34,8 +34,11 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 
 		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
+		createPrefItem('middle scroll', 'middle-scroll', false);
 		createPrefItem('flashing menu', 'flashing-menu', true);
-		//createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
+		createPrefItem('allow video cutscenes', 'vidscene', true);
+		createPrefItem('allow cutscenes', 'cutscenes', true);
+		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('Allow Debug Logging', 'debuglog', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
 		createPrefItem('Auto Pause', 'auto-pause', false);
@@ -68,9 +71,15 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 
 	public static function initPrefs():Void
 	{
+		if (FlxG.save.data.pref != null)
+			preferences = FlxG.save.data.pref;
+
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
+		preferenceCheck('middle-scroll', false);
 		preferenceCheck('flashing-menu', true);
+		preferenceCheck('vidscene', true);
+		preferenceCheck('cutscenes', true);
 		// preferenceCheck('camera-zoom', true);
 		preferenceCheck('debuglog', true);
 		preferenceCheck('fps-counter', true);
@@ -133,6 +142,8 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		preferences.set(prefName, daSwap);
 		checkboxes[items.selectedIndex].daValue = daSwap;
 		Engine.debugPrint('toggled? ' + preferences.get(prefName));
+
+		FlxG.save.data.pref = preferences;
 
 		switch (prefName)
 		{

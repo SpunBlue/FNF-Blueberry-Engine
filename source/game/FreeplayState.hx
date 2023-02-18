@@ -60,6 +60,12 @@ class FreeplayState extends MusicBeatState
     override function create(){
         allowCamBeat = true;
 
+        if (!FlxG.sound.music.playing){
+            FlxG.sound.playMusic(Paths.music('freakyMenu'));
+            FlxG.sound.music.fadeIn(0.5, 0, 1);
+            Conductor.changeBPM(102);
+        }
+
         super.create();
 
         bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));

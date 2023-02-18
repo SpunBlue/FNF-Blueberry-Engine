@@ -1,5 +1,6 @@
 package engine.modutil;
 
+import flixel.math.FlxAngle;
 import util.ui.PreferencesMenu;
 import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -65,6 +66,8 @@ class Hscript
 		interp.variables.set("FlxTypedGroup", FlxTypedGroup);
 		interp.variables.set("Paths", Paths);
 		interp.variables.set("Path", Path);
+
+		interp.variables.set("FlxAngle", FlxAngle);
 
 		interp.variables.set("FlxAtlasFrames", FlxAtlasFrames);
 		interp.variables.set("FlxAtlas", FlxAtlas);

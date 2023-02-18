@@ -9,14 +9,14 @@ import flixel.FlxSprite;
 import shaderslmfao.ColorSwap;
 
 class StrumNotes extends FlxSpriteGroup{
-	public var arrows:Array<FlxSprite> = [];
+	public var arrows:Array<StrumArrow> = [];
 	public var style:String = '';
 
 	private var lastStyle:String = '';
 
 	var didTransition:Bool = false;
 
-    public function new(x:Float, y:Float, strumLineY:Float, specialX:Float, ?style:String = ''){
+    public function new(x:Float, y:Float, strumLineY:Float, xOffset:Float, ?style:String = '', downscroll:Bool = false){
 		setSize(FlxG.width, FlxG.height);
 
         super(x, y);
@@ -25,7 +25,7 @@ class StrumNotes extends FlxSpriteGroup{
 		lastStyle = style;
 
         for (i in 0...4){
-            var babyArrow:FlxSprite = new FlxSprite(0, strumLineY);
+            var babyArrow:StrumArrow = new StrumArrow(0, strumLineY, downscroll);
             var colorswap:ColorSwap = new ColorSwap();
             babyArrow.shader = colorswap.shader;
             colorswap.update(Note.arrowColors[i]);
@@ -109,7 +109,7 @@ class StrumNotes extends FlxSpriteGroup{
             babyArrow.ID = i;
 
             babyArrow.x += 50;
-			babyArrow.x += specialX;
+			babyArrow.x += xOffset;
 
             babyArrow.animation.play('static');
 			babyArrow.alpha = 0; // for note transition
@@ -147,10 +147,20 @@ class StrumNotes extends FlxSpriteGroup{
 				babyArrow.y -= 10;
 				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
 	
-				i++;
+				++i;
 			}
 
 			didTransition = true;
 		}
+	}
+}
+
+class StrumArrow extends FlxSprite{
+	public var isDownscroll:Bool = false;
+
+	public function new (x:Float, y:Float, downscroll:Bool){
+		super(x, y);
+
+		isDownscroll = downscroll;
 	}
 }

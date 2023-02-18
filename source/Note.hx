@@ -13,6 +13,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import shaderslmfao.ColorSwap;
 import util.ui.PreferencesMenu;
+import StrumNotes.StrumArrow;
 
 using StringTools;
 
@@ -34,7 +35,6 @@ class Note extends FlxSprite
 	private var willMiss:Bool = false;
 
 	public var altNote:Bool = false;
-	public var invisNote:Bool = false;
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
@@ -50,19 +50,19 @@ class Note extends FlxSprite
 
 	public static var arrowColors:Array<Float> = [1, 1, 1, 1];
 
-	public var strumTrack:FlxSprite;
+	public var strumTrack:StrumArrow;
 	private var xOffset:Float;
 
 	var defaultAlpha:Float = 1;
-	public var hideNote:Bool = false;
 
 	public var style:String = '';
 
 	var inChart:Bool = false;
 
 	public var noteFuckingDying:Bool = false;
+	public var hideBitch:Bool = false;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:FlxSprite, ?style:String = '', ?inCharter:Bool = true)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true)
 	{
 		super();
 
@@ -93,7 +93,7 @@ class Note extends FlxSprite
 		colorSwap.update(arrowColors[noteData]);
 	}
 
-	public function updateTracker(strumNote:FlxSprite){
+	public function updateTracker(strumNote:StrumArrow){
 		strumTrack = strumNote;
 	}
 
@@ -165,16 +165,12 @@ class Note extends FlxSprite
 		switch (noteData)
 		{
 			case 0:
-				x += swagWidth * 0;
 				animation.play('purpleScroll');
 			case 1:
-				x += swagWidth * 1;
 				animation.play('blueScroll');
 			case 2:
-				x += swagWidth * 2;
 				animation.play('greenScroll');
 			case 3:
-				x += swagWidth * 3;
 				animation.play('redScroll');
 		}
 
@@ -188,10 +184,8 @@ class Note extends FlxSprite
 			noteScore * 0.2;
 			defaultAlpha = 0.6;
 
-			if (PreferencesMenu.getPref('downscroll'))
+			if (strumTrack.isDownscroll)
 				angle = 180;
-
-			xOffset += width / 2;
 
 			switch (noteData)
 			{
@@ -207,10 +201,12 @@ class Note extends FlxSprite
 
 			updateHitbox();
 
-			xOffset -= width / 2;
-
-			if (PlayState.curStage.startsWith('school'))
-				xOffset += 30;
+			switch (style){
+				default:
+					xOffset += 35;
+				case 'pixel':
+					xOffset += 30;
+			}
 
 			if (prevNote.isSustainNote)
 			{
@@ -234,20 +230,19 @@ class Note extends FlxSprite
 	}
 	
 	override function update(elapsed:Float)
-	{
-		if (strumTrack != null && !hideNote && !noteFuckingDying){
-			this.x = strumTrack.x + xOffset;
-			this.alpha = defaultAlpha;
-		}
-		else if (strumTrack == null && !hideNote)
-			hideNote = true;
-		
-		if (hideNote && !inChart && !noteFuckingDying){
-			this.x = 0;
-			this.alpha = 0;
+	{	
+		if (strumTrack != null){
+			x = strumTrack.x + xOffset;
+
+			hideBitch = !strumTrack.visible;
 		}
 
 		super.update(elapsed);
+
+		if (hideBitch)
+			alpha = 0;
+		else
+			alpha = defaultAlpha;
 
 		if (mustPress)
 		{
@@ -287,8 +282,10 @@ class Note extends FlxSprite
 	public function fuckNote(notes:FlxTypedGroup<Note>){
 		noteFuckingDying = true;
 
-		kill();
-		notes.remove(this, true);
-		destroy();
+		FlxTween.tween(this, {defaultAlpha: 0}, 0.5, {ease: FlxEase.circOut, onComplete: function(v:Dynamic){
+			kill();
+			notes.remove(this, true);
+			destroy();
+		}});
 	}
 }

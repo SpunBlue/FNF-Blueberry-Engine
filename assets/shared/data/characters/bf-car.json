@@ -16,7 +16,6 @@
 			"name": "idleHair",
 			"fps": 24,
 			"indices": [8, 9, 10, 11, 12, 13],
-            "loop": true,
 			"offsets": [-5]
 		},
 		{

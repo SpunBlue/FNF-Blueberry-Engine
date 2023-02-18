@@ -41,17 +41,17 @@
         },
         {
             "prefix": "PRETTY GOOD",
-            "name": "singDOWN-alt",
+            "name": "prettyGood",
             "fps": 24,
             "indices": [],
-            "offsets": [98, -90]
+            "offsets": [98, 10]
         },
         {
             "prefix": "TANKMAN UGH",
             "name": "singUP-alt",
             "fps": 24,
             "indices": [],
-            "offsets": [24, 56]
+            "offsets": [-6, -4]
         }
     ],
     "flipX": true,
