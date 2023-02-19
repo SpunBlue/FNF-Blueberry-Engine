@@ -39,6 +39,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		createPrefItem('allow video cutscenes', 'vidscene', true);
 		createPrefItem('allow cutscenes', 'cutscenes', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
+		createPrefItem('Funny Chart Lights', 'chart-lights', true);
 		createPrefItem('Allow Debug Logging', 'debuglog', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
 		createPrefItem('Auto Pause', 'auto-pause', false);
@@ -83,6 +84,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		// preferenceCheck('camera-zoom', true);
 		preferenceCheck('debuglog', true);
 		preferenceCheck('fps-counter', true);
+		preferenceCheck('chart-lights', true);
 		preferenceCheck('auto-pause', false);
 		preferenceCheck('master-volume', 1);
 

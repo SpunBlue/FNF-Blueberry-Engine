@@ -184,7 +184,7 @@ class Note extends FlxSprite
 			noteScore * 0.2;
 			defaultAlpha = 0.6;
 
-			if (strumTrack.isDownscroll)
+			if (strumTrack != null && strumTrack.isDownscroll)
 				angle = 180;
 
 			switch (noteData)
@@ -241,7 +241,7 @@ class Note extends FlxSprite
 
 		if (hideBitch)
 			alpha = 0;
-		else
+		else if (!inChart)
 			alpha = defaultAlpha;
 
 		if (mustPress)

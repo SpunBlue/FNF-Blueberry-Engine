@@ -43,8 +43,6 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
-		mod = ModLib.curMod;
-
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 
@@ -55,8 +53,8 @@ class Character extends FlxSprite
 
 		Engine.debugPrint('Getting ready for loading of character $character');
 		
-		if (mod != null && ModVariables.characters.exists('$character-' + mod.id))
-			charJson = ModVariables.characters.get('$character-' + mod.id);
+		if (mod != null && ModVariables.characters.exists('$character-' + ModLib.getModID(ModLib.curMod)))
+			charJson = ModVariables.characters.get('$character-' + ModLib.getModID(ModLib.curMod));
 		else if (CharVar.defChars.exists('$character')){
 			charJson = CharVar.defChars.get('$character');
 
@@ -65,7 +63,7 @@ class Character extends FlxSprite
 		else{
 			charJson = Json.parse(ModAssets.getAsset('data/characters/$character.json', mod, null, 'shared'));
 
-			if (mod == null)
+			if (ModLib.getModID(ModLib.curMod) == null)
 				addToDef = true;
 		}
 
@@ -109,7 +107,7 @@ class Character extends FlxSprite
 				setGraphicSize(Std.int(width * charJson.size));
 
 			if (!addToDef)
-				ModVariables.characters.set('$character-' + mod.id, charJson);
+				ModVariables.characters.set('$character-' + ModLib.getModID(ModLib.curMod), charJson);
 			else
 				CharVar.defChars.set('$character', charJson);
 		}

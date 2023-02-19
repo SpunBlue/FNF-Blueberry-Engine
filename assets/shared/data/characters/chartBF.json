@@ -1,0 +1,45 @@
+{
+    "imagePath": "characters/bfPixel.png",
+    "xmlPath": "characters/bfPixel.xml",
+    "Position": [0, 0],
+    "CamPosition": [-100, 24],
+    "animations": [
+        {
+            "prefix": "BF IDLE",
+            "name": "idle",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF UP NOTE",
+            "name": "singUP",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF LEFT NOTE",
+            "name": "singLEFT",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF RIGHT NOTE",
+            "name": "singRIGHT",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        },
+        {
+            "prefix": "BF DOWN NOTE",
+            "name": "singDOWN",
+            "fps": 24,
+            "indices": null,
+            "offsets": [0, 0]
+        }
+    ],
+    "antialiasing": false,
+    "flipX": true
+}

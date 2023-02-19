@@ -276,10 +276,7 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		var modID:String = null;
-
-		if (ModLib.curMod != null)
-			modID = ModLib.curMod.id;
+		var modID:String = ModLib.getModID(ModLib.curMod);
 
 		if (FileSystem.exists('assets/data/charts/' + SONG.song.toLowerCase() + '/dialogue.json')){
 			dialogue = Json.parse(File.getContent('assets/data/charts/' + SONG.song.toLowerCase() + '/dialogue.json'));
@@ -2071,7 +2068,7 @@ class PlayState extends MusicBeatState
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
-		if (curBeat % gfSpeed == 0 && (gf.animation.curAnim.name.startsWith('dance') || gf.animation.curAnim.name != 'idle' && gf.animation.curAnim.finished))
+		if (curBeat % gfSpeed == 0 && (gf.isDancing() || !gf.isDancing() && gf.animation.curAnim.finished))
 			gf.dance();
 
 		if (boyfriend.isDancing() || !boyfriend.isDancing() && !boyfriend.animation.curAnim.name.startsWith("sing") && boyfriend.animation.curAnim.finished 

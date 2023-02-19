@@ -1,5 +1,7 @@
 package;
 
+import engine.modding.SpunModLib.ModLib;
+import engine.modding.SpunModLib.ModAssets;
 import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
@@ -40,7 +42,7 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		var rawJson = Assets.getText(Paths.json('charts/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
+		var rawJson = ModAssets.getContent("data/charts/" + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json', null, ModLib.getModID(ModLib.curMod), null).trim();
 
 		while (!rawJson.endsWith("}"))
 		{
