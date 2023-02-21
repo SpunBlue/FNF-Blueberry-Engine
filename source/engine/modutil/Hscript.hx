@@ -1,5 +1,6 @@
 package engine.modutil;
 
+import haxe.Json;
 import flixel.math.FlxAngle;
 import util.ui.PreferencesMenu;
 import flixel.graphics.atlas.FlxAtlas;
@@ -47,7 +48,6 @@ class Hscript
 		interp.variables.set("Bool", Bool);
 		interp.variables.set("Dynamic", Dynamic);
 		interp.variables.set("Math", Math);
-		interp.variables.set("Main", Main);
 		interp.variables.set("FlxMath", FlxMath);
 		interp.variables.set("Std", Std);
 		interp.variables.set("StringTools", StringTools);
@@ -66,6 +66,7 @@ class Hscript
 		interp.variables.set("FlxTypedGroup", FlxTypedGroup);
 		interp.variables.set("Paths", Paths);
 		interp.variables.set("Path", Path);
+		interp.variables.set("Json", Json);
 
 		interp.variables.set("FlxAngle", FlxAngle);
 
@@ -81,13 +82,15 @@ class Hscript
 		interp.variables.set("Song", Song);
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("Section", Section);
+		interp.variables.set("Note", Note);
 
 		// Modding System
 		interp.variables.set("ModAssets", ModAssets);
+		interp.variables.set("ModLib", ModLib);
 
 		interp.allowStaticVariables = interp.allowPublicVariables = true;
 
-		interp.variables.set("getModID", function(value:Dynamic)
+		interp.variables.set("getModID", function()
 		{
 			return ModLib.curMod.id;
 		});
@@ -148,11 +151,13 @@ class Hscript
 	 * Load App Script
 	 * @param location Location of the Script (Root starts at 'data', you can't change this.)
 	 * @param scriptName name of Script.
+	 * @param modID Mod ID.
+	 * @param addDir Additional Directory on Fail
 	 */
-	public function loadScript(location:String, scriptName:String, ?modID:String = null)
+	public function loadScript(location:String, scriptName:String, ?modID:String = null, addDir:String = 'shared')
 	{
 		try{
-			script = parser.parseString(ModAssets.getAsset('data/$location/$scriptName.hx', null, modID, "shared"));
+			script = parser.parseString(ModAssets.getAsset('data/$location/$scriptName.hx', null, modID, addDir));
 			interp.execute(script);
 		}
 		catch(e:Dynamic){

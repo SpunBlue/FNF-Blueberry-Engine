@@ -1,5 +1,11 @@
 package;
 
+import util.ui.PreferencesMenu;
+import lime.app.Application;
+import sys.io.File;
+import sys.FileSystem;
+import haxe.PosInfos;
+import haxe.Log;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Assets;
@@ -41,6 +47,27 @@ class Main extends Sprite
 	{
 		super();
 
+		var fnfVer:String = '0.2.8'; // change later maybe
+
+		if (!FileSystem.isDirectory('logs/'))
+			FileSystem.createDirectory('logs');
+
+		var logName:String = (Date.now().getMonth() + 1) + '-' + Date.now().getDate() + '-' + Date.now().getFullYear() + ' ' + 
+			cnvrtBetterTime(Date.now().getHours(), Date.now().getMinutes());
+		var content:String = '${Sys.systemName()} - Blueberry Engine v${Application.current.meta.get('version')}\nFriday Night Funkin\' v$fnfVer\n';
+
+		Log.trace = function(v:Dynamic, ?infos:PosInfos){
+			if (PreferencesMenu.getPref('debugfilelog')){
+				content += '\n(Line:${infos.lineNumber} Class:${infos.className} Method:${infos.methodName})::$v';
+				File.saveContent('logs/$logName.txt', content);
+			}
+
+			#if (sys && desktop)
+			if (PreferencesMenu.getPref('debuglog'))
+				Sys.println('(Line: ${infos.lineNumber} Class: "${infos.className}" Method: "${infos.methodName}")::$v');
+			#end
+		}
+
 		if (stage != null)
 		{
 			init();
@@ -49,6 +76,27 @@ class Main extends Sprite
 		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
+	}
+
+	function cnvrtBetterTime(hour:Int, minute:Int, ?spacer:String = '.'):String {
+		var min:String;
+
+		if (Std.string(minute).length == 1)
+			min = '0$minute';
+		else
+			min = '$minute';
+
+		var convertedHour:Int = hour % 12;
+		if (convertedHour == 0) {
+			convertedHour = 12;
+		}
+		var result:String = '$convertedHour$spacer$min';
+		if (hour >= 12) {
+			result += 'PM';
+		} else {
+			result += 'AM';
+		}
+		return result;
 	}
 
 	private function init(?E:Event):Void
@@ -91,52 +139,5 @@ class Main extends Sprite
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsCounter);
 		#end
-		/* 
-			video = new Video();
-			addChild(video);
-
-			var netConnection = new NetConnection();
-			netConnection.connect(null);
-
-			netStream = new NetStream(netConnection);
-			netStream.client = {onMetaData: client_onMetaData};
-			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, netStream_onAsyncError);
-
-			#if (js && html5)
-			overlay = new Sprite();
-			overlay.graphics.beginFill(0, 0.5);
-			overlay.graphics.drawRect(0, 0, 560, 320);
-			overlay.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
-			overlay.buttonMode = true;
-			addChild(overlay);
-
-			netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnection_onNetStatus);
-			#else
-			netStream.play("assets/preload/music/dredd.mp4");
-			#end 
-		 */
 	}
-	/* 
-		private function client_onMetaData(metaData:Dynamic)
-		{
-			video.attachNetStream(netStream);
-
-			video.width = video.videoWidth;
-			video.height = video.videoHeight;
-		}
-
-		private function netStream_onAsyncError(event:AsyncErrorEvent):Void
-		{
-			trace("Error loading video");
-		}
-
-		private function netConnection_onNetStatus(event:NetStatusEvent):Void
-		{
-		}
-
-		private function overlay_onMouseDown(event:MouseEvent):Void
-		{
-			netStream.play("assets/preload/music/dredd.mp4");
-		}
-	 */
 }

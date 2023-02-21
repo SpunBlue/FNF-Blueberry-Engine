@@ -1,0 +1,8 @@
+{
+	"name": "Test Mod",
+	"id": "FunkinTestMod",
+	"description": "Test Mod for Blueberry Engine",
+	"author": "SpunBlue",
+	"version": "1.0.0",
+	"ModEngineVersion": "1.0.0"
+}

@@ -1,5 +1,6 @@
 package engine.modding;
 
+import flixel.system.FlxSound;
 import haxe.Json;
 import openfl.Assets;
 import openfl.media.Sound;
@@ -37,9 +38,9 @@ class ModLib{
 
                 if (FileSystem.exists(fullPath + '/mod.json')){
                     try{
-                        trace('Attempting to load \"$fullPath\", ' + modFolders[i]);
+                        trace('Attempting to load \"$fullPath\", ' + modFolders[i] + ' at: ' + Path.normalize(fullPath + '/mod.json'));
 
-                        var json:ModJSON = Json.parse(fullPath + '/mod.json');
+                        var json:ModJSON = Json.parse(File.getContent(Path.normalize(fullPath + '/mod.json')));
                         var thisID:String = null;
 
                         if (json != null && json.id != null)
@@ -164,7 +165,15 @@ class ModAssets{
         return foundMod;
     }
 
-    private static function getPath(path:String, ?mod:Mod, ?modID:String, ?addDir:String):String{
+    /**
+     * Retrieve the Path to a directory or asset.
+     * @param path Path
+     * @param mod Mod Data
+     * @param modID Mod ID
+     * @param addDir Additional Directory
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
+     */
+    public static function getPath(path:String, ?mod:Mod, ?modID:String, ?addDir:String, ?onFailPullAssets:Bool = true):String{
         if (addDir == null)
             addDir = '';
 
@@ -180,15 +189,21 @@ class ModAssets{
 
         fullPath = Path.normalize(fullPath);
 
-        if (!FileSystem.exists(fullPath) || mod == null && modID == null)
+        trace(fullPath);
+
+        if ((!FileSystem.exists(fullPath) || mod == null && modID == null) && onFailPullAssets){
             fullPath = Path.normalize('assets/$addDir/$path');
+
+            if (!FileSystem.exists(fullPath))
+                return null;
+        }
 
         return fullPath;
     }
 
     private static function isValidExt(ext:String){
         for (exten in supportExt){
-            if (exten == ext){
+            if (exten.toLowerCase() == ext.toLowerCase()){
                 return true;
                 break;
             }
@@ -204,8 +219,9 @@ class ModAssets{
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-    public static function getAsset(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String):Dynamic{
+    public static function getAsset(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true):Dynamic{
         #if debug
         trace('File to load: ' + path + ' - path may not be accurate to final path.');
         #end
@@ -230,11 +246,11 @@ class ModAssets{
                     return null;
                 }
             case 'png' | 'jpg' | 'jpeg':
-                return getGraphic(path, mod, modID, additionDirOnFail);
+                return getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets);
             case 'txt' | 'json' | 'hx' | 'lua' | 'xml':
-                return getContent(path, mod, modID, additionDirOnFail);
+                return getContent(path, mod, modID, additionDirOnFail, onFailPullAssets);
             case 'ogg' | 'wav' | 'mp3':
-                return getSound(path, mod, modID, additionDirOnFail);
+                return getSound(path, mod, modID, additionDirOnFail, onFailPullAssets);
         }
     }
 
@@ -244,9 +260,10 @@ class ModAssets{
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-    public static function getContent(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String){
-        var path:String = getPath(path, mod, modID, additionDirOnFail);
+    public static function getContent(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
+        var path:String = getPath(path, mod, modID, additionDirOnFail, onFailPullAssets);
         trace(path);
 
         var ext:String = Path.extension(path).toLowerCase();
@@ -270,9 +287,10 @@ class ModAssets{
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-    public static function getSound(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String){
-        var path:String = getPath(path, mod, modID, additionDirOnFail);
+    public static function getSound(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
+        var path:String = getPath(path, mod, modID, additionDirOnFail, onFailPullAssets);
         trace(path);
 
         var ext:String = Path.extension(path).toLowerCase();
@@ -296,9 +314,10 @@ class ModAssets{
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-    public static function getGraphic(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String){
-        var path:String = getPath(path, mod, modID, additionDirOnFail);
+    public static function getGraphic(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
+        var path:String = getPath(path, mod, modID, additionDirOnFail, onFailPullAssets);
         trace(path);
 
         var ext:String = Path.extension(path).toLowerCase();
@@ -330,9 +349,10 @@ class ModAssets{
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-    public static function assetExists(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String):Bool{
-        var fullPath:String = getPath(path, mod, modID, additionDirOnFail);
+    public static function assetExists(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true):Bool{
+        var fullPath:String = getPath(path, mod, modID, additionDirOnFail, onFailPullAssets);
 
         #if debug
         trace('Checking for file: ' + fullPath);

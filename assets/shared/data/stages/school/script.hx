@@ -2,28 +2,28 @@ var bgGirls:BackgroundGirls;
 var repositionShit = -200;
 
 function onCreate(){
-    var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky'));
+    var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky', 'week6'));
     bgSky.scrollFactor.set(0.1, 0.1);
     bgSky.antialiasing = false;
     add(bgSky);
 
-    var bgSchool:FlxSprite = new FlxSprite(repositionShit, 0).loadGraphic(Paths.image('weeb/weebSchool'));
+    var bgSchool:FlxSprite = new FlxSprite(repositionShit, 0).loadGraphic(Paths.image('weeb/weebSchool', 'week6'));
     bgSchool.scrollFactor.set(0.6, 0.90);
     bgSchool.antialiasing = false;
     add(bgSchool);
 
-    var bgStreet:FlxSprite = new FlxSprite(repositionShit).loadGraphic(Paths.image('weeb/weebStreet'));
+    var bgStreet:FlxSprite = new FlxSprite(repositionShit).loadGraphic(Paths.image('weeb/weebStreet', 'week6'));
     bgStreet.scrollFactor.set(0.95, 0.95);
     bgStreet.antialiasing = false;
     add(bgStreet);
 
-    var fgTrees:FlxSprite = new FlxSprite(repositionShit + 170, 130).loadGraphic(Paths.image('weeb/weebTreesBack'));
+    var fgTrees:FlxSprite = new FlxSprite(repositionShit + 170, 130).loadGraphic(Paths.image('weeb/weebTreesBack', 'week6'));
     fgTrees.scrollFactor.set(0.9, 0.9);
     fgTrees.antialiasing = false;
     add(fgTrees);
 
     var bgTrees:FlxSprite = new FlxSprite(repositionShit - 380, -800);
-    var treetex = Paths.getPackerAtlas('weeb/weebTrees');
+    var treetex = Paths.getPackerAtlas('weeb/weebTrees', 'week6');
     bgTrees.frames = treetex;
     bgTrees.animation.add('treeLoop', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], 12);
     bgTrees.animation.play('treeLoop');
@@ -32,7 +32,7 @@ function onCreate(){
     add(bgTrees);
 
     var treeLeaves:FlxSprite = new FlxSprite(repositionShit, -40);
-    treeLeaves.frames = Paths.getSparrowAtlas('weeb/petals');
+    treeLeaves.frames = Paths.getSparrowAtlas('weeb/petals', 'week6');
     treeLeaves.animation.addByPrefix('leaves', 'PETALS ALL', 24, true);
     treeLeaves.animation.play('leaves');
     treeLeaves.scrollFactor.set(0.85, 0.85);
@@ -55,7 +55,7 @@ function onCreate(){
     bgTrees.updateHitbox();
     treeLeaves.updateHitbox();
 
-    bgGirls = new BackgroundGirls(-100, 190);
+    bgGirls = new BackgroundGirls(-100, 190, 'week6');
     bgGirls.scrollFactor.set(0.9, 0.9);
     bgGirls.antialiasing = false;
 

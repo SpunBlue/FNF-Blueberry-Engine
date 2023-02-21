@@ -5,25 +5,25 @@ var fastCar:FlxSprite;
 function onCreate(){
     setDefaultZoom(0.90);
 
-    var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset'));
+    var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset', 'week4'));
     skyBG.scrollFactor.set(0.1, 0.1);
     add(skyBG);
 
     var bgLimo:FlxSprite = new FlxSprite(-200, 480);
-    bgLimo.frames = Paths.getSparrowAtlas('limo/bgLimo');
-    bgLimo.animation.addByPrefix('drive', "background limo pink", 24);
+    bgLimo.frames = Paths.getSparrowAtlas('limo/bgLimo', 'week4');
+    bgLimo.animation.addByPrefix('drive', "background limo pink", 'week4', 24);
     bgLimo.animation.play('drive');
     bgLimo.scrollFactor.set(0.4, 0.4);
     add(bgLimo);
 
     for (i in 0...5)
     {
-        var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 385);
+        var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 385, 'week4');
         dancer.scrollFactor.set(0.4, 0.4);
         grpLimoDancers.add(dancer);
     }
 
-    var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic(Paths.image('limo/limoOverlay'));
+    var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic(Paths.image('limo/limoOverlay', 'week4'));
     overlayShit.alpha = 0.5;
     // add(overlayShit);
     // var shaderBullshit = new BlendModeEffect(new OverlayShader(), FlxColor.RED);
@@ -31,12 +31,12 @@ function onCreate(){
     // overlayShit.shader = shaderBullshit;
 
     limo = new FlxSprite(-120, 550);
-    limo.frames = Paths.getSparrowAtlas('limo/limoDrive');
+    limo.frames = Paths.getSparrowAtlas('limo/limoDrive', 'week4');
     limo.animation.addByPrefix('drive', "Limo stage", 24);
     limo.animation.play('drive');
     limo.antialiasing = true;
 
-    fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
+    fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol', 'week4'));
 
     resetFastCar();
 

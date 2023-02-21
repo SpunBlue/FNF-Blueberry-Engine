@@ -14,11 +14,11 @@ var trainCooldown:Int = 0;
 var curLight:Int = 0;
 
 function onCreate(){
-    var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky'));
+    var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky', 'week3'));
     bg.scrollFactor.set(0.1, 0.1);
     add(bg);
 
-    var city:FlxSprite = new FlxSprite(-10).loadGraphic(Paths.image('philly/city'));
+    var city:FlxSprite = new FlxSprite(-10).loadGraphic(Paths.image('philly/city', 'week3'));
     city.scrollFactor.set(0.3, 0.3);
     city.setGraphicSize(Std.int(city.width * 0.85));
     city.updateHitbox();
@@ -30,7 +30,7 @@ function onCreate(){
 
     for (i in 0...5)
     {
-        var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.image('philly/win' + i));
+        var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.image('philly/win' + i, 'week3'));
         light.scrollFactor.set(0.3, 0.3);
         light.visible = false;
         light.setGraphicSize(Std.int(light.width * 0.85));
@@ -40,10 +40,10 @@ function onCreate(){
         phillyCityLights.add(light);
     }
 
-    var streetBehind:FlxSprite = new FlxSprite(-40, 50).loadGraphic(Paths.image('philly/behindTrain'));
+    var streetBehind:FlxSprite = new FlxSprite(-40, 50).loadGraphic(Paths.image('philly/behindTrain', 'week3'));
     add(streetBehind);
 
-    phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('philly/train'));
+    phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('philly/train', 'week3'));
     add(phillyTrain);
 
     trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
@@ -51,7 +51,7 @@ function onCreate(){
 
     // var cityLights:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.win0.png);
 
-    var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.image('philly/street'));
+    var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.image('philly/street', 'week3'));
     add(street);
 }
 

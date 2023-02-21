@@ -5,12 +5,12 @@ import flixel.graphics.frames.FlxAtlasFrames;
 
 class BackgroundGirls extends FlxSprite
 {
-	public function new(x:Float, y:Float)
+	public function new(x:Float, y:Float, ?library:String)
 	{
 		super(x, y);
 
 		// BG fangirls dissuaded
-		frames = Paths.getSparrowAtlas('weeb/bgFreaks');
+		frames = Paths.getSparrowAtlas('weeb/bgFreaks', library);
 
 		animation.addByIndices('danceLeft', 'BG girls group', CoolUtil.numberArray(14), "", 24, false);
 		animation.addByIndices('danceRight', 'BG girls group', CoolUtil.numberArray(30, 15), "", 24, false);

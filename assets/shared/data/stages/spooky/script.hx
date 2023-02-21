@@ -4,12 +4,12 @@ var isHalloween:Bool = false;
 function onCreate(){
     halloweenLevel = true;
 
-    var hallowTex:FlxAtlasFrames = Paths.getSparrowAtlas('halloween_bg');
+    var hallowTex:FlxAtlasFrames = Paths.getSparrowAtlas('halloween_bg', 'week2');
 
     halloweenBG = new FlxSprite(-200, -100);
     halloweenBG.frames = hallowTex;
     halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
-    halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
+    halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 'week2', 24, false);
     halloweenBG.animation.play('idle');
     halloweenBG.antialiasing = true;
     add(halloweenBG);

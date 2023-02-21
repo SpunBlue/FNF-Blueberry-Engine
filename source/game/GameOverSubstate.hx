@@ -41,10 +41,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (bf.animation.exists('firstDeath'))
 			bf.playAnim('firstDeath');
 		else{
-			if (!bf.animation.exists('singDOWNmiss'))
-				bf.playAnim('idle');
+			if (!bf.animation.exists('singLEFTmiss'))
+				bf.playAnim('singLEFT');
 			else
-				bf.playAnim('singDOWNmiss');
+				bf.playAnim('singLEFTmiss');
 			fallback = true;
 		}
 		add(bf);
@@ -154,6 +154,10 @@ class GameOverSubstate extends MusicBeatSubstate
 			isEnding = true;
 			if (bf.animation.exists('deathConfirm'))
 				bf.playAnim('deathConfirm', true);
+			else if (bf.animation.exists('singDOWNmiss'))
+				bf.playAnim('singDOWNmiss');
+			else
+				bf.playAnim('singDOWN');
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music('gameOverEnd' + stageSuffix));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)

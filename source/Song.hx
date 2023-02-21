@@ -1,5 +1,7 @@
 package;
 
+import game.editors.EventNote.EventSection;
+import game.editors.EventNote.EventNote;
 import engine.modding.SpunModLib.ModLib;
 import engine.modding.SpunModLib.ModAssets;
 import Section.SwagSection;
@@ -13,12 +15,15 @@ typedef SwagSong =
 {
 	var song:String;
 	var notes:Array<SwagSection>;
+	var ?events:Array<EventSection>;
 	var bpm:Float;
 	var needsVoices:Bool;
 	var speed:Float;
-
 	var player1:String;
 	var player2:String;
+	var ?gfVersion:String;
+	var ?stage:String;
+	var ?style:String;
 	var validScore:Bool;
 }
 

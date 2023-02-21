@@ -9,13 +9,13 @@ class BGSprite extends FlxSprite
 	 */
 	public var idleAnim:String;
 
-	public function new(image:String, x:Float = 0, y:Float = 0, parX:Float = 1, parY:Float = 1, ?daAnimations:Array<String>, ?loopingAnim:Bool = false)
+	public function new(image:String, x:Float = 0, y:Float = 0, parX:Float = 1, parY:Float = 1, ?library:String, ?daAnimations:Array<String>, ?loopingAnim:Bool = false)
 	{
 		super(x, y);
 
 		if (daAnimations != null)
 		{
-			frames = Paths.getSparrowAtlas(image);
+			frames = Paths.getSparrowAtlas(image, library);
 			for (anims in daAnimations)
 			{
 				animation.addByPrefix(anims, anims, 24, loopingAnim);
@@ -27,7 +27,7 @@ class BGSprite extends FlxSprite
 		}
 		else
 		{
-			loadGraphic(Paths.image(image));
+			loadGraphic(Paths.image(image, library));
 			active = false;
 		}
 

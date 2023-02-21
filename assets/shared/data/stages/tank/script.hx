@@ -8,46 +8,46 @@ var tankGround:BGSprite;
 function onCreate(){
     setDefaultZoom(0.9);
 
-    var bg:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0);
+    var bg:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0, 'week7');
     add(bg);
 
-    var tankSky:BGSprite = new BGSprite('tankClouds', FlxG.random.int(-700, -100), FlxG.random.int(-20, 20), 0.1, 0.1);
+    var tankSky:BGSprite = new BGSprite('tankClouds', FlxG.random.int(-700, -100), FlxG.random.int(-20, 20), 0.1, 0.1, 'week7');
     tankSky.active = true;
     tankSky.velocity.x = FlxG.random.float(5, 15);
     add(tankSky);
 
-    var tankMountains:BGSprite = new BGSprite('tankMountains', -300, -20, 0.2, 0.2);
+    var tankMountains:BGSprite = new BGSprite('tankMountains', -300, -20, 0.2, 0.2, 'week7');
     tankMountains.setGraphicSize(Std.int(tankMountains.width * 1.2));
     tankMountains.updateHitbox();
     add(tankMountains);
 
-    var tankBuildings:BGSprite = new BGSprite('tankBuildings', -200, 0, 0.30, 0.30);
+    var tankBuildings:BGSprite = new BGSprite('tankBuildings', -200, 0, 0.30, 0.30, 'week7');
     tankBuildings.setGraphicSize(Std.int(tankBuildings.width * 1.1));
     tankBuildings.updateHitbox();
     add(tankBuildings);
 
-    var tankRuins:BGSprite = new BGSprite('tankRuins', -200, 0, 0.35, 0.35);
+    var tankRuins:BGSprite = new BGSprite('tankRuins', -200, 0, 0.35, 0.35, 'week7');
     tankRuins.setGraphicSize(Std.int(tankRuins.width * 1.1));
     tankRuins.updateHitbox();
     add(tankRuins);
 
-    var smokeLeft:BGSprite = new BGSprite('smokeLeft', -200, -100, 0.4, 0.4, ['SmokeBlurLeft'], true);
+    var smokeLeft:BGSprite = new BGSprite('smokeLeft', -200, -100, 0.4, 0.4, 'week7', ['SmokeBlurLeft'], true);
     add(smokeLeft);
 
-    var smokeRight:BGSprite = new BGSprite('smokeRight', 1100, -100, 0.4, 0.4, ['SmokeRight'], true);
+    var smokeRight:BGSprite = new BGSprite('smokeRight', 1100, -100, 0.4, 0.4, 'week7', ['SmokeRight'], true);
     add(smokeRight);
 
     // tankGround.
 
-    tankWatchtower = new BGSprite('tankWatchtower', 100, 50, 0.5, 0.5, ['watchtower gradient color']);
+    tankWatchtower = new BGSprite('tankWatchtower', 100, 50, 0.5, 0.5, 'week7', ['watchtower gradient color']);
     add(tankWatchtower);
 
-    tankGround = new BGSprite('tankRolling', 300, 300, 0.5, 0.5, ['BG tank w lighting'], true);
+    tankGround = new BGSprite('tankRolling', 300, 300, 0.5, 0.5, 'week7', ['BG tank w lighting'], true);
     add(tankGround);
 
     add(tankmanRun);
 
-    var tankGround:BGSprite = new BGSprite('tankGround', -420, -150);
+    var tankGround:BGSprite = new BGSprite('tankGround', -420, -150, 1, 1, 'week7');
     tankGround.setGraphicSize(Std.int(tankGround.width * 1.15));
     tankGround.updateHitbox();
     add(tankGround);
@@ -56,23 +56,23 @@ function onCreate(){
 
     // smokeLeft.screenCenter();
 
-    var fgTank0:BGSprite = new BGSprite('tank0', -500, 650, 1.7, 1.5, ['fg']);
+    var fgTank0:BGSprite = new BGSprite('tank0', -500, 650, 1.7, 1.5, 'week7', ['fg']);
     foregroundSprites.add(fgTank0);
 
-    var fgTank1:BGSprite = new BGSprite('tank1', -300, 750, 2, 0.2, ['fg']);
+    var fgTank1:BGSprite = new BGSprite('tank1', -300, 750, 2, 0.2, 'week7', ['fg']);
     foregroundSprites.add(fgTank1);
 
     // just called 'foreground' just cuz small inconsistency no bbiggei
-    var fgTank2:BGSprite = new BGSprite('tank2', 450, 940, 1.5, 1.5, ['foreground']);
+    var fgTank2:BGSprite = new BGSprite('tank2', 450, 940, 1.5, 1.5, 'week7', ['foreground']);
     foregroundSprites.add(fgTank2);
 
-    var fgTank4:BGSprite = new BGSprite('tank4', 1300, 900, 1.5, 1.5, ['fg']);
+    var fgTank4:BGSprite = new BGSprite('tank4', 1300, 900, 1.5, 1.5, 'week7', ['fg']);
     foregroundSprites.add(fgTank4);
 
-    var fgTank5:BGSprite = new BGSprite('tank5', 1620, 700, 1.5, 1.5, ['fg']);
+    var fgTank5:BGSprite = new BGSprite('tank5', 1620, 700, 1.5, 1.5, 'week7', ['fg']);
     foregroundSprites.add(fgTank5);
 
-    var fgTank3:BGSprite = new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']);
+    var fgTank3:BGSprite = new BGSprite('tank3', 1300, 1200, 3.5, 2.5, 'week7', ['fg']);
     foregroundSprites.add(fgTank3);
 
     stageLayer2.add(foregroundSprites);

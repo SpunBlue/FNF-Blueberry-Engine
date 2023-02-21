@@ -96,7 +96,7 @@
 	<assets path="assets/week7"    library="week7"    exclude="*.fla|*.ogg" if="web"/>
 	<assets path="assets/week7"    library="week7"    exclude="*.fla|*.mp3" unless="web"/>
 	
-	<assets path='mods' rename='mods' embed='false'/>
+	<assets path='include/mods' rename='mods' embed='false' if='desktop || android'/>
 
 	<!-- <template path='mods' /> -->
 	
@@ -131,7 +131,7 @@
 	<!-- https://github.com/ninjamuffin99/Flixel-Animate-Atlas-Player -->
 
 
-	<!--<haxelib name="discord_rpc" if="cpp"/> --> <!-- foesn't work with neko -->
+	<haxelib name="discord_rpc" if="desktop || android"/> -->
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
 	<!-- <haxelib name="markdown" /> -->

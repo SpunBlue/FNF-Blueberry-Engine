@@ -8,7 +8,7 @@ function onCreate(){
     var posY = 200;
 
     var bg:FlxSprite = new FlxSprite(posX, posY);
-    bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool');
+    bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool', 'week6');
     bg.animation.addByPrefix('idle', 'background 2', 24);
     bg.animation.play('idle');
     bg.scrollFactor.set(0.8, 0.9);
