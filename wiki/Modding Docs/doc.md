@@ -15,7 +15,7 @@ A script is a collection of functions that are called at various points during g
 - `noteMiss(direction:Int)`: Called when a note is missed because it was not hit.
 
 To add custom behavior to the game, modders can write their own functions and add them to the script. For example:
-```cs
+```hx
 var sprite:FlxSprite;
 
 function onCreate(){
