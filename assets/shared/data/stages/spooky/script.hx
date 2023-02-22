@@ -1,10 +1,7 @@
 var halloweenBG:FlxSprite;
-var isHalloween:Bool = false;
 
 function onCreate(){
-    halloweenLevel = true;
-
-    var hallowTex:FlxAtlasFrames = Paths.getSparrowAtlas('halloween_bg', 'week2');
+    var hallowTex:FlxAtlasFrames = Paths.getSparrowAtlas('halloween_bg', 'week2'); // broken... somehow?
 
     halloweenBG = new FlxSprite(-200, -100);
     halloweenBG.frames = hallowTex;
@@ -13,10 +10,6 @@ function onCreate(){
     halloweenBG.animation.play('idle');
     halloweenBG.antialiasing = true;
     add(halloweenBG);
-
-    isHalloween = true;
-
-    trace('create crash test');
 }
 
 function createPost(){
@@ -39,10 +32,10 @@ var lightningStrikeBeat:Int = 0;
 var lightningOffset:Int = 8;
 
 function beatHit(curBeat){
-    if (isHalloween && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
+    if (FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
     {
         FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
-        halloweenBG.animation.play('lightning');
+        halloweenBG.animation.play('lightning', true);
     
         lightningStrikeBeat = curBeat;
         lightningOffset = FlxG.random.int(8, 24);
@@ -50,4 +43,6 @@ function beatHit(curBeat){
         boyfriend.playAnim('scared', true);
         gf.playAnim('scared', true);
     }
+    else if (halloweenBG.animation.finished) // bandaid patch
+        halloweenBG.animation.play('idle');
 }

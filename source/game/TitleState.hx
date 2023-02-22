@@ -137,24 +137,6 @@ class TitleState extends MusicBeatState
 		// video.
 	}
 
-	private function netStream_onAsyncError(event:AsyncErrorEvent):Void
-	{
-		Engine.debugPrint("Error loading video");
-	}
-
-	private function netConnection_onNetStatus(event:NetStatusEvent):Void
-	{
-		if (event.info.code == 'NetStream.Play.Complete')
-		{
-			// netStream.dispose();
-			// FlxG.stage.removeChild(video);
-
-			startIntro();
-		}
-
-		Engine.debugPrint(event.toString());
-	}
-
 	private function overlay_onMouseDown(event:MouseEvent):Void
 	{
 		netStream.soundTransform.volume = 0.2;
@@ -212,7 +194,7 @@ class TitleState extends MusicBeatState
 		logoBl.shader = swagShader.shader;
 		// logoBl.shader = alphaShader.shader;
 
-		// Engine.debugPrint();
+		// trace();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
@@ -310,7 +292,7 @@ class TitleState extends MusicBeatState
 			{
 				#if polymod
 				polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
-				Engine.debugPrint('reinitialized');
+				trace('reinitialized');
 				#end
 			}
 
@@ -321,11 +303,6 @@ class TitleState extends MusicBeatState
 
 		camFollow.y = CoolUtil.coolLerp(camFollow.y, camY, 0.06);
 		FlxG.camera.zoom = CoolUtil.coolLerp(FlxG.camera.zoom, defaultZoom, 0.06);
-
-		#if debug
-		if (FlxG.keys.justPressed.M)
-			Engine.debugPrint('step: $curStep');
-		#end
 
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
@@ -382,7 +359,7 @@ class TitleState extends MusicBeatState
 
 					if (version.trim() != onlineVersion)
 					{
-						Engine.debugPrint('OLD VERSION!');
+						trace('OLD VERSION!');
 						// FlxG.switchState(new OutdatedSubState());
 					}
 					else
@@ -568,6 +545,8 @@ class TitleState extends MusicBeatState
 			remove(credGroup);
 
 			FlxG.camera.flash(FlxColor.WHITE, 4);
+
+			defaultZoom = 1;
 
 			logoBl.visible = true;
 			gfDance.visible = true;

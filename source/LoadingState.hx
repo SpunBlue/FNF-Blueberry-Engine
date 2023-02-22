@@ -93,7 +93,7 @@ class LoadingState extends MusicBeatState
 
 	function checkLibrary(library:String)
 	{
-		Engine.debugPrint(Assets.hasLibrary(library));
+		trace(Assets.hasLibrary(library));
 		if (Assets.getLibrary(library) == null)
 		{
 			@:privateAccess
@@ -150,7 +150,7 @@ class LoadingState extends MusicBeatState
 
 		#if debug
 		if (FlxG.keys.justPressed.SPACE)
-			Engine.debugPrint('fired: ' + callbacks.getFired() + " unfired:" + callbacks.getUnfired());
+			trace('fired: ' + callbacks.getFired() + " unfired:" + callbacks.getUnfired());
 		#end
 	}
 
@@ -330,7 +330,7 @@ class MultiCallback
 	inline function log(msg):Void
 	{
 		if (logId != null)
-			Engine.debugPrint('$logId: $msg');
+			trace('$logId: $msg');
 	}
 
 	public function getFired()

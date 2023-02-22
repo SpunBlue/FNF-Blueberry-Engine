@@ -115,7 +115,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 					prefToggle(prefString);
 
 				default:
-					Engine.debugPrint('swag');
+					trace('swag');
 			}
 		});
 
@@ -125,10 +125,10 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 				createCheckbox(prefString);
 
 			default:
-				Engine.debugPrint('swag');
+				trace('swag');
 		}
 
-		Engine.debugPrint(Type.typeof(prefValue).getName());
+		trace(Type.typeof(prefValue).getName());
 	}
 
 	function createCheckbox(prefString:String)
@@ -147,7 +147,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		daSwap = !daSwap;
 		preferences.set(prefName, daSwap);
 		checkboxes[items.selectedIndex].daValue = daSwap;
-		Engine.debugPrint('toggled? ' + preferences.get(prefName));
+		trace('toggled? ' + preferences.get(prefName));
 
 		FlxG.save.data.pref = preferences;
 
@@ -185,11 +185,11 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		if (preferences.get(prefString) == null)
 		{
 			preferences.set(prefString, prefValue);
-			Engine.debugPrint('set preference!');
+			trace('set preference!');
 		}
 		else
 		{
-			Engine.debugPrint('found preference: ' + preferences.get(prefString));
+			trace('found preference: ' + preferences.get(prefString));
 		}
 	}
 }

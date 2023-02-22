@@ -1,5 +1,6 @@
 package engine.modutil;
 
+import sys.thread.Thread;
 import haxe.Json;
 import flixel.math.FlxAngle;
 import util.ui.PreferencesMenu;
@@ -93,6 +94,17 @@ class Hscript
 		interp.variables.set("getModID", function()
 		{
 			return ModLib.curMod.id;
+		});
+
+		interp.variables.set("createThread", function(func:Void -> Void)
+		{
+			#if (target.threaded)
+			Thread.create(() -> {
+				func();
+			});
+			#else
+			func();
+			#end
 		});
 
 		// regular ol' functions

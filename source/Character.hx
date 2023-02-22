@@ -51,7 +51,7 @@ class Character extends FlxSprite
 		// character generation shit here
 		var addToDef:Bool = false;
 
-		Engine.debugPrint('Getting ready for loading of character $character');
+		trace('Getting ready for loading of character $character');
 		
 		if (mod != null && ModVariables.characters.exists('$character-' + ModLib.getModID(ModLib.curMod)))
 			charJson = ModVariables.characters.get('$character-' + ModLib.getModID(ModLib.curMod));
@@ -112,7 +112,7 @@ class Character extends FlxSprite
 				CharVar.defChars.set('$character', charJson);
 		}
 		else{
-			Engine.debugPrint('$character is equal to null, error in JSON!');
+			trace('$character is equal to null, error in JSON!');
 		}
 
 		if (animation.exists('idle'))
@@ -149,7 +149,7 @@ class Character extends FlxSprite
 
 		TankmenBG.animationNotes = animationNotes;
 
-		Engine.debugPrint(animationNotes);
+		trace(animationNotes);
 		animationNotes.sort(sortAnims);
 	}
 
@@ -194,7 +194,7 @@ class Character extends FlxSprite
 				{
 					if (Conductor.songPosition > animationNotes[0][0])
 					{
-						Engine.debugPrint('played shoot anim' + animationNotes[0][1]);
+						trace('played shoot anim' + animationNotes[0][1]);
 
 						var shootAnim:Int = 1;
 

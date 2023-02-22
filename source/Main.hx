@@ -1,5 +1,11 @@
 package;
 
+import lime.system.System;
+import flixel.system.FlxVersion;
+import haxe.display.Protocol.Version;
+import sys.thread.Thread;
+import openfl.events.UncaughtErrorEvent;
+import openfl.events.EventType;
 import util.ui.PreferencesMenu;
 import lime.app.Application;
 import sys.io.File;
@@ -47,26 +53,52 @@ class Main extends Sprite
 	{
 		super();
 
-		var fnfVer:String = '0.2.8'; // change later maybe
-
 		if (!FileSystem.isDirectory('logs/'))
 			FileSystem.createDirectory('logs');
 
 		var logName:String = (Date.now().getMonth() + 1) + '-' + Date.now().getDate() + '-' + Date.now().getFullYear() + ' ' + 
 			cnvrtBetterTime(Date.now().getHours(), Date.now().getMinutes());
-		var content:String = '${Sys.systemName()} - Blueberry Engine v${Application.current.meta.get('version')}\nFriday Night Funkin\' v$fnfVer\n';
+
+		// this variable scares me.
+		var content:String = '${Sys.systemName()} ${System.platformVersion} - Blueberry Engine v${Application.current.meta.get('version')} - Friday Night Funkin\' v0.2.8\n';
 
 		Log.trace = function(v:Dynamic, ?infos:PosInfos){
-			if (PreferencesMenu.getPref('debugfilelog')){
-				content += '\n(Line:${infos.lineNumber} Class:${infos.className} Method:${infos.methodName})::$v';
-				File.saveContent('logs/$logName.txt', content);
-			}
+			try{
+				if (PreferencesMenu.getPref('debugfilelog')){
+					content += '\n(Line:${infos.lineNumber} Class:${infos.className} Method:${infos.methodName})::$v';
 
-			#if (sys && desktop)
-			if (PreferencesMenu.getPref('debuglog'))
-				Sys.println('(Line: ${infos.lineNumber} Class: "${infos.className}" Method: "${infos.methodName}")::$v');
-			#end
+					// Creates a thread, threads basically run tasks in the background and doesn't wait for completion. Helps with performance, shouldn't do this with everything though.
+					#if (target.threaded)
+					Thread.create(() -> {
+						File.saveContent('logs/$logName.txt', content);
+					});
+					#else
+					File.saveContent('logs/$logName.txt', content); // do it anyways lol
+					#end
+				}
+	
+				#if (sys && desktop)
+				if (PreferencesMenu.getPref('debuglog')){
+					#if (target.threaded)
+					Thread.create(() -> {
+						Sys.println('(Line: ${infos.lineNumber} Class: "${infos.className}" Method: "${infos.methodName}")::$v');
+					});
+					#else
+					Sys.println('(Line: ${infos.lineNumber} Class: "${infos.className}" Method: "${infos.methodName}")::$v');
+					#end
+				}
+				#end
+			}
+			catch(e:Dynamic){
+				#if (sys && desktop)
+				try{
+					Sys.println('Debugging Error! $e');
+				}
+				#end
+			}
 		}
+
+		Application.current.window.title = 'Friday Night Funkin\' Blueberry Engine v${Application.current.meta.get('version')}';
 
 		if (stage != null)
 		{

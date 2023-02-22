@@ -4,12 +4,15 @@ goo goo ga ga, baby documentation, goo goo ga ga, not ready, goo goo ga ga.
 ## How to use Hscript Support.
 A script is a collection of functions that are called at various points during gameplay. The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
 
+Avaliable on all:
 - `onCreate()`: Called when the gameplay state is created.
 - `createPost()`: Called after the gameplay state is created.
 - `update(elapsed:Float)`: Called every frame before the gameplay state is updated.
 - `updatePost(elapsed:Float)`: Called every frame after the gameplay state is updated.
+Avaliable on some:
 - `beatHit()`: Called when a beat is hit.
 - `stepHit()`: Called when a step is hit.
+Avaliable in PlayState:
 - `goodNoteHit(note:Note)`: Called when a note is hit correctly.
 - `noteTooLate(daNote:Note)`: Called when a note is missed because it was hit too late.
 - `noteMiss(direction:Int)`: Called when a note is missed because it was not hit.
@@ -80,6 +83,7 @@ Classes:
 Functions:
 - `getModID()`: Returns the current Mod ID.
 - `trace(value:Dynamic)`: Logs anything to the console.
+- `createThread(func:Void -> Void)`: Creates a thread and runs the given function, if threads are not supported it will run anyways.
 
 ### Accesssing PlayState Game Objects.
 The engine provides access to various objects, classes, and functions, through global variables. Modders can use these variables to modify the PlayState or get information. Here is a list of available global variables:

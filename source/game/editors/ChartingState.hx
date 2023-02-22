@@ -1,5 +1,6 @@
 package game.editors;
 
+import lime.app.Application;
 import engine.modutil.ModVariables;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import engine.modding.SpunModLib.ModAssets;
@@ -86,6 +87,7 @@ class ChartingState extends MusicBeatState
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
 	**/
 	var curSelectedNote:Array<Dynamic>;
+	var curSelectedEvent:ChartEvent;
 
 	var tempBpm:Float = 0;
 
@@ -365,7 +367,7 @@ class ChartingState extends MusicBeatState
 		check_voices.callback = function()
 		{
 			_song.needsVoices = check_voices.checked;
-			Engine.debugPrint('CHECKED!');
+			trace('CHECKED!');
 		};
 
 		var check_mute_inst = new FlxUICheckBox(10, 120, null, null, "Mute Inst", 100);
@@ -670,9 +672,9 @@ class ChartingState extends MusicBeatState
 
 		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
 		{
-			Engine.debugPrint(curStep);
-			Engine.debugPrint((_song.notes[curSection].lengthInSteps) * (curSection + 1));
-			Engine.debugPrint('DUMBSHIT');
+			trace(curStep);
+			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
+			trace('DUMBSHIT');
 
 			if (_song.notes[curSection + 1] == null)
 			{
@@ -811,7 +813,7 @@ class ChartingState extends MusicBeatState
 								}
 								else
 								{
-									Engine.debugPrint('tryin to delete note...');
+									trace('tryin to delete note...');
 									deleteNote(note);
 								}
 							}
@@ -919,7 +921,7 @@ class ChartingState extends MusicBeatState
 							}
 							else
 							{
-								Engine.debugPrint('tryin to delete event...');
+								trace('tryin to delete event...');
 								deleteEvent(note);
 							}
 						}
@@ -927,7 +929,7 @@ class ChartingState extends MusicBeatState
 				}
 				else
 				{
-					Engine.debugPrint('attempting to add event');
+					trace('attempting to add event');
 					UI_box.selected_tab_id = 'Events';
 					addEvent();
 				}
@@ -1018,9 +1020,9 @@ class ChartingState extends MusicBeatState
 		{
 			if (curSelectedNote[3] != null)
 			{
-				Engine.debugPrint('ALT NOTE SHIT');
+				trace('ALT NOTE SHIT');
 				curSelectedNote[3] = !curSelectedNote[3];
-				Engine.debugPrint(curSelectedNote[3]);
+				trace(curSelectedNote[3]);
 			}
 			else
 				curSelectedNote[3] = true;
@@ -1071,7 +1073,7 @@ class ChartingState extends MusicBeatState
 
 	function changeSection(sec:Int = 0, ?updateMusic:Bool = true):Void
 	{
-		Engine.debugPrint('changing section' + sec);
+		trace('changing section' + sec);
 
 		if (_song.notes[sec] != null)
 		{
@@ -1356,8 +1358,8 @@ class ChartingState extends MusicBeatState
 			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteAlt]);
 		}
 
-		Engine.debugPrint(noteStrum);
-		Engine.debugPrint(curSection);
+		trace(noteStrum);
+		trace(curSection);
 
 		updateGrid();
 		updateNoteUI();
@@ -1366,11 +1368,12 @@ class ChartingState extends MusicBeatState
 	}
 
 	private function addEvent():Void{
-		Engine.debugPrint('Adding note at ' + getStrumTime(dummyArrow.y) + sectionStartTime());
+		trace('Adding note at ' + getStrumTime(dummyArrow.y) + sectionStartTime());
 
 		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime();
 
 		_song.events[curSection].eventNotes.push({strumtime: noteStrum, event: 'test'});
+		curSelectedEvent = _song.events[curSection].eventNotes[_song.events[curSection].eventNotes.length - 1];
 
 		updateGrid();
 		autosaveSong();
@@ -1419,7 +1422,7 @@ class ChartingState extends MusicBeatState
 
 				if (sec != null && sec == i)
 				{
-					Engine.debugPrint('swag loop??');
+					trace('swag loop??');
 					break;
 				}
 			}
@@ -1430,7 +1433,7 @@ class ChartingState extends MusicBeatState
 
 	function loadLevel():Void
 	{
-		Engine.debugPrint(_song.notes);
+		trace(_song.notes);
 	}
 
 	function getNotes():Array<Dynamic>
