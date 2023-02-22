@@ -12,6 +12,7 @@ import engine.Engine;
 import flixel.math.FlxRandom;
 import hxcodec.VideoHandler;
 import util.ui.PreferencesMenu;
+import util.ui.AccessibilityMenu;
 import sys.io.File;
 import sys.FileSystem;
 import Section.SwagSection;
@@ -241,6 +242,13 @@ class PlayState extends MusicBeatState
 		// Cameras
 		script.interp.variables.set("camHUD", camHUD);
 		script.interp.variables.set("camGame", camGame);
+                
+                // Accessibility
+                script.interp.variables.set("subtitles", AccessibilityMenu.getPref('subtitles'));
+		script.interp.variables.set("flashingMenu", AccessibilityMenu.getPref('flashing-menu'));
+		script.interp.variables.set("deuteranopia", AccessibilityMenu.getPref('deuteranopia'));
+		script.interp.variables.set("protanopia", AccessibilityMenu.getPref('protanopia'));
+		script.interp.variables.set("tritanopia", AccessibilityMenu.getPref('tritanopia'));
 
 		// Song Variables
 		script.interp.variables.set("daPixelZoom", daPixelZoom);
