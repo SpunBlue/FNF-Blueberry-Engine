@@ -1,8 +1,11 @@
 # Welcome to Blueberry Engine!
 goo goo ga ga, baby documentation, goo goo ga ga, not ready, goo goo ga ga.
 
+## Current Issues
+
+
 ## How to use Hscript Support.
-A script is a collection of functions that are called at various points during gameplay. The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
+To use Hscript you must have basic and sometimes intermediate knowledge of Haxe and HaxeFlixel, The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
 
 Avaliable on all:
 - `onCreate()`: Called when the gameplay state is created.
@@ -14,11 +17,11 @@ Avaliable on some:
 - `stepHit()`: Called when a step is hit.
 Avaliable in PlayState:
 - `goodNoteHit(note:Note)`: Called when a note is hit correctly.
-- `noteTooLate(daNote:Note)`: Called when a note is missed because it was hit too late.
-- `noteMiss(direction:Int)`: Called when a note is missed because it was not hit.
+- `noteTooLate(daNote:Note)`: Called when a note is missed because it was not hit.
+- `noteMiss(direction:Int)`: Called when the player makes a misinput.
 
 To add custom behavior to the game, modders can write their own functions and add them to the script. For example:
-```cs
+```haxe
 var sprite:FlxSprite;
 
 function onCreate(){
@@ -79,18 +82,19 @@ Classes:
 - `Conductor`
 - `Section`
 - `Note`
+- `ModLib`: The modding class.
+- `ModAssets`: The modding assets class.
 
 Functions:
 - `getModID()`: Returns the current Mod ID.
 - `trace(value:Dynamic)`: Logs anything to the console.
 - `createThread(func:Void -> Void)`: Creates a thread and runs the given function, if threads are not supported it will run anyways.
+- `cacheGraphic(path:String, modID:String)`: Cache a Graphic, if used, it will cause less lag when loading a Graphic.
 
 ### Accesssing PlayState Game Objects.
 The engine provides access to various objects, classes, and functions, through global variables. Modders can use these variables to modify the PlayState or get information. Here is a list of available global variables:
 
 Classes:
-- `ModAssets`: The modding assets class.
-- `ModLib`: The modding class.
 - `StrumNotes`: StrumNotes class.
 - `BackgroundDancer`: Background dancer class.
 - `BackgroundGirls`: Background girls class.
@@ -133,7 +137,7 @@ Shaders:
 - `ColorSwap`: Color swap shader class.
 
 Misc:
-- `curMod`: The current mod ID loaded.
+- `curMod`: The current mod-data loaded.
 - `SONG`: The current song data.
 - `curSong`: The current song name.
 - `curStage`: The current stage name.
@@ -141,6 +145,16 @@ Misc:
 - `inCutscene`: Whether or not the game is in a cutscene.
 - `curBeat`: The current beat number.
 - `curStep`: The current step number.
+
+### Scripts for Mid-song Events in PlayState
+Same variables as PlayState except the only function that can be called is `event`, path can be anywhere though aslong as it's in the Mod's directory.
+
+Example:
+```haxe
+function event(){
+    trace('this is all i can do, how lame am i right?');
+}
+```
 
 ### What it's used for, and Advice.
 Currently, Hscript is used for making Stages and for any purpose you have in-song. You put scripts in `data/stages` or in `data/charts/SONG_NAME`.

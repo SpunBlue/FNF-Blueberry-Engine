@@ -288,14 +288,14 @@ class ChartingState extends MusicBeatState
 				ModVariables.updateCharacterList();
 
 			for (char in ModVariables.characterList){
-				characters.push(char);
+				characters.push('${char.string}:${char.mod.id}');
 			}
 
 			if (ModVariables.stageList == null)
 				ModVariables.updateStageList();
 
 			for (stage in ModVariables.stageList){
-				stages.push(stage);
+				stages.push('${stage.string}:${stage.mod.id}');
 			}
 		}
 
@@ -346,9 +346,123 @@ class ChartingState extends MusicBeatState
 		UI_box.scrollFactor.set();
 	}
 
+
+	var eventVar1:FlxUIInputText;
+	var eventVar2:FlxUIInputText;
+	var eventVar3:FlxUIInputText;
+	var eventVar4:FlxUIInputText;
+	var eventVar5:FlxUIInputText;
+
+	var loadCurEvent:Void -> Void;
+
 	function addEventsUI():Void{
 		var tab_events = new FlxUI(null, UI_box);
 		tab_events.name = 'Events';
+
+		var events:Array<EventListData> = [];
+		var eventNames:Array<String> = [];
+
+		for (array in ModVariables.validEvents){
+			if (array != null){
+				events.push(array);
+				eventNames.push(array.eventName);
+			}
+		}
+
+		eventVar1 = new FlxUIInputText(10, 100);
+		var eventVar1InfoText = new FlxText(eventVar1.width + 10, eventVar1.y);
+
+		eventVar2 = new FlxUIInputText(10, 150);
+		var eventVar2InfoText = new FlxText(eventVar2.width + 10, eventVar2.y);
+
+		eventVar3 = new FlxUIInputText(10, 200);
+		var eventVar3InfoText = new FlxText(eventVar3.width + 10, eventVar3.y);
+
+		eventVar4 = new FlxUIInputText(10, 250);
+		var eventVar4InfoText = new FlxText(eventVar4.width + 10, eventVar4.y);
+
+		eventVar5 = new FlxUIInputText(10, 300);
+		var eventVar5InfoText = new FlxText(eventVar5.width + 10, eventVar5.y);
+
+		var eventInstructionText = new FlxText(10, 325);
+		eventInstructionText.text = "Click to place or remove.\nClick Update to save Event Changes.\nPlacing also saves.";
+
+		var eventDropDown = new FlxUIDropDownMenu(10, 50, FlxUIDropDownMenu.makeStrIdLabelArray(eventNames, true), function(lol:String)
+		{
+			if (curSelectedEvent != null)
+				curSelectedEvent.event = eventNames[Std.parseInt(lol)];
+			else
+				trace('$curSelectedEvent - ${eventNames[Std.parseInt(lol)]} | event is null');
+
+			for (event in events){
+				if (event != null && event.eventName.toLowerCase() == eventNames[Std.parseInt(lol)].toLowerCase()){
+					eventVar1InfoText.text = event.var1Hint;
+					eventVar2InfoText.text = event.var2Hint;
+					eventVar3InfoText.text = event.var3Hint;
+					eventVar4InfoText.text = event.var4Hint;
+					eventVar5InfoText.text = event.var5Hint;
+					eventInstructionText.text = event.info;
+
+					trace('Setting Event Info');
+
+					break;
+				}
+			}
+		});
+
+		var saveButton:FlxButton = new FlxButton(0, 8, "Update", function()
+		{
+			if (curSelectedEvent != null){
+				curSelectedEvent.event = eventDropDown.selectedLabel;
+				curSelectedEvent.variable1 = eventVar1.text;
+				curSelectedEvent.variable2 = eventVar2.text;
+				curSelectedEvent.variable3 = eventVar3.text;
+				curSelectedEvent.variable4 = eventVar4.text;
+				curSelectedEvent.variable5 = eventVar5.text;
+			}
+			else
+				trace('$curSelectedEvent | event is null');
+		});
+
+		
+		loadCurEvent = function(){
+			eventDropDown.selectedLabel = curSelectedEvent.event;
+
+			eventVar1.text = curSelectedEvent.variable1;
+			eventVar2.text = curSelectedEvent.variable2;
+			eventVar3.text = curSelectedEvent.variable3;
+			eventVar4.text = curSelectedEvent.variable4;
+			eventVar5.text = curSelectedEvent.variable5;
+
+			for (event in events){
+				if (event != null && event.eventName.toLowerCase() == eventNames[eventNames.indexOf(curSelectedEvent.event)].toLowerCase()){
+					eventVar1InfoText.text = event.var1Hint;
+					eventVar2InfoText.text = event.var2Hint;
+					eventVar3InfoText.text = event.var3Hint;
+					eventVar4InfoText.text = event.var4Hint;
+					eventVar5InfoText.text = event.var5Hint;
+					eventInstructionText.text = event.info;
+
+					trace('Setting Event Info');
+
+					break;
+				}
+			}
+		}
+
+		tab_events.add(eventVar1);
+		tab_events.add(eventVar2);
+		tab_events.add(eventVar3);
+		tab_events.add(eventVar4);
+		tab_events.add(eventVar5);
+		tab_events.add(eventVar1InfoText);
+		tab_events.add(eventVar2InfoText);
+		tab_events.add(eventVar3InfoText);
+		tab_events.add(eventVar4InfoText);
+		tab_events.add(eventVar5InfoText);
+		tab_events.add(eventInstructionText);
+		tab_events.add(saveButton);
+		tab_events.add(eventDropDown);
 
 		UI_box.addGroup(tab_events);
 		UI_box.scrollFactor.set();
@@ -420,7 +534,7 @@ class ChartingState extends MusicBeatState
 		stepperSpeed.value = _song.speed;
 		stepperSpeed.name = 'song_speed';
 
-		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 65, 1, 100, 1, 999, 3);
+		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 65, 0.5, 120, 1, 999, 3);
 		stepperBPM.value = Conductor.bpm;
 		stepperBPM.name = 'song_bpm';
 
@@ -706,13 +820,13 @@ class ChartingState extends MusicBeatState
 					if (lastTouchedNote != note && PreferencesMenu.getPref('chart-lights')){
 						switch(note.noteData){
 							case 0:
-								bg.color = FlxColor.PURPLE;
+								bg.color = FlxColor.fromRGB(194, 75, 153);
 							case 1:
-								bg.color = FlxColor.fromRGB(79, 134, 247);
+								bg.color = FlxColor.fromRGB(0, 255, 255);
 							case 2:
-								bg.color = FlxColor.GREEN;
+								bg.color = FlxColor.fromRGB(18, 250, 5);
 							case 3:
-								bg.color = FlxColor.RED;
+								bg.color = FlxColor.fromRGB(249, 57, 63);
 						}
 	
 						lastTouchedNote = note;
@@ -740,6 +854,10 @@ class ChartingState extends MusicBeatState
 
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
+
+		var shiftThing:Int = 1;
+		if (FlxG.keys.pressed.SHIFT)
+			shiftThing = 4;
 
 		if (!typingShit.hasFocus && !FlxG.mouse.overlaps(UI_box))
 		{
@@ -898,6 +1016,11 @@ class ChartingState extends MusicBeatState
 						vocals.time = FlxG.sound.music.time;
 					}
 				}
+
+				if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
+					changeSection(curSection + shiftThing, true);
+				if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
+					changeSection(curSection - shiftThing, true);
 		}
 
 		if (FlxG.mouse.x < 0 && FlxG.mouse.x >= -40 && FlxG.mouse.y >= eventGridBG.y && FlxG.mouse.y < eventGridBG.height){
@@ -917,7 +1040,8 @@ class ChartingState extends MusicBeatState
 						{
 							if (FlxG.keys.pressed.CONTROL)
 							{
-								// selectEvent(note);
+								curSelectedEvent = note.thisEvent;
+								loadCurEvent();
 							}
 							else
 							{
@@ -942,14 +1066,6 @@ class ChartingState extends MusicBeatState
 				Conductor.changeBPM(Conductor.bpm + 1);
 			if (FlxG.keys.justPressed.DOWN)
 				Conductor.changeBPM(Conductor.bpm - 1); */
-
-		var shiftThing:Int = 1;
-		if (FlxG.keys.pressed.SHIFT)
-			shiftThing = 4;
-		if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
-			changeSection(curSection + shiftThing, true);
-		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
-			changeSection(curSection - shiftThing, true);
 
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
@@ -1203,15 +1319,14 @@ class ChartingState extends MusicBeatState
 			genSection(i, 0);
 		}
 
-		if (_song.events[curSection] == null)
-			addEventSection();
-
-		if (_song.events[curSection].eventNotes != null){
+		if (_song.events[curSection] != null && _song.events[curSection].eventNotes != null){
 			for (i in _song.events[curSection].eventNotes){
 				if (i != null)
 					genEventSection(i);
 			}
 		}
+		else if (_song.events[curSection] == null)
+			addEventSection();
 	}
 
 	function genEventSection(i:ChartEvent){
@@ -1368,6 +1483,16 @@ class ChartingState extends MusicBeatState
 	}
 
 	private function addEvent():Void{
+		if (curSelectedEvent != null){
+			trace("Saving event before placing a new one lol");
+
+			curSelectedEvent.variable1 = eventVar1.text;
+			curSelectedEvent.variable2 = eventVar2.text;
+			curSelectedEvent.variable3 = eventVar3.text;
+			curSelectedEvent.variable4 = eventVar4.text;
+			curSelectedEvent.variable5 = eventVar5.text;
+		}
+
 		trace('Adding note at ' + getStrumTime(dummyArrow.y) + sectionStartTime());
 
 		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime();

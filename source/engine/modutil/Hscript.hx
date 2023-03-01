@@ -1,5 +1,6 @@
 package engine.modutil;
 
+import openfl.display.BitmapData;
 import sys.thread.Thread;
 import haxe.Json;
 import flixel.math.FlxAngle;
@@ -107,6 +108,10 @@ class Hscript
 			#end
 		});
 
+		interp.variables.set("cacheGraphic", function(path:String, modID:String){
+			Assets.cache.setBitmapData(ModAssets.getPath(path, null, modID, null, false), BitmapData.fromFile(ModAssets.getPath(path, null, modID, null, false)));
+		});
+
 		// regular ol' functions
 		interp.variables.set("trace", function(value:Dynamic)
 		{
@@ -170,6 +175,21 @@ class Hscript
 	{
 		try{
 			script = parser.parseString(ModAssets.getAsset('data/$location/$scriptName.hx', null, modID, addDir));
+			interp.execute(script);
+		}
+		catch(e:Dynamic){
+			trace('Hscript Error! $e');
+		}
+	}
+
+	/**
+	 * Load script from path
+	 * @param path
+	 */
+	public function loadScriptFP(path:String)
+	{
+		try{
+			script = parser.parseString(File.getContent(path));
 			interp.execute(script);
 		}
 		catch(e:Dynamic){

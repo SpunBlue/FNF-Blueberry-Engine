@@ -52,18 +52,32 @@ class Character extends FlxSprite
 		var addToDef:Bool = false;
 
 		trace('Getting ready for loading of character $character');
+
+		var chardata:Array<String> = character.split(':');
+
+		if (chardata != null && chardata.length > 0){
+			if (chardata[1] != null)
+				mod = ModAssets.findMod(chardata[1]);
+			else
+				mod = ModLib.curMod;
+		}
+		else
+			mod = ModLib.curMod;
 		
-		if (mod != null && ModVariables.characters.exists('$character-' + ModLib.getModID(ModLib.curMod)))
-			charJson = ModVariables.characters.get('$character-' + ModLib.getModID(ModLib.curMod));
+		if (mod != null && ModVariables.characters.exists({string: '$character', mod: mod}))
+			charJson = ModVariables.characters.get({string: '$character', mod: mod});
 		else if (CharVar.defChars.exists('$character')){
 			charJson = CharVar.defChars.get('$character');
 
 			addToDef = true;
 		}
 		else{
+			if (chardata != null && chardata.length > 0 && chardata[0] != null)
+				character = chardata[0];
+
 			charJson = Json.parse(ModAssets.getAsset('data/characters/$character.json', mod, null, 'shared'));
 
-			if (ModLib.getModID(ModLib.curMod) == null)
+			if (mod == null || ModLib.getModID(ModLib.curMod) == null)
 				addToDef = true;
 		}
 
@@ -107,7 +121,7 @@ class Character extends FlxSprite
 				setGraphicSize(Std.int(width * charJson.size));
 
 			if (!addToDef)
-				ModVariables.characters.set('$character-' + ModLib.getModID(ModLib.curMod), charJson);
+				ModVariables.characters.set({string: '$character', mod: mod}, charJson);
 			else
 				CharVar.defChars.set('$character', charJson);
 		}

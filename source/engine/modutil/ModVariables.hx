@@ -1,5 +1,6 @@
 package engine.modutil;
 
+import engine.modding.SpunModLib.Mod;
 import haxe.io.Path;
 import sys.FileSystem;
 import engine.modding.SpunModLib.ModLib;
@@ -16,41 +17,61 @@ typedef EventListData = {
     var ?info:String;
 }
 
-class ModVariables{
-    public static var characters:Map<String, CharJson> = new Map();
+typedef MData = {
+    var mod:Mod;
+    var string:String;
+}
 
-    public static var characterList:Array<String>;
-    public static var stageList:Array<String>;
+class ModVariables{
+    public static var characters:Map<MData, CharJson> = new Map();
+
+    public static var characterList:Array<MData>;
+    public static var stageList:Array<MData>;
 
     public static var validEvents:Array<EventListData> = [
         {eventName: "setZoom", var1Hint: "Which Camera? ('game' or 'hud').", var2Hint: "New Zoom Amount.", var3Hint: "Immediate Zoom? ('true', 'false', or blank)."},
         {eventName: "beatZoom", var1Hint: "Which Camera? ('game' or 'hud').", var2Hint: "How much zoom to add."},
         {eventName: "playAnimation", var1Hint: "Which Character? ('dad' or 'bf).", var2Hint: 'Animation to play.'},
+        {eventName: "swapCharacter", var1Hint: "'dad' or 'bf'", var2Hint: "Character Name.", info: "Swaps the main dad/bf with a new Character."},
         /*
         {eventName: "addCharacter", var1Hint: "Character Name.", var2Hint: "Which type? ('dad' or 'bf').", var3Hint: "Character ID."},
         {eventName: "deleteCharacter", var1Hint: "Character ID.", var2Hint: "Which type? ('dad' or 'bf')."},
-        {eventName: "swapCharacter", var1Hint: "'dad' or 'bf'", var2Hint: "Character Name.", info: "Swaps the main dad/bf with a new Character."}
+        {eventName: "playAnimCharID", var1Hint: "Character ID.", var2Hint: "Which type? ('dad' or 'bf').", info: "Play Animation on a specific Character from ID."}
         */
-        {eventName: "runScript", var1Hint: "Script Path. (Ex: 'data/event.hx')."}
+        {eventName: "runScript", var1Hint: "Script Path. (Ex: 'data/event.hx').", var2Hint: "Mod ID, leave blank for default."}
     ];
 
     public static function reset(){
-        characters.clear();
-        characterList = null;
-        stageList = null;
+        // n/a
+    }
+
+    /**
+     * Not modifying SpunModLib for this lol
+     */
+    public static function loadMod(){
+        updateCharacterList();
+        updateStageList();
     }
 
     public static function updateCharacterList(){
-        characterList = [];
-        readDirectory(ModAssets.getPath('data/characters/', ModLib.curMod, null, null, false), characterList);
+        if (characterList == null)
+            characterList = [];
+
+        for (mod in ModLib.mods){
+            readDirectory(ModAssets.getPath('data/characters/', mod, null, null, false), characterList, mod);
+        }
     }
 
     public static function updateStageList(){
-        stageList = [];
-        readDirectory(ModAssets.getPath('data/characters/', ModLib.curMod, null, null, false), stageList);
+        if (stageList == null)
+            stageList = [];
+        
+        for (mod in ModLib.mods){
+            readDirectory(ModAssets.getPath('data/stages/', mod, null, null, false), stageList, mod, 'hx');    
+        }
     }
 
-    private static function readDirectory(path:String, array:Array<String>){
+    private static function readDirectory(path:String, array:Array<MData>, mod:Mod, ext:String = 'json'){
         var paths:Array<String> = [];
         
         if (path != null && path.length > 0)
@@ -65,11 +86,11 @@ class ModVariables{
         if (paths != null && paths.length > 0){
             for(file in paths){
                 if (file != null){
-                    if (Path.extension(file).toLowerCase() == 'json'){
-                        array.push(Path.withoutExtension(Path.withoutDirectory(file)));
+                    if (Path.extension(file).toLowerCase() == ext.toLowerCase()){
+                        array.push({string: Path.withoutExtension(Path.withoutDirectory(file)), mod: mod});
                     }
                     else if (FileSystem.isDirectory(Path.normalize('$path/$file'))){
-                        readDirectory(Path.normalize('$path/$file'), array);
+                        readDirectory(Path.normalize('$path/$file'), array, mod);
                     }
                     else{
                         trace('Failed to read character in $path. Result: $file.');

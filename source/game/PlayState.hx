@@ -1,5 +1,6 @@
 package game;
 
+import game.editors.EventNote.ChartEvent;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import engine.modding.SpunModLib.Mod;
 import haxe.io.Path;
@@ -143,6 +144,7 @@ class PlayState extends MusicBeatState
 	public static var campaignScore:Int = 0;
 
 	public var defaultCamZoom:Float = 1.05;
+	public var defaultHudZoom:Float = 1;
 
 	// how big to stretch the pixel art assets
 	public static var daPixelZoom:Float = 6;
@@ -173,11 +175,13 @@ class PlayState extends MusicBeatState
 	
 	var ext:String = #if web 'mp3' #else 'ogg' #end;
 
+	var songEvents:Array<ChartEvent> = [];
+
 	/**
 	 * Hscript is so fucking goofy. Variables won't update automatically for some fucking reason.
 	 * @param onlyUpdate Only add variables that update in-game.
 	 */
-	function setScriptVar(?onlyUpdate:Bool = false){
+	function setScriptVar(?onlyUpdate:Bool = false, script:Hscript){
 		if (!onlyUpdate){
 			// Functions
 			script.interp.variables.set("add", function(value:Dynamic)
@@ -279,6 +283,18 @@ class PlayState extends MusicBeatState
 				#if release
 				trace('FORCED RELOAD');
 				#end
+			}
+		}
+
+		// i am so... so... so sorry.
+		if (SONG.events != null){
+			for (section in SONG.events){
+				if (section != null){
+					for (event in section.eventNotes){
+						if (event != null)
+							songEvents.push(event);
+					}
+				}
 			}
 		}
 
@@ -400,7 +416,7 @@ class PlayState extends MusicBeatState
 			add(stageCurtains);
 		}
 
-		setScriptVar();
+		setScriptVar(false, script);
 
 		script.call("onCreate"); // A lot of stuff here will not run or work properly.
 
@@ -613,7 +629,7 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		setScriptVar(true);
+		setScriptVar(true, script);
 		script.call("createPost");
 
 		#if discord_rpc
@@ -1102,6 +1118,69 @@ class PlayState extends MusicBeatState
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
 
+	// putting this here so i don't have to scroll down LOL
+	function performEvent(event:ChartEvent){
+		if (event == null)
+			trace('Event: $event seems to be null? Probably gonna crash LOL');
+
+		switch (event.event.toLowerCase()){
+			case 'setzoom':
+				camZooming = true;
+
+				if (event.variable1.toLowerCase() == 'game'){
+					defaultCamZoom = Std.parseFloat(event.variable2);
+
+					if (event.variable3.toLowerCase() == 'true')
+						FlxG.camera.zoom = Std.parseFloat(event.variable2);
+				}
+				else if (event.variable1.toLowerCase() == 'hud'){
+					defaultHudZoom = Std.parseFloat(event.variable2);
+
+					if (event.variable3.toLowerCase() == 'true')
+						camHUD.zoom = Std.parseFloat(event.variable2);
+				}
+			case 'beatzoom':
+				camZooming = true;
+
+				if (event.variable1.toLowerCase() == 'game')
+					FlxG.camera.zoom += Std.parseFloat(event.variable2);
+				else if (event.variable1.toLowerCase() == 'hud')
+					camHUD.zoom += Std.parseFloat(event.variable2);
+			case 'swapcharacter':
+				switch(event.variable1.toLowerCase()){
+					case 'dad':
+						var newDad:Character = new Character(dad.x - dad.charJson.Position[0], dad.y - dad.charJson.Position[1], event.variable2);
+						newDad.setPosition(newDad.x + newDad.charJson.Position[0], newDad.y + newDad.charJson.Position[1]);
+
+						dad.kill();
+
+						dad = newDad;
+						dadGroup.add(dad);
+					case 'bf' | 'boyfriend' | 'bluehaired bitch':
+						var newBF:Boyfriend = new Boyfriend(boyfriend.x - boyfriend.charJson.Position[0], boyfriend.y - boyfriend.charJson.Position[1], event.variable2);
+						newBF.setPosition(newBF.x + newBF.charJson.Position[0], newBF.y + newBF.charJson.Position[1]);
+
+						boyfriend.kill();
+						
+						boyfriend = newBF;
+						boyfriendGroup.add(boyfriend);
+				}
+			case 'runscript':
+				var eventScript:Hscript = new Hscript();
+
+				var modID:String = '';
+
+				if (event.variable2 != null && event.variable2 != '')
+					modID = event.variable2;
+				else if (ModLib.curMod != null)
+					modID = ModLib.curMod.id;
+
+				eventScript.loadScriptFP(ModAssets.getPath(event.variable1, null, modID, null, false));
+				setScriptVar(false, eventScript);
+				eventScript.call("event");
+		}
+	}
+
 	override public function update(elapsed:Float)
 	{
 		// makes the lerp non-dependant on the framerate
@@ -1143,7 +1222,17 @@ class PlayState extends MusicBeatState
 			// Conductor.lastSongPos = FlxG.sound.music.time;
 		}
 
-		setScriptVar(true);
+		if (!inCutscene && !paused && generatedMusic && FlxG.sound.music.playing){
+			for (event in songEvents){
+				if (Conductor.songPosition >= event.strumtime){
+					// trace('$event was played at ${Conductor.songPosition} in song $curSong');
+					performEvent(event);
+					songEvents.remove(event);
+				}
+			}
+		}
+
+		setScriptVar(true, script);
 
 		script.call("update", [elapsed]);
 
@@ -1252,7 +1341,7 @@ class PlayState extends MusicBeatState
 		if (camZooming)
 		{
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
-			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+			camHUD.zoom = FlxMath.lerp(defaultHudZoom, camHUD.zoom, 0.95);
 		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);
@@ -1506,8 +1595,9 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (!inCutscene)
+		if (!inCutscene){
 			keyShit();
+		}
 
 		script.call("updatePost", [elapsed]);
 	}
