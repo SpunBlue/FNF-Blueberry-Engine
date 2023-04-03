@@ -125,7 +125,9 @@
 	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
 
 	<haxedef name="hscriptPos" />
-	
+
+	<haxeflag name="-dce" value="no"/>
+
 	<!-- <haxelib name="flixel-animate" /> -->
 	<!-- <haxelib name="spinehaxe" /> -->
 	<!-- https://github.com/ninjamuffin99/Flixel-Animate-Atlas-Player -->
