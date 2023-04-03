@@ -1,12 +1,13 @@
 package game.editors;
 
+import util.EventNote;
 import lime.app.Application;
 import engine.modutil.ModVariables;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import engine.modding.SpunModLib.ModAssets;
 import engine.modding.SpunModLib.ModLib;
-import game.editors.EventNote.ChartEvent;
-import game.editors.EventNote.EventSection;
+import util.EventNote.ChartEvent;
+import util.EventNote.EventSection;
 import util.ui.PreferencesMenu;
 import engine.Engine;
 import Conductor.BPMChangeEvent;
@@ -859,9 +860,7 @@ class ChartingState extends MusicBeatState
 		if (FlxG.keys.pressed.SHIFT)
 			shiftThing = 4;
 
-		if (!typingShit.hasFocus && !FlxG.mouse.overlaps(UI_box))
-		{
-			if (FlxG.keys.justPressed.SPACE)
+		if (FlxG.keys.justPressed.SPACE && !typingShit.hasFocus){
 			{
 				if (FlxG.sound.music.playing)
 				{
@@ -874,7 +873,10 @@ class ChartingState extends MusicBeatState
 					FlxG.sound.music.play();
 				}
 			}
+		}
 
+		if (!typingShit.hasFocus && !FlxG.mouse.overlaps(UI_box))
+		{
 			if (!FlxG.keys.pressed.SHIFT)
 			{
 				if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
@@ -1302,21 +1304,21 @@ class ChartingState extends MusicBeatState
 			if ((curSection - 1) >= 0 && curSection < _song.notes.length - 1 && _song.notes[curSection - 1] != null){
 				for (i in _song.notes[curSection - 1].sectionNotes)
 				{
-					genSection(i, -1);
+					genSection(i, -1, curSection);
 				}
 			}
 	
 			if (curSection < _song.notes.length - 1) {
 				for (i in _song.notes[curSection + 1].sectionNotes)
 				{
-					genSection(i, 1);
+					genSection(i, 1, curSection);
 				}
 			}
 		}
 		
 		for (i in sectionInfo)
 		{
-			genSection(i, 0);
+			genSection(i, 0, curSection);
 		}
 
 		if (_song.events[curSection] != null && _song.events[curSection].eventNotes != null){
@@ -1340,8 +1342,8 @@ class ChartingState extends MusicBeatState
 		curRenderedEvents.add(event);
 	}
 
-	function genSection(i:Array<Dynamic>, ?addToSection:Int = 0){
-		var section:Int = curSection + addToSection;
+	function genSection(i:Array<Dynamic>, ?addToSection:Int = 0, currentSection:Int){
+		var section:Int = currentSection + addToSection;
 		
 		var daNoteInfo = i[1];
 		var daStrumTime = i[0];
@@ -1351,6 +1353,7 @@ class ChartingState extends MusicBeatState
 		note.sustainLength = daSus;
 		note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 		note.updateHitbox();
+		note.belongsToSection = section;
 		note.x = Math.floor(daNoteInfo * GRID_SIZE);
 		note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime(section)) % (Conductor.stepCrochet * _song.notes[section].lengthInSteps), 
 			sectionBGs.members[addToSection + 1]));
@@ -1365,6 +1368,7 @@ class ChartingState extends MusicBeatState
 		if (daSus > 0)
 		{
 			var sustainVis:FakeSustain = new FakeSustain(note.x + (GRID_SIZE / 2), note.y + GRID_SIZE, note.noteData % 4);
+			sustainVis.belongsToSection = section;
 			sustainVis.makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, (gridBG.height))));
 			sustainVis.setSize(sustainVis.width, sustainVis.height - 2); // offset for mini-characters
 
@@ -1667,6 +1671,7 @@ class ChartingState extends MusicBeatState
 class FakeSustain extends FlxSprite{
 	public var noteData:Int = 0;
 	public var mustPress:Bool;
+	public var belongsToSection:Int = 0;
 
 	public function new(x:Float, y:Float, data:Int, ?bfNote:Bool){
 		super(x, y);

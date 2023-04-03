@@ -1,4 +1,4 @@
-package game.editors;
+package util;
 
 import flixel.FlxSprite;
 

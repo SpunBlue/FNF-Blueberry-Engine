@@ -210,12 +210,6 @@ class MainMenuState extends MusicBeatState
 		if (_exiting)
 			menuItems.enabled = false;
 
-		if (controls.BACK && menuItems.enabled && !menuItems.busy)
-		{
-			FlxG.sound.play(Paths.sound('cancelMenu'));
-			FlxG.switchState(new TitleState());
-		}
-
 		Conductor.songPosition = FlxG.sound.music.time;
 
 		super.update(elapsed);

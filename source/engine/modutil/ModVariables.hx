@@ -74,7 +74,7 @@ class ModVariables{
     private static function readDirectory(path:String, array:Array<MData>, mod:Mod, ext:String = 'json'){
         var paths:Array<String> = [];
         
-        if (path != null && path.length > 0)
+        if (path != null && path.length > 0 && FileSystem.exists(path))
             paths = FileSystem.readDirectory(path);
         else
         {
@@ -93,7 +93,7 @@ class ModVariables{
                         readDirectory(Path.normalize('$path/$file'), array, mod);
                     }
                     else{
-                        trace('Failed to read character in $path. Result: $file.');
+                        trace('Failed at $path. Result: $file.');
                     }
                 }
             }

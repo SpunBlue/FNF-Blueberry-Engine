@@ -100,16 +100,11 @@ class ModLib{
     }
 
     /**
-     * Reset the current Mod loaded in the `curMod` Variable.
-     * @param undetect Remove all of the detected mods from the `mods` Map.
-     * @deprecated Just run `setMod`, It's used for setting and resetting, plus it has more flexibility.
+     * Reset the current Mods loaded in the `mods` Map Variable.
      */
-    @:deprecated
-    public static function reset(?undetect:Bool = false){
+    public static function reset(){
         curMod = null;
-
-        if (undetect)
-            mods = new Map();
+        mods = new Map();
     }
 
     /**
@@ -126,7 +121,7 @@ class ModLib{
 
     /**
      * @param mod
-     * @deprecated Ended up being useless to me, but hey you might need it.
+     * @deprecated Ended up being useless to me, but hey someone might need it.
      */
      @:deprecated
     public static function getModFolderByID(modID:String){

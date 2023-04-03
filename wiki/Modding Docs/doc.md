@@ -44,7 +44,7 @@ function updatePost(elapsed){
 If a function doesn't need any parameters, it needs to be defined without any.
 
 ### Accessing Haxe and Flixel Classes and Functions.
-The engine provides access to various classes, and functions, through global variables. Modders can use these variables in all states. Keep in mind that this list isn't detailed. Here is a list of avaliable global variables:
+The engine provides access to various classes, and functions, through global variables. Modders can use these variables in all states. Keep in mind that this list isn't fully detailed. Here is a list of avaliable global variables:
 
 Classes:
 - `Int`

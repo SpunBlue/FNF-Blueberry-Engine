@@ -1,7 +1,7 @@
 package;
 
-import game.editors.EventNote.EventSection;
-import game.editors.EventNote.EventNote;
+import util.EventNote.EventSection;
+import util.EventNote.EventNote;
 import engine.modding.SpunModLib.ModLib;
 import engine.modding.SpunModLib.ModAssets;
 import Section.SwagSection;

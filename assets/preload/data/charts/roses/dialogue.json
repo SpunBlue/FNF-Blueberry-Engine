@@ -2,21 +2,25 @@
 	"leftPortraitXOffset": 128,
 	"rightPortraitXOffset": -128,
 	"portraitYOffset": 394,
+	"boxAntialiasing": false,
 	"dialogues": [
 		{
 			"dialogue": "Not bad for an ugly worm.",
 			"image": "weeb/senpaiMad",
-			"facing": "left"
+			"facing": "left",
+			"antialiasing": false
 		},
 		{
 			"dialogue": "But this time I'll rip your nuts off right after your girlfriend finishes gargling mine.",
 			"image": "weeb/senpaiMad",
-			"facing": "left"
+			"facing": "left",
+			"antialiasing": false
 		},
 		{
 			"dialogue": "Bop beep be be skdoo bep",
 			"image": "weeb/bfPortrait",
-			"facing": "right"
+			"facing": "right",
+			"antialiasing": false
 		}
 	]
 }

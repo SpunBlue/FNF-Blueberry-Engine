@@ -1,5 +1,7 @@
 package;
 
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import lime.math.RGBA;
 import sys.FileSystem;
 import game.PlayState;
@@ -31,8 +33,8 @@ class DialogueBox extends FlxSpriteGroup
 
 	public var finishThing:Void->Void;
 
-	var portraitLeft:FlxSprite;
-	var portraitRight:FlxSprite;
+	var portraitLeft:DialoguePortraitSprite;
+	var portraitRight:DialoguePortraitSprite;
 
 	var handSelect:FlxSprite;
 	var bgFade:FlxSprite;
@@ -95,10 +97,15 @@ class DialogueBox extends FlxSpriteGroup
 			}
 		}
 
+		if (dialogueJson.boxAntialiasing != null)
+			box.antialiasing = dialogueJson.boxAntialiasing;
+		else
+			box.antialiasing = true;
+
 		this.dialogueList = dialogueJson.dialogues;
 
-		portraitLeft = new FlxSprite();
-		portraitRight = new FlxSprite();
+		portraitLeft = new DialoguePortraitSprite();
+		portraitRight = new DialoguePortraitSprite();
 
 		add(portraitLeft);
 		add(portraitRight);
@@ -250,14 +257,22 @@ class DialogueBox extends FlxSpriteGroup
 		if (json.portraitYOffset != null)
 			yOff = json.portraitYOffset;
 
+		var imagelol:String = dialogueList[0].image;
+
 		switch (dialogueList[0].facing.toLowerCase()){
 			case 'left':
 				portraitRight.visible = false;
-				if (!portraitLeft.visible)
+				if (!portraitLeft.visible || portraitLeft.visible && portraitLeft.lastGraphicPath != imagelol)
 				{
-					portraitLeft.visible = true;
+					if (!portraitLeft.visible){
+						portraitLeft.alpha = 0;
+						portraitLeft.visible = true;
+	
+						FlxTween.tween(portraitLeft, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+					}
 
-					portraitLeft.loadGraphic(Paths.image(dialogueList[0].image));
+					portraitLeft.loadGraphic(Paths.image(imagelol));
+					portraitLeft.lastGraphicPath = imagelol;
 
 					if (portraitLeft.flipX != false)
 						portraitLeft.flipX = false;
@@ -266,14 +281,25 @@ class DialogueBox extends FlxSpriteGroup
 						portraitLeft.setGraphicSize(Std.int(portraitLeft.width * PlayState.daPixelZoom * 0.9));
 					portraitLeft.updateHitbox();
 					portraitLeft.setPosition(box.x + lXOff, (box.y - portraitLeft.height) + yOff);
+
+					if (dialogueList[0].antialiasing != null)
+						portraitLeft.antialiasing = dialogueList[0].antialiasing;
+					else
+						portraitLeft.antialiasing = true;
 				}
 			case 'right':
 				portraitLeft.visible = false;
-				if (!portraitRight.visible)
+				if (!portraitRight.visible || portraitRight.visible && portraitRight.lastGraphicPath != imagelol)
 				{
-					portraitRight.visible = true;
+					if (!portraitLeft.visible){
+						portraitRight.visible = true;
+						portraitRight.alpha = 0;
 
-					portraitRight.loadGraphic(Paths.image(dialogueList[0].image));
+						FlxTween.tween(portraitRight, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+					}
+
+					portraitRight.loadGraphic(Paths.image(imagelol));
+					portraitRight.lastGraphicPath = imagelol;
 
 					if (portraitRight.flipX != true)
 						portraitRight.flipX = true;
@@ -282,8 +308,21 @@ class DialogueBox extends FlxSpriteGroup
 						portraitRight.setGraphicSize(Std.int(portraitRight.width * PlayState.daPixelZoom * 0.9));
 					portraitRight.updateHitbox();
 					portraitRight.setPosition((box.width - portraitRight.width) + rXOff, (box.y - portraitRight.height) + yOff);
+
+					if (dialogueList[0].antialiasing != null)
+						portraitRight.antialiasing = dialogueList[0].antialiasing;
+					else
+						portraitRight.antialiasing = true;
 				}
 		}
+	}
+}
+
+class DialoguePortraitSprite extends FlxSprite{
+	public var lastGraphicPath:String = "";
+
+	override public function new(?x:Float = 0, ?y:Float = 0){
+		super(x, y);
 	}
 }
 
@@ -294,6 +333,7 @@ typedef DialogueShitJson = {
 	var ?boxIdleAnimation:String;
 	var ?boxXOffset:Float;
 	var ?boxYOffset:Float;
+	var ?boxAntialiasing:Bool;
 	var ?portraitYOffset:Float;
 	var ?leftPortraitXOffset:Float;
 	var ?rightPortraitXOffset:Float;
@@ -307,5 +347,6 @@ typedef DialogueShit = {
 	var dialogue:String;
 	var ?speed:Float; // Lower is faster and Higher as slower... for some reason.
 	var image:String;
+	var ?antialiasing:Bool;
 	var facing:String; // Left or Right
 }

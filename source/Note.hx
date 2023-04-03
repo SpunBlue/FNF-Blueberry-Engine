@@ -62,6 +62,13 @@ class Note extends FlxSprite
 	public var noteFuckingDying:Bool = false;
 	public var hideBitch:Bool = false;
 
+	/**
+	 * Only used for the Charter.
+	 */
+	public var belongsToSection:Int = 0;
+
+	public var sangByCharID:Int = 0;
+
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true)
 	{
 		super();

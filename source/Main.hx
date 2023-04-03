@@ -68,7 +68,7 @@ class Main extends Sprite
 					content += '\n(Line:${infos.lineNumber} Class:${infos.className} Method:${infos.methodName})::$v';
 
 					// Creates a thread, threads basically run tasks in the background and doesn't wait for completion. Helps with performance, shouldn't do this with everything though.
-					#if (target.threaded)
+					#if (!html5 && target.threaded)
 					Thread.create(() -> {
 						File.saveContent('logs/$logName.txt', content);
 					});
@@ -171,5 +171,31 @@ class Main extends Sprite
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsCounter);
 		#end
+	}
+
+	// Copied from a personal project
+	/**
+	 * Create a thread to run a specific task, allows running the same task even if creating threads is not possible.
+	 * @param task Function
+	 * @param allowNonThread Allow `task` to run even if threading isn't possible, defaults to `true`.
+	 */
+	public static function createThread(task:Void->Void, allowNonThread:Bool = true)
+	{
+		try
+		{
+			#if (target.threaded)
+			sys.thread.Thread.create(() ->
+			{
+				task();
+			});
+			#else
+			if (allowNonThread)
+				task(); // do it anyways LOL
+			#end
+		}
+		catch (e:Dynamic)
+		{
+			trace('ERROR DURRING THREAD PROCESS, $e');
+		}
 	}
 }

@@ -2,21 +2,25 @@
 	"leftPortraitXOffset": 128,
 	"rightPortraitXOffset": -128,
 	"portraitYOffset": 394,
+	"boxAntialiasing": false,
 	"dialogues": [
 		{
 			"dialogue": "Ah, a new fair maiden has come in search of true love!",
 			"image": "weeb/senpaiPortrait",
-			"facing": "left"
+			"facing": "left",
+			"antialiasing": false
 		},
 		{
 			"dialogue": "A serenade between gentlemen shall decide where her beautiful heart shall reside.",
 			"image": "weeb/senpaiPortrait",
-			"facing": "left"
+			"facing": "left",
+			"antialiasing": false
 		},
 		{
 			"dialogue": "Beep bo bop",
 			"image": "weeb/bfPortrait",
-			"facing": "right"
+			"facing": "right",
+			"antialiasing": false
 		}
 	]
 }
