@@ -90,8 +90,6 @@ class Hscript
 		interp.variables.set("ModAssets", ModAssets);
 		interp.variables.set("ModLib", ModLib);
 
-		interp.allowStaticVariables = interp.allowPublicVariables = true;
-
 		interp.variables.set("getModID", function()
 		{
 			return ModLib.curMod.id;
@@ -112,37 +110,7 @@ class Hscript
 			Assets.cache.setBitmapData(ModAssets.getPath(path, null, modID, null, false), BitmapData.fromFile(ModAssets.getPath(path, null, modID, null, false)));
 		});
 
-		// regular ol' functions
-		interp.variables.set("trace", function(value:Dynamic)
-		{
-			trace(value);
-		});
-
-		/*interp.variables.set("forceAnimPlay", function(val:Character, val2:String, val3:Bool){
-			val.animation.play(val2, val3);
-		});*/
-
-		interp.variables.set("import", function(class_name:String)
-		{
-			var classes = class_name.split(".");
-
-			if (Type.resolveClass(class_name) != null)
-				interp.variables.set(classes[classes.length - 1], Type.resolveClass(class_name));
-			else if (Type.resolveEnum(class_name) != null)
-			{
-				var enum_new = {};
-				var good_enum = Type.resolveEnum(class_name);
-
-				for (constructor in good_enum.getConstructors())
-				{
-					Reflect.setField(enum_new, constructor, good_enum.createByName(constructor));
-				}
-
-				interp.variables.set(classes[classes.length - 1], enum_new);
-			}
-			else
-				trace(class_name + " isn't a valid class or enum!");
-		});
+		interp.allowStaticVariables = interp.allowPublicVariables = true;
 	}
 
 	public function call(funcName:String, ?args:Array<Dynamic>):Dynamic
