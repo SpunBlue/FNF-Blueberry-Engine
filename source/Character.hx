@@ -86,9 +86,9 @@ class Character extends FlxSprite
 
 		if (charJson != null){
 			if (charJson.isSpritesheet == null || charJson.isSpritesheet == false)
-				frames = FlxAtlasFrames.fromSparrow(ModAssets.getAsset('images/' + charJson.imagePath, mod, null, 'shared'), ModAssets.getAsset('images/' + charJson.xmlPath, null, null, 'shared'));
+				frames = FlxAtlasFrames.fromSparrow(ModAssets.getAsset('images/' + charJson.imagePath, mod, null, 'shared'), ModAssets.getAsset('images/' + charJson.xmlPath, mod, null, 'shared'));
 			else
-				frames = FlxAtlasFrames.fromSpriteSheetPacker(ModAssets.getAsset('images/' + charJson.imagePath, mod, null, 'shared'), ModAssets.getAsset('images/' + charJson.xmlPath, null, null, 'shared'));
+				frames = FlxAtlasFrames.fromSpriteSheetPacker(ModAssets.getAsset('images/' + charJson.imagePath, mod, null, 'shared'), ModAssets.getAsset('images/' + charJson.xmlPath, mod, null, 'shared'));
 
 			antialiasing = charJson.antialiasing;
 			healthBarColors = charJson.healthBarColor;
