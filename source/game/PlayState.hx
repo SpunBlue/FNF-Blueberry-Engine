@@ -154,8 +154,6 @@ class PlayState extends MusicBeatState
 
 	public static var inCutscene:Bool = false;
 
-	public var isCameraOnForcedPos:Bool = false;
-
 	var songLength:Float = 0;
 
 	#if discord_rpc
@@ -257,7 +255,6 @@ class PlayState extends MusicBeatState
 		// Song Variables
 		script.interp.variables.set("daPixelZoom", daPixelZoom);
 		script.interp.variables.set("defaultCamZoom", defaultCamZoom);
-		script.interp.variables.set("camFollow", camFollow);
 		script.interp.variables.set("curSong", SONG.song);
 		script.interp.variables.set("SONG", SONG);
 		script.interp.variables.set("curStage", curStage);
@@ -1343,7 +1340,7 @@ class PlayState extends MusicBeatState
 			changeSection(-1);
 		#end
 
-		if (generatedMusic && SONG.notes[Std.int(curStep / 16)] != null && !isCameraOnForcedPos)
+		if (generatedMusic && SONG.notes[Std.int(curStep / 16)] != null)
 		{
 			cameraRightSide = SONG.notes[Std.int(curStep / 16)].mustHitSection;
 			cameraMovement();
