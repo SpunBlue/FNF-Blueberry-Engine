@@ -97,7 +97,7 @@ class PlayState extends MusicBeatState
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 
-	private var camFollow:FlxObject;
+	public var camFollow:FlxObject;
 
 	private static var prevCamFollow:FlxObject;
 
@@ -270,6 +270,9 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("strumLines", strumLineNotes);
 
 		script.interp.variables.set("replaceStrum", replaceArrows);
+
+		script.interp.variables.set('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
+		script.interp.variables.set('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
 	}
 
 	override public function create()
