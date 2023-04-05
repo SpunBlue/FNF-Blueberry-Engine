@@ -1262,10 +1262,9 @@ class PlayState extends MusicBeatState
 		'${(Math.floor((Conductor.songPosition / 1000) / 60))}:${(Math.floor((Conductor.songPosition / 1000) % 60) < 10 ? '0' : '') + Math.floor((Conductor.songPosition / 1000) % 60)}'.replace('\n', '')*/;
 
 		if (!PreferencesMenu.getPref('downscroll'))
-			hitsTxt.text = 'SHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints\nAccuracy: ' + funnyRatingText(calculateRatingPercent());
+			hitsTxt.text = 'SHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints\nAccuracy: ' + funnyRatingText(calculateRatingPercent()) + ' ' + textSpacer + 'Time: ' + FlxStringUtil.formatTime(FlxG.sound.music.time / 1000.0);
 		else
-			hitsTxt.text = 'Accuracy: ' + funnyRatingText(calculateRatingPercent()) + '\nSHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints';
-		
+			hitsTxt.text = 'Accuracy: ' + funnyRatingText(calculateRatingPercent()) + ' ' + textSpacer + 'Time: ' + FlxStringUtil.formatTime(FlxG.sound.music.time / 1000.0) + '\nSHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints';
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
