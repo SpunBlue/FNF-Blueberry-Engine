@@ -102,6 +102,8 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollow:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNotes> = new FlxTypedGroup<StrumNotes>();
+	public var noteSplashGroup:FlxTypedGroup<NoteSplash>;
+
 	private var playerStrums:StrumNotes;
 	private var cpuStrums:StrumNotes;
 
@@ -141,8 +143,6 @@ class PlayState extends MusicBeatState
 
 	public var songHits:Int = 0;
 	public var songMisses:Int = 0;
-
-	var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
 	public static var campaignScore:Int = 0;
 
@@ -476,15 +476,6 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -5000;
 
-		// fake notesplash cache type deal so that it loads in the graphic?
-		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-
-		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
-		grpNoteSplashes.add(noteSplash);
-		
-		add(grpNoteSplashes);
-		noteSplash.kill();
-
 		var s:String = null;
 
 		if (s == null){
@@ -497,9 +488,12 @@ class PlayState extends MusicBeatState
 		}
 		else
 			s = SONG.style;
-		
+
 		generateStaticArrows(s, PreferencesMenu.getPref('middle-scroll'), PreferencesMenu.getPref('downscroll'));
 		add(strumLineNotes);
+
+		noteSplashGroup = new FlxTypedGroup<NoteSplash>();
+		add(noteSplashGroup);
 
 		generateSong(s);
 
@@ -570,7 +564,7 @@ class PlayState extends MusicBeatState
 		hitsTxt.scrollFactor.set();
 		add(hitsTxt);
 
-		grpNoteSplashes.cameras = [camHUD];
+		noteSplashGroup.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -1532,12 +1526,9 @@ class PlayState extends MusicBeatState
 							getCharFromID(cID, true).playAnim('singRIGHT' + altAnim, true);
 					}
 
-					if (!daNote.isSustainNote && !daNote.hideBitch){
-						var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-						noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-						noteSplash.animation.curAnim.frameRate = 24;
-						grpNoteSplashes.add(noteSplash);
-					}
+					// if (!daNote.isSustainNote && !daNote.hideBitch){
+						// spawnNoteSplash(daNote.noteData);
+					// }
 
 					if (cpuStrums != null){
 						cpuStrums.forEach(function(spr:FlxSprite)
@@ -1765,21 +1756,13 @@ class PlayState extends MusicBeatState
 			++goods;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.05){
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-			noteSplash.animation.curAnim.frameRate = 24;
-			grpNoteSplashes.add(noteSplash);
-
+			spawnNoteSplash(daNote.noteData);
 			daRating = 'sick';
 			score = 350;
 			++sicks;
 		}
 		else{
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-			noteSplash.animation.curAnim.frameRate = 24 * (0.5 + FlxG.random.float(0, 0.25)); // Slow and satisfying.
-			grpNoteSplashes.add(noteSplash);
-
+			spawnNoteSplash(daNote.noteData);
 			++mints;
 		}
 
@@ -2372,6 +2355,16 @@ class PlayState extends MusicBeatState
 		}
 
 		return 0;
+	}
+
+	public inline function spawnNoteSplash(noteData:Int) {
+		var staticNote:FlxSprite = playerStrums.members[noteData];
+		createNoteSplash(staticNote.x, staticNote.y, noteData);
+	}
+
+	public inline function createNoteSplash(x:Float, y:Float, noteData:Int) {
+		var splash:NoteSplash = new NoteSplash(x, y, noteData);
+		noteSplashGroup.add(splash);
 	}
 }
 
