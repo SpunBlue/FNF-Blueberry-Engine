@@ -1,14 +1,15 @@
 package engine.modding;
 
-import flixel.system.FlxSound;
 import haxe.Json;
-import openfl.Assets;
-import openfl.media.Sound;
-import openfl.display.BitmapData;
-import flixel.graphics.FlxGraphic;
 import sys.io.File;
 import haxe.io.Path;
+import openfl.Assets;
 import sys.FileSystem;
+import openfl.media.Sound;
+import flixel.system.FlxSound;
+import openfl.display.BitmapData;
+import flixel.graphics.FlxGraphic;
+import flixel.graphics.frames.FlxAtlasFrames;
 
 class ModLib{
     public static var mods:Map<String, Mod> = new Map();
@@ -335,6 +336,32 @@ class ModAssets{
         #end
 
         return null;
+    }
+
+    /**
+     * Only get graphic, you can also use the `getAsset` function which is universal.
+     * @param path Path (images/test.png). Don't include root directory.
+     * @param mod Mod Data
+     * @param modID Mod ID, leave `mod` as `null` to use.
+     * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
+     */
+	inline static public function getSparrowAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true)
+    {
+        return FlxAtlasFrames.fromSparrow(getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets), getContent('images/$path.xml', mod, modID, additionDirOnFail, onFailPullAssets));
+    }
+
+    /**
+     * Only get graphic, you can also use the `getAsset` function which is universal.
+     * @param path Path (images/test.png). Don't include root directory.
+     * @param mod Mod Data
+     * @param modID Mod ID, leave `mod` as `null` to use.
+     * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
+     * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
+     */
+    inline static public function getPackerAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true)
+    {
+        return FlxAtlasFrames.fromSpriteSheetPacker(getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets), getContent('images/$path.txt', mod, modID, additionDirOnFail, onFailPullAssets));
     }
 
     /**
