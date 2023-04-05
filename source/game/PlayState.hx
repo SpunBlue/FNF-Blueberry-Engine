@@ -353,6 +353,17 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		for (file in FileSystem.readDirectory(ModAssets.getPath("data/scripts/", null, modID, null))){
+			if (file != null && Path.extension(file).toLowerCase() == 'hx'){
+				trace('Attempting to load script: $file');
+
+				script.loadScriptFP(ModAssets.getPath("data/scripts/" + file, null, modID));
+			}
+			else if (file == null){
+				trace('File is null?! Cannot load script... if it even is a script.');
+			}
+		}
+
 		/*if (ModAssets.assetExists('data/charts/' + SONG.song.toLowerCase() + '/script.hx', null, modID, null)){
 			script.loadScript('charts/' + SONG.song.toLowerCase(), 'script', modID);
 		}*/
