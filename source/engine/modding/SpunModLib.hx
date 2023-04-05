@@ -340,7 +340,7 @@ class ModAssets{
 
     /**
      * Only get graphic, you can also use the `getAsset` function which is universal.
-     * @param path Path (images/test.png). Don't include root directory.
+     * @param path Path (images/test.xml). Don't include root directory.
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
@@ -352,7 +352,7 @@ class ModAssets{
 
     /**
      * Only get graphic, you can also use the `getAsset` function which is universal.
-     * @param path Path (images/test.png). Don't include root directory.
+     * @param path Path (images/test.txt). Don't include root directory.
      * @param mod Mod Data
      * @param modID Mod ID, leave `mod` as `null` to use.
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
