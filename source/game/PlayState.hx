@@ -230,9 +230,6 @@ class PlayState extends MusicBeatState
 			script.interp.variables.set("StrumNotes", StrumNotes);
 		}
 
-        // idk
-		script.interp.variables.set("this", this);
-
 		// Stage Layers
 		script.interp.variables.set("stageLayer0", layer0); // Behind all
 		script.interp.variables.set("stageLayer1", layer1); // In front of GF
@@ -261,6 +258,8 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("gfVersion", gfVersion);
 
 		// Misc
+		script.interp.variables.set("this", this);
+
 		script.interp.variables.set("inCutscene", inCutscene);
 		script.interp.variables.set("curBeat", curBeat);
 		script.interp.variables.set("curStep", curStep);
