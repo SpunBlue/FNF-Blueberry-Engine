@@ -154,6 +154,8 @@ class PlayState extends MusicBeatState
 
 	public static var inCutscene:Bool = false;
 
+	public var isCameraOnForcedPos:Bool = false;
+
 	var songLength:Float = 0;
 
 	#if discord_rpc
@@ -1341,10 +1343,9 @@ class PlayState extends MusicBeatState
 			changeSection(-1);
 		#end
 
-		if (generatedMusic && SONG.notes[Std.int(curStep / 16)] != null)
+		if (generatedMusic && SONG.notes[Std.int(curStep / 16)] != null && !isCameraOnForcedPos)
 		{
 			cameraRightSide = SONG.notes[Std.int(curStep / 16)].mustHitSection;
-
 			cameraMovement();
 		}
 
