@@ -346,8 +346,7 @@ class ModAssets{
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
      * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-	inline static public function getSparrowAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true)
-    {
+	inline static public function getSparrowAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
         return FlxAtlasFrames.fromSparrow(getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets), getContent('$path.xml', mod, modID, additionDirOnFail, onFailPullAssets));
     }
 
@@ -359,8 +358,7 @@ class ModAssets{
      * @param additionalDirOnFail If the asset could not be located in the Mod's directory, Instead of using the regular `assets` path, it will add an additional string after the `assets/`. Example: `assets/shared` `shared` being the string added.
      * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
-    inline static public function getPackerAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true)
-    {
+    inline static public function getPackerAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
         return FlxAtlasFrames.fromSpriteSheetPacker(getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets), getContent('$path.txt', mod, modID, additionDirOnFail, onFailPullAssets));
     }
 
