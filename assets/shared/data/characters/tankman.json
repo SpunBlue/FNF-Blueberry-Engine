@@ -54,6 +54,11 @@
             "offsets": [-6, -4]
         }
     ],
+	"healthBarColor": [
+		225,
+		225,
+		225
+	],
     "flipX": true,
     "antialiasing": true
 }

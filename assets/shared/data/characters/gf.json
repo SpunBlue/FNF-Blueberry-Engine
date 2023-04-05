@@ -82,5 +82,10 @@
             "offsets": [-2, -17]
         }
     ],
+	"healthBarColor": [
+		165,
+		0,
+		77
+	],
     "antialiasing": true
-} 
+}

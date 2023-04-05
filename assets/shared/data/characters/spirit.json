@@ -1,46 +1,51 @@
 {
-    "imagePath": "characters/spirit.png",
-    "xmlPath": "characters/spirit.txt",
-    "Position": [0, 350],
-    "CamPosition": [0, 92],
-    "animations": [
-      {
-        "prefix": "idle spirit_",
-        "name": "idle",
-        "fps": 24,
-        "indices": null,
-        "offsets": [0, 0]
-      },
-      {
-        "prefix": "up_",
-        "name": "singUP",
-        "fps": 24,
-        "indices": null,
-        "offsets": [-6, 50]
-      },
-      {
-        "prefix": "right_",
-        "name": "singRIGHT",
-        "fps": 24,
-        "indices": null,
-        "offsets": [0, 27]
-      },
-      {
-        "prefix": "spirit down_",
-        "name": "singDOWN",
-        "fps": 24,
-        "indices": null,
-        "offsets": [390, 400]
-      },
-      {
-        "prefix": "left_",
-        "name": "singLEFT",
-        "fps": 24,
-        "indices": null,
-        "offsets": [-10, 10]
-      }
-    ],
-    "antialiasing": false,
-    "size": 6,
-    "isSpritesheet": true
-  }
+  "imagePath": "characters/spirit.png",
+  "xmlPath": "characters/spirit.txt",
+  "Position": [0, 350],
+  "CamPosition": [0, 92],
+  "animations": [
+    {
+      "prefix": "idle spirit_",
+      "name": "idle",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 0]
+    },
+    {
+      "prefix": "up_",
+      "name": "singUP",
+      "fps": 24,
+      "indices": null,
+      "offsets": [-6, 50]
+    },
+    {
+      "prefix": "right_",
+      "name": "singRIGHT",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 27]
+    },
+    {
+      "prefix": "spirit down_",
+      "name": "singDOWN",
+      "fps": 24,
+      "indices": null,
+      "offsets": [390, 400]
+    },
+    {
+      "prefix": "left_",
+      "name": "singLEFT",
+      "fps": 24,
+      "indices": null,
+      "offsets": [-10, 10]
+    }
+  ],
+	"healthBarColor": [
+		255,
+		60,
+		110
+	],
+  "antialiasing": false,
+  "size": 6,
+  "isSpritesheet": true
+}

@@ -40,6 +40,11 @@
       "offsets": [-10, 10]
     }
   ],
+	"healthBarColor": [
+		175,
+		102,
+		206
+	],
   "antialiasing": true,
   "singHold": 6.1
 }
