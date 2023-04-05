@@ -97,7 +97,7 @@ class PlayState extends MusicBeatState
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 
-	public var camFollow:FlxObject;
+	private var camFollow:FlxObject;
 
 	private static var prevCamFollow:FlxObject;
 
