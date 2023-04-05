@@ -33,11 +33,10 @@ class ModVariables{
         {eventName: "beatZoom", var1Hint: "Which Camera? ('game' or 'hud').", var2Hint: "How much zoom to add."},
         {eventName: "playAnimation", var1Hint: "Which Character? ('dad' or 'bf).", var2Hint: 'Animation to play.'},
         {eventName: "swapCharacter", var1Hint: "'dad' or 'bf'", var2Hint: "Character Name.", info: "Swaps the main dad/bf with a new Character."},
-        /*
-        {eventName: "addCharacter", var1Hint: "Character Name.", var2Hint: "Which type? ('dad' or 'bf').", var3Hint: "Character ID."},
+        {eventName: "addCharacter", var1Hint: "Character Name.", var2Hint: "Which type? ('dad' or 'bf').", var3Hint: "Character ID.", var4Hint: "X Offset", var5Hint: "Y Offset"},
         {eventName: "deleteCharacter", var1Hint: "Character ID.", var2Hint: "Which type? ('dad' or 'bf')."},
-        {eventName: "playAnimCharID", var1Hint: "Character ID.", var2Hint: "Which type? ('dad' or 'bf').", info: "Play Animation on a specific Character from ID."}
-        */
+        {eventName: "selectCharacter", var1Hint: "Character ID.", var2Hint: "Which type? ('dad' or 'bf').", info: "Select a Character from a specified ID to sing."},
+        {eventName: "playAnimCharID", var1Hint: "Character ID.", var2Hint: "Which type? ('dad' or 'bf').", var3Hint: "Animation Name.",info: "Play Animation on a specific Character from ID."},
         {eventName: "runScript", var1Hint: "Script Path. (Ex: 'data/event.hx').", var2Hint: "Mod ID, leave blank for default."}
     ];
 

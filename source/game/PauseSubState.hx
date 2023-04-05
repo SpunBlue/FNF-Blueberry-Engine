@@ -1,5 +1,6 @@
 package game;
 
+import game.editors.ChartingState;
 import engine.modding.SpunModLib.ModAssets;
 import flixel.group.FlxGroup;
 import Controls.Control;
@@ -23,6 +24,7 @@ class PauseSubState extends MusicBeatSubstate
 		'Resume',
 		'Restart Song',
 		'Toggle Practice Mode',
+		'Chart Editor',
 		'Exit to menu'
 	];
 
@@ -195,6 +197,8 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to menu":
 					PlayState.deathCounter = 0;
 					FlxG.switchState(new FreeplayState());
+				case 'Chart Editor':
+					FlxG.switchState(new ChartingState());
 			}
 		}
 

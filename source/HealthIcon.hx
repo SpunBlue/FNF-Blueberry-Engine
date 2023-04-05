@@ -1,5 +1,7 @@
 package;
 
+import engine.modding.SpunModLib.ModLib;
+import engine.modding.SpunModLib.ModAssets;
 import game.PlayState;
 import flixel.FlxSprite;
 import engine.modding.SpunModLib.ModLib;
