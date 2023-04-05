@@ -1,5 +1,6 @@
 package game;
 
+import flixel.FlxObject;
 import engine.modding.SpunModLib.ModAssets;
 import engine.modding.SpunModLib.ModLib;
 import engine.modding.SpunModLib.Mod;
@@ -86,13 +87,12 @@ class FreeplayState extends MusicBeatState
         add(menuItems);
         add(playIcons);
 
-        // too lazy to rename this correctly
-        var leftBar = new FlxSprite(FlxG.width - 256, 0).makeGraphic(256, FlxG.height, FlxColor.BLACK);
-        leftBar.alpha = 0.75;
-        leftBar.scrollFactor.set(0, 0);
-        uiItems.add(leftBar);
+        var rightBar = new FlxSprite(FlxG.width - 256, 0).makeGraphic(256, FlxG.height, FlxColor.BLACK);
+        rightBar.alpha = 0.75;
+        rightBar.scrollFactor.set(0, 0);
+        uiItems.add(rightBar);
 
-        scoreText = new FlxText(FlxG.width - 256, 5, leftBar.width, "", 32);
+        scoreText = new FlxText(FlxG.width - 256, 5, rightBar.width, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
         scoreText.scrollFactor.set(0, 0);
         uiItems.add(scoreText);
@@ -186,8 +186,6 @@ class FreeplayState extends MusicBeatState
                         i++;
                     }
                 }
-
-                lastSelected = curSelected;
             }
 
             if (item != null && curSelected == item.ID + 1 && controls.ACCEPT){
@@ -197,6 +195,7 @@ class FreeplayState extends MusicBeatState
 
                     generateMenu(getMenu('songs'));
 
+                    lastSelected = curSelected;
                     curSelected = 1;
                 }
                 else if (item.type.toLowerCase() == 'playall' || item.type.toLowerCase() == 'shuffle'){
@@ -271,6 +270,13 @@ class FreeplayState extends MusicBeatState
         if (FlxG.keys.justPressed.ESCAPE == true){
             if (inSongMenu){
                 generateMenu(getMenu('weeks'));
+
+                curSelected = lastSelected;
+
+                for (item in menuItems){
+                    if (item.ID == curSelected)
+                        camFollow.y = item.y;
+                }
             }
             else
                 FlxG.switchState(new MainMenuState());
@@ -380,7 +386,6 @@ class FreeplayState extends MusicBeatState
     
         return randomizedArray;
     }
-    
 }
 
 class Checkbox extends FlxSprite

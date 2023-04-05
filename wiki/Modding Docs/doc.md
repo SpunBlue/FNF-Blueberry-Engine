@@ -9,10 +9,10 @@ To use Hscript you must have basic and sometimes intermediate knowledge of Haxe 
 
 Avaliable on all:
 - `onCreate()`: Called when the gameplay state is created.
-- `createPost()`: Called after the gameplay state is created.
 - `update(elapsed:Float)`: Called every frame before the gameplay state is updated.
-- `updatePost(elapsed:Float)`: Called every frame after the gameplay state is updated.
 Avaliable on some:
+- `createPost()`: Called after the gameplay state is created.
+- `updatePost(elapsed:Float)`: Called every frame after the gameplay state is updated.
 - `beatHit()`: Called when a beat is hit.
 - `stepHit()`: Called when a step is hit.
 Avaliable in PlayState:
@@ -84,6 +84,8 @@ Classes:
 - `Note`
 - `ModLib`: The modding class.
 - `ModAssets`: The modding assets class.
+- `VideoHandler`: HxCodec Class for Cutscenes.
+- `VideoSprite`: HxCodec Class for Cutscenes.
 
 Functions:
 - `getModID()`: Returns the current Mod ID.
@@ -111,10 +113,14 @@ Functions:
 - `curGF()`: Returns the current Girlfriend.
 - `createTrail(char:FlxObject, graphic:FlxGraphic, length:Int, delay:Float, alpha:Float, diff:Float, ?addInGroup:Bool, ?group:FlxGroup)`: Creates a trail effect.
 - `replaceStrum(style:String, ?skipTransition:Bool, ?dontGenCPU:Bool)`: Replace all strumlines with given data, Generates with no Preferences attatched.
+- `addCharacter(charName:String, charID:Int = 0, isDad = false, xOff:Float, yOff:Float)`: Add another Character to the stage.
+- `removeCharacter(charID:Int = 0, isDad:Bool = false)`: Remove a Character from the stage.
+- `getCharFromID(id:Int, isDad:Bool = false)`: Get a Character from a specified ID.
 
 Objects:
 - `camHUD`: The HUD Camera.
 - `camGame`: The Game Camera.
+- `camFollow`: The object camGame follows.
 - `playerStrums`: Player Strums.
 - `cpuStrums`: CPU Strums.
 
