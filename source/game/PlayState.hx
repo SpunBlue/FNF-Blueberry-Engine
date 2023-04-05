@@ -255,6 +255,7 @@ class PlayState extends MusicBeatState
 		// Song Variables
 		script.interp.variables.set("daPixelZoom", daPixelZoom);
 		script.interp.variables.set("defaultCamZoom", defaultCamZoom);
+		script.interp.variables.set("camFollow", camFollow);
 		script.interp.variables.set("curSong", SONG.song);
 		script.interp.variables.set("SONG", SONG);
 		script.interp.variables.set("curStage", curStage);
