@@ -2,6 +2,8 @@ package;
 
 import game.PlayState;
 import flixel.FlxSprite;
+import engine.modding.SpunModLib.ModLib;
+import engine.modding.SpunModLib.ModAssets;
 
 using StringTools;
 
@@ -54,7 +56,8 @@ class HealthIcon extends FlxSprite
 		{
 			if (animation.getByName(newChar) == null)
 			{
-				loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
+				var modID:String = ModLib.getModID(ModLib.curMod);
+				loadGraphic(ModAssets.getAsset('images/icons/icon-$newChar.png', null, modID, null), true, 150, 150);
 				animation.add(newChar, [0, 1], 0, false, isPlayer);
 			}
 			animation.play(newChar);
