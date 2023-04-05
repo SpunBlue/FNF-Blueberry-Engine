@@ -97,11 +97,13 @@ class PlayState extends MusicBeatState
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 
-	private var camFollow:FlxObject;
+	public var camFollow:FlxObject;
 
 	private static var prevCamFollow:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNotes> = new FlxTypedGroup<StrumNotes>();
+	public var noteSplashGroup:FlxTypedGroup<NoteSplash>;
+
 	private var playerStrums:StrumNotes;
 	private var cpuStrums:StrumNotes;
 
@@ -141,8 +143,6 @@ class PlayState extends MusicBeatState
 
 	public var songHits:Int = 0;
 	public var songMisses:Int = 0;
-
-	var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
 	public static var campaignScore:Int = 0;
 
@@ -266,6 +266,8 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("gfVersion", gfVersion);
 
 		// Misc
+		script.interp.variables.set("this", this);
+
 		script.interp.variables.set("inCutscene", inCutscene);
 		script.interp.variables.set("curBeat", curBeat);
 		script.interp.variables.set("curStep", curStep);
@@ -275,6 +277,9 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("strumLines", strumLineNotes);
 
 		script.interp.variables.set("replaceStrum", replaceArrows);
+
+		script.interp.variables.set('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
+		script.interp.variables.set('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
 	}
 
 	override public function create()
@@ -405,10 +410,10 @@ class PlayState extends MusicBeatState
 		else{
 			defaultCamZoom = 0.9;
 			curStage = 'stage';
-	
+
 			var bg:BGSprite = new BGSprite('stageback', -600, -200, 0.9, 0.9);
 			add(bg);
-	
+
 			var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
 			stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
 			stageFront.updateHitbox();
@@ -416,14 +421,13 @@ class PlayState extends MusicBeatState
 			stageFront.scrollFactor.set(0.9, 0.9);
 			stageFront.active = false;
 			add(stageFront);
-	
+
 			var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
 			stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
 			stageCurtains.updateHitbox();
 			stageCurtains.antialiasing = true;
 			stageCurtains.scrollFactor.set(1.3, 1.3);
 			stageCurtains.active = false;
-	
 			add(stageCurtains);
 		}
 
@@ -482,15 +486,6 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -5000;
 
-		// fake notesplash cache type deal so that it loads in the graphic?
-		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-
-		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
-		grpNoteSplashes.add(noteSplash);
-		
-		add(grpNoteSplashes);
-		noteSplash.kill();
-
 		var s:String = null;
 
 		if (s == null){
@@ -503,9 +498,12 @@ class PlayState extends MusicBeatState
 		}
 		else
 			s = SONG.style;
-		
+
 		generateStaticArrows(s, PreferencesMenu.getPref('middle-scroll'), PreferencesMenu.getPref('downscroll'));
 		add(strumLineNotes);
+
+		noteSplashGroup = new FlxTypedGroup<NoteSplash>();
+		add(noteSplashGroup);
 
 		generateSong(s);
 
@@ -546,8 +544,8 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
-		// healthBar
+		healthBar.createFilledBar(FlxColor.fromRGB(dad.healthBarColors[0], dad.healthBarColors[1], dad.healthBarColors[2]),
+			FlxColor.fromRGB(boyfriend.healthBarColors[0], boyfriend.healthBarColors[1], boyfriend.healthBarColors[2]));
 		add(healthBar);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
@@ -576,7 +574,7 @@ class PlayState extends MusicBeatState
 		hitsTxt.scrollFactor.set();
 		add(hitsTxt);
 
-		grpNoteSplashes.cameras = [camHUD];
+		noteSplashGroup.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -1320,10 +1318,9 @@ class PlayState extends MusicBeatState
 		'${(Math.floor((Conductor.songPosition / 1000) / 60))}:${(Math.floor((Conductor.songPosition / 1000) % 60) < 10 ? '0' : '') + Math.floor((Conductor.songPosition / 1000) % 60)}'.replace('\n', '')*/;
 
 		if (!PreferencesMenu.getPref('downscroll'))
-			hitsTxt.text = 'SHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints\nAccuracy: ' + funnyRatingText(calculateRatingPercent());
+			hitsTxt.text = 'SHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints\nAccuracy: ' + funnyRatingText(calculateRatingPercent()) + ' ' + textSpacer + 'Time: ' + FlxStringUtil.formatTime(FlxG.sound.music.time / 1000.0);
 		else
-			hitsTxt.text = 'Accuracy: ' + funnyRatingText(calculateRatingPercent()) + '\nSHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints';
-		
+			hitsTxt.text = 'Accuracy: ' + funnyRatingText(calculateRatingPercent()) + ' ' + textSpacer + 'Time: ' + FlxStringUtil.formatTime(FlxG.sound.music.time / 1000.0) + '\nSHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints';
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1393,7 +1390,6 @@ class PlayState extends MusicBeatState
 		if (generatedMusic && SONG.notes[Std.int(curStep / 16)] != null)
 		{
 			cameraRightSide = SONG.notes[Std.int(curStep / 16)].mustHitSection;
-
 			cameraMovement();
 		}
 
@@ -1579,12 +1575,9 @@ class PlayState extends MusicBeatState
 							getCharFromID(cID, true).playAnim('singRIGHT' + altAnim, true);
 					}
 
-					if (!daNote.isSustainNote && !daNote.hideBitch){
-						var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-						noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-						noteSplash.animation.curAnim.frameRate = 24;
-						grpNoteSplashes.add(noteSplash);
-					}
+					// if (!daNote.isSustainNote && !daNote.hideBitch){
+						// spawnNoteSplash(daNote.noteData);
+					// }
 
 					if (cpuStrums != null){
 						cpuStrums.forEach(function(spr:FlxSprite)
@@ -1812,21 +1805,13 @@ class PlayState extends MusicBeatState
 			++goods;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.05){
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-			noteSplash.animation.curAnim.frameRate = 24;
-			grpNoteSplashes.add(noteSplash);
-
+			spawnNoteSplash(daNote.noteData);
 			daRating = 'sick';
 			score = 350;
 			++sicks;
 		}
 		else{
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
-			noteSplash.animation.curAnim.frameRate = 24 * (0.5 + FlxG.random.float(0, 0.25)); // Slow and satisfying.
-			grpNoteSplashes.add(noteSplash);
-
+			spawnNoteSplash(daNote.noteData);
 			++mints;
 		}
 
@@ -2423,6 +2408,16 @@ class PlayState extends MusicBeatState
 		return 0;
 	}
 
+	public inline function spawnNoteSplash(noteData:Int) {
+		var staticNote:FlxSprite = playerStrums.members[noteData];
+		createNoteSplash(staticNote.x, staticNote.y, noteData);
+	}
+
+	public inline function createNoteSplash(x:Float, y:Float, noteData:Int) {
+		var splash:NoteSplash = new NoteSplash(x, y, noteData);
+		noteSplashGroup.add(splash);
+	}
+ 
 	/**
 	 * Adds another Character to the stage
 	 * @param charName Character Name

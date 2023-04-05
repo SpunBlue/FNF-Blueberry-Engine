@@ -47,6 +47,11 @@
 			"offsets": [250, -23]
 		}
 	],
+	"healthBarColor": [
+		216,
+		85,
+		142
+	],
     "loopAfterIdle": "idleHair",
 	"antialiasing": true
 }

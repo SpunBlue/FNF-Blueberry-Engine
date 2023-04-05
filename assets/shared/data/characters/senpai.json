@@ -1,45 +1,50 @@
 {
-    "imagePath": "characters/senpai.png",
-    "xmlPath": "characters/senpai.xml",
-    "Position": [150, 360],
-    "CamPosition": [100, 24],
-    "animations": [
-      {
-        "prefix": "Senpai Idle",
-        "name": "idle",
-        "fps": 24,
-        "indices": null,
-        "offsets": [0, 0]
-      },
-      {
-        "prefix": "SENPAI UP NOTE",
-        "name": "singUP",
-        "fps": 24,
-        "indices": null,
-        "offsets": [5, 37]
-      },
-      {
-        "prefix": "SENPAI RIGHT NOTE",
-        "name": "singRIGHT",
-        "fps": 24,
-        "indices": null,
-        "offsets": [0, 0]
-      },
-      {
-        "prefix": "SENPAI DOWN NOTE",
-        "name": "singDOWN",
-        "fps": 24,
-        "indices": null,
-        "offsets": [14, 0]
-      },
-      {
-        "prefix": "SENPAI LEFT NOTE",
-        "name": "singLEFT",
-        "fps": 24,
-        "indices": null,
-        "offsets": [40, 0]
-      }
-    ],
-    "antialiasing": false,
-    "size": 6
-  }
+  "imagePath": "characters/senpai.png",
+  "xmlPath": "characters/senpai.xml",
+  "Position": [150, 360],
+  "CamPosition": [100, 24],
+  "animations": [
+    {
+      "prefix": "Senpai Idle",
+      "name": "idle",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 0]
+    },
+    {
+      "prefix": "SENPAI UP NOTE",
+      "name": "singUP",
+      "fps": 24,
+      "indices": null,
+      "offsets": [5, 37]
+    },
+    {
+      "prefix": "SENPAI RIGHT NOTE",
+      "name": "singRIGHT",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 0]
+    },
+    {
+      "prefix": "SENPAI DOWN NOTE",
+      "name": "singDOWN",
+      "fps": 24,
+      "indices": null,
+      "offsets": [14, 0]
+    },
+    {
+      "prefix": "SENPAI LEFT NOTE",
+      "name": "singLEFT",
+      "fps": 24,
+      "indices": null,
+      "offsets": [40, 0]
+    }
+  ],
+	"healthBarColor": [
+		255,
+		170,
+		111
+	],
+  "antialiasing": false,
+  "size": 6
+}

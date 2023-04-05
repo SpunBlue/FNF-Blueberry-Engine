@@ -1,5 +1,6 @@
 package;
 
+import cpp.CPPInterface;
 import lime.system.System;
 import flixel.system.FlxVersion;
 import haxe.display.Protocol.Version;
@@ -170,6 +171,15 @@ class Main extends Sprite
 		#if !mobile
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsCounter);
+		#end
+
+		#if cpp
+		CPPInterface.darkMode();
+		#end
+
+		#if cpp
+		cpp.NativeGc.enable(true);
+		cpp.NativeGc.run(true);
 		#end
 	}
 

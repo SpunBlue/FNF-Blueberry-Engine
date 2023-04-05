@@ -32,10 +32,13 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'bf';
 
 	public var holdTimer:Float = 0;
+
 	var singHold:Float = 4;
 
 	public var animationNotes:Array<Dynamic> = [];
 	public var animOffsets:Map<String, Array<Dynamic>> = new Map();
+
+	public var healthBarColors:Array<Int> = [0, 0, 0];
 
 	public var mod:Mod;
 
@@ -88,6 +91,7 @@ class Character extends FlxSprite
 				frames = FlxAtlasFrames.fromSpriteSheetPacker(ModAssets.getAsset('images/' + charJson.imagePath, mod, null, 'shared'), ModAssets.getAsset('images/' + charJson.xmlPath, mod, null, 'shared'));
 
 			antialiasing = charJson.antialiasing;
+			healthBarColors = charJson.healthBarColor;
 
 			if (charJson.flipX != null)
 				flipX = charJson.flipX;
@@ -310,6 +314,7 @@ typedef CharJson = {
 	var xmlPath:String;
 	var Position:Array<Int>;
 	var CamPosition:Array<Int>;
+    var healthBarColor:Array<Int>;
 	var animations:Array<CharAnims>;
 	var ?flipX:Bool;
 	var ?flipY:Bool;

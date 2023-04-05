@@ -2,7 +2,7 @@
 	"imagePath": "characters/BOYFRIEND.png",
 	"xmlPath": "characters/BOYFRIEND.xml",
 	"Position": [0, 0],
-	"CamPosition": [0, -64],
+	"CamPosition": [0, 0],
 	"animations": [
 		{
 			"prefix": "BF idle dance",
@@ -104,7 +104,11 @@
             "offsets": [0, -4]
         }
     ],
+	"healthBarColor": [
+		49,
+		176,
+		209
+	],
     "antialiasing": true,
     "flipX": true
 }
-			

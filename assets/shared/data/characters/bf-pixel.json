@@ -90,6 +90,11 @@
             "offsets": [-30, -12]
         }
     ],
+	"healthBarColor": [
+		123,
+		214,
+		246
+	],
     "antialiasing": false,
     "flipX": true,
     "size": 6
