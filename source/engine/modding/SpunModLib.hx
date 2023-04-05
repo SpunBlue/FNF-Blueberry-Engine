@@ -347,7 +347,7 @@ class ModAssets{
      * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
 	inline static public function getSparrowAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
-        return FlxAtlasFrames.fromSparrow(getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets), getContent('$path.xml', mod, modID, additionDirOnFail, onFailPullAssets));
+        return FlxAtlasFrames.fromSparrow(getGraphic('$path.png', mod, modID, additionDirOnFail, onFailPullAssets), getContent('$path.xml', mod, modID, additionDirOnFail, onFailPullAssets));
     }
 
     /**
@@ -359,7 +359,7 @@ class ModAssets{
      * @param onFailPullAssets If enabled, if failed to find directory/file in mod it will pull from the Assets Folder in the base-game.
      */
     inline static public function getPackerAtlas(path:String, ?mod:Mod, ?modID:String, ?additionDirOnFail:String, ?onFailPullAssets:Bool = true){
-        return FlxAtlasFrames.fromSpriteSheetPacker(getGraphic(path, mod, modID, additionDirOnFail, onFailPullAssets), getContent('$path.txt', mod, modID, additionDirOnFail, onFailPullAssets));
+        return FlxAtlasFrames.fromSpriteSheetPacker(getGraphic('$path.png', mod, modID, additionDirOnFail, onFailPullAssets), getContent('$path.txt', mod, modID, additionDirOnFail, onFailPullAssets));
     }
 
     /**
