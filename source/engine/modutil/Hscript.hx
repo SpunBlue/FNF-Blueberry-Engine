@@ -1,5 +1,7 @@
 package engine.modutil;
 
+import hxcodec.VideoHandler;
+import hxcodec.VideoSprite;
 import openfl.display.BitmapData;
 import sys.thread.Thread;
 import haxe.Json;
@@ -89,6 +91,10 @@ class Hscript
 		// Modding System
 		interp.variables.set("ModAssets", ModAssets);
 		interp.variables.set("ModLib", ModLib);
+		
+		// Cutscenes
+		interp.variables.set("VideoSprite", VideoSprite);
+		interp.variables.set("VideoHandler", VideoHandler);
 
 		interp.variables.set("getModID", function()
 		{

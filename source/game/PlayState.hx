@@ -212,6 +212,11 @@ class PlayState extends MusicBeatState
 					add(trail);
 			});
 
+			// No idea if this will work
+			script.interp.variables.set("addCharacter", addCharacter);
+			script.interp.variables.set("removeCharacter", removeCharacter);
+			script.interp.variables.set("getCharFromID", getCharFromID);
+
 			// Stage shit
 			script.interp.variables.set("BackgroundDancer", BackgroundDancer);
 			script.interp.variables.set("BackgroundGirls", BackgroundGirls);
@@ -229,6 +234,9 @@ class PlayState extends MusicBeatState
 			script.interp.variables.set("curMod", ModLib.curMod);
 			script.interp.variables.set("StrumNotes", StrumNotes);
 		}
+
+		// camFollow
+		script.interp.variables.set("camFollow", camFollow);
 
 		// Stage Layers
 		script.interp.variables.set("stageLayer0", layer0); // Behind all
@@ -330,19 +338,19 @@ class PlayState extends MusicBeatState
 		}
 
 		for (file in FileSystem.readDirectory(ModAssets.getPath("data/charts/" + SONG.song.toLowerCase() + "/", null, modID, null))){
-			if (file != null && Path.extension(file).toLowerCase() == '.hx'){
+			if (file != null && Path.extension(file).toLowerCase() == 'hx'){
 				trace('Attempting to load script: $file');
 
-				script.loadScript("charts/" + SONG.song.toLowerCase(), Path.withoutExtension(Path.withoutDirectory(file)), modID, null);
+				script.loadScriptFP(ModAssets.getPath("data/charts/" + SONG.song.toLowerCase() + "/" + file, null, modID));
 			}
 			else if (file == null){
 				trace('File is null?! Cannot load script... if it even is a script.');
 			}
 		}
 
-		if (ModAssets.assetExists('data/charts/' + SONG.song.toLowerCase() + '/script.hx', null, modID, null)){
+		/*if (ModAssets.assetExists('data/charts/' + SONG.song.toLowerCase() + '/script.hx', null, modID, null)){
 			script.loadScript('charts/' + SONG.song.toLowerCase(), 'script', modID);
-		}
+		}*/
 
 		// TEMPORARY!!!
 		if (SONG.stage == null){
@@ -926,6 +934,9 @@ class PlayState extends MusicBeatState
 				swagNote.altNote = songNotes[3];
 				swagNote.scrollFactor.set(0, 0);
 
+				if (songNotes[4] != null)
+					swagNote.sangByCharID = songNotes[4];
+
 				var susLength:Float = swagNote.sustainLength;
 
 				susLength = susLength / Conductor.stepCrochet;
@@ -943,6 +954,7 @@ class PlayState extends MusicBeatState
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, strum.arrows[daNoteData], noteStyle, false);
+					sustainNote.sangByCharID = oldNote.sangByCharID;
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
 
@@ -1189,6 +1201,54 @@ class PlayState extends MusicBeatState
 				eventScript.loadScriptFP(ModAssets.getPath(event.variable1, null, modID, null, false));
 				setScriptVar(false, eventScript);
 				eventScript.call("event");
+			case 'addcharacter':
+				var bool:Bool = false;
+
+				switch (event.variable2.toLowerCase()){
+					case 'dad':
+						bool = true;
+					case 'bf' | 'boyfriend':
+						bool = false;
+				}
+
+				addCharacter(event.variable1, Std.parseInt(event.variable3), bool, Std.parseFloat(event.variable4), Std.parseFloat(event.variable5));
+			case 'deletecharacter':
+				var bool:Bool = false;
+
+				switch (event.variable2.toLowerCase()){
+					case 'dad':
+						bool = true;
+					case 'bf' | 'boyfriend':
+						bool = false;
+				}
+
+				removeCharacter(Std.parseInt(event.variable1), bool);
+			case 'playanimcharid':
+				var bool:Bool = false;
+
+				switch (event.variable2.toLowerCase()){
+					case 'dad':
+						bool = true;
+					case 'bf' | 'boyfriend':
+						bool = false;
+				}
+
+				var character:Dynamic = getCharFromID(Std.parseInt(event.variable1), bool);
+				character.playAnim(event.variable3);
+			case 'playanimation':
+				switch(event.variable1.toLowerCase()){
+					case 'dad':
+						dad.playAnim(event.variable2);
+					case 'bf' | 'boyfriend':
+						boyfriend.playAnim(event.variable2);
+				}
+			case 'selectcharacter':
+				switch (event.variable2.toLowerCase()){
+					case 'dad':
+						curDAD = getCharFromID(Std.parseInt(event.variable1), true);
+					case 'bf' | 'boyfriend':
+						curBF = getCharFromID(Std.parseInt(event.variable1), false);
+				}
 		}
 	}
 
@@ -1277,18 +1337,6 @@ class PlayState extends MusicBeatState
 			pauseSubState.camera = camHUD;
 			boyfriendPos.put();
 		}
-
-		if (FlxG.keys.justPressed.SEVEN)
-		{
-			FlxG.switchState(new ChartingState());
-
-			#if discord_rpc
-			DiscordClient.changePresence("Chart Editor", null, null, true);
-			#end
-		}
-
-		if (FlxG.keys.justPressed.NINE)
-			iconP1.swapOldIcon();
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
@@ -2223,8 +2271,10 @@ class PlayState extends MusicBeatState
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
-		if (curBeat % gfSpeed == 0 && (gf.isDancing() || !gf.isDancing() && gf.animation.curAnim.finished))
-			gf.dance();
+		for (gf in gfGroup){
+			if (curBeat % gfSpeed == 0 && (gf.isDancing() || !gf.isDancing() && gf.animation.curAnim.finished))
+				gf.dance();
+		}
 
 		for (boyfriend in boyfriendGroup){
 			if (boyfriend.isDancing() || !boyfriend.isDancing() && !boyfriend.animation.curAnim.name.startsWith("sing") && boyfriend.animation.curAnim.finished 
@@ -2359,18 +2409,76 @@ class PlayState extends MusicBeatState
 			group = dadGroup;
 
 		for (character in group){
-			if (character.ID == id)
+			if (character.ID == id && character != null)
 				return character;
 		}
 
 		try{
-			trace('Unable to find character of ID "$id" in group ${if (isDad == true) return "dadGroup"; else return "bfGroup";}');
+			trace('Unable to find character of ID "$id" in group ${if (isDad == true) return "dadGroup"; else return "boyfriendGroup";}');
 		}
 		catch(e:Dynamic){
 			trace('If you see this, my trace for saying "Unable to find character of ID" didn\'t work properly, and gave the error of "$e". Please report this to me immediatly.');
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Adds another Character to the stage
+	 * @param charName Character Name
+	 * @param charID ID of Character
+	 * @param isDad Is the Character the opponent?
+	 * @param xOff X Offset
+	 * @param yOff Y Offset
+	 */
+	function addCharacter(charName:String, charID:Int = 0, isDad = false, xOff:Float, yOff:Float){
+		if (isDad){
+			var character = new Character(dad.x + xOff, dad.y + yOff, charName);
+			character.ID = charID;
+			dadGroup.add(character);
+		}
+		else{
+			var character = new Boyfriend(boyfriend.x + xOff, boyfriend.y + yOff, charName);
+			character.ID = charID;
+			boyfriendGroup.add(character);
+		}
+	}
+
+	/**
+	 * Removes a character
+	 * @param charID ID of Character
+	 * @param isDad Is the opponent?
+	 */
+	function removeCharacter(charID:Int = 0, isDad:Bool = false){
+		var character:Dynamic = getCharFromID(charID, isDad);
+
+		if (isDad){
+			if (curDAD == character){
+				if (character == dad)
+					trace('Yo uh, we are 100% about to crash. You are trying to remove what is most likely the default character.');
+				else
+					curDAD = dad;
+			}
+		}
+		else{
+			if (curBF == character){
+				if (character == boyfriend)
+					trace('Yo uh, we are 100% about to crash. You are trying to remove what is most likely the default character.');
+				else
+					curBF = boyfriend;
+			}
+		}
+
+		character.kill();
+
+		if (isDad){
+			dadGroup.remove(character, true);
+		}
+		else{
+			boyfriendGroup.remove(character, true);
+		}
+
+		character.destroy(); // Don't leave anything left >:3
 	}
 }
 

@@ -625,6 +625,7 @@ class ChartingState extends MusicBeatState
 	}
 
 	var stepperSusLength:FlxUINumericStepper;
+	var idSingStepper:FlxUINumericStepper;
 
 	function addNoteUI():Void
 	{
@@ -635,10 +636,17 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
+		var info:FlxText = new FlxText(10, 30, 0, "ID of Singer (0 = Default)", 10);
+		idSingStepper = new FlxUINumericStepper(10, 50, 1, 0, 0, 9999, 0);
+		idSingStepper.value = 0;
+		idSingStepper.name = 'note_SingerID';
+
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
 
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
+		tab_group_note.add(info);
+		tab_group_note.add(idSingStepper);
 
 		UI_box.addGroup(tab_group_note);
 	}
@@ -739,6 +747,9 @@ class ChartingState extends MusicBeatState
 			{
 				curSelectedNote[2] = nums.value;
 				updateGrid();
+			}
+			else if (wname == 'note_SingerID'){
+				curSelectedNote[4] = nums.value;
 			}
 			else if (wname == 'section_bpm')
 			{
@@ -1266,8 +1277,13 @@ class ChartingState extends MusicBeatState
 
 	function updateNoteUI():Void
 	{
-		if (curSelectedNote != null)
+		if (curSelectedNote != null){
 			stepperSusLength.value = curSelectedNote[2];
+			if (curSelectedNote[4] != null)
+				idSingStepper.value = curSelectedNote[4];
+			else
+				idSingStepper.value = 0;
+		}
 	}
 
 	function getSectionJunk(section:Int){
@@ -1468,7 +1484,7 @@ class ChartingState extends MusicBeatState
 		var noteSus = 0;
 		var noteAlt = false;
 
-		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteAlt]);
+		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteAlt, idSingStepper.value]);
 
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
 
