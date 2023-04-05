@@ -226,7 +226,7 @@ class ChartingState extends MusicBeatState
 		add(dummyArrow);
 
 		var tabs = [
-			{name: "Stage", label: 'Stage'},
+			{name: "Assets", label: 'Assets'},
 			{name: "Song", label: 'Song'},
 			{name: "Section", label: 'Section'},
 			{name: "Note", label: 'Note'},
@@ -244,7 +244,7 @@ class ChartingState extends MusicBeatState
 		addSectionUI();
 		addNoteUI();
 
-		addStageUI();
+		addAssetsUI();
 		addEventsUI();
 
 		UI_box.selected_tab_id = 'Song';
@@ -277,9 +277,9 @@ class ChartingState extends MusicBeatState
 		super.create();
 	}
 
-	function addStageUI():Void{
-		var tab_stage = new FlxUI(null, UI_box);
-		tab_stage.name = 'Stage';
+	function addAssetsUI():Void{
+		var tab_assets = new FlxUI(null, UI_box);
+		tab_assets.name = 'Assets';
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
@@ -318,32 +318,32 @@ class ChartingState extends MusicBeatState
 		player2DropDown.selectedLabel = _song.player2;
 		player1DropDown.dropDirection = Down;
 
-		var gfDD_Text:FlxText = new FlxText(75, 75, 0, "Girlfriend");
-		var gfDropDown = new FlxUIDropDownMenu(75, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		var gfDD_Text:FlxText = new FlxText(10, 75, 0, "Girlfriend");
+		var gfDropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.gfVersion = characters[Std.parseInt(character)];
 		});
 		gfDropDown.selectedLabel = _song.gfVersion;
 		gfDropDown.dropDirection = Down;
 
-		var stageDD_Text:FlxText = new FlxText(10, 125, 0, "Stage");
-		var stageDropDown = new FlxUIDropDownMenu(10, 150, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+		var stageDD_Text:FlxText = new FlxText(150, 75, 0, "Stage");
+		var stageDropDown = new FlxUIDropDownMenu(150, 100, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 		{
 			_song.stage = stages[Std.parseInt(stage)];
 		});
 		stageDropDown.selectedLabel = _song.stage;
 		stageDropDown.dropDirection = Down;
 
-		tab_stage.add(stageDD_Text);
-		tab_stage.add(stageDropDown);
-		tab_stage.add(gfDD_Text);
-		tab_stage.add(gfDropDown);
-		tab_stage.add(p1DD_Text);
-		tab_stage.add(player1DropDown);
-		tab_stage.add(p2DD_Text);
-		tab_stage.add(player2DropDown);
+		tab_assets.add(stageDD_Text);
+		tab_assets.add(stageDropDown);
+		tab_assets.add(gfDD_Text);
+		tab_assets.add(gfDropDown);
+		tab_assets.add(p1DD_Text);
+		tab_assets.add(player1DropDown);
+		tab_assets.add(p2DD_Text);
+		tab_assets.add(player2DropDown);
 
-		UI_box.addGroup(tab_stage);
+		UI_box.addGroup(tab_assets);
 		UI_box.scrollFactor.set();
 	}
 
