@@ -435,7 +435,7 @@ class PlayState extends MusicBeatState
 
 		script.call("onCreate"); // A lot of stuff here will not run or work properly.
 
-		var stageData = ModAssets.getAsset('data/stages/$curStage.json', modID, null, 'shared');
+		var stageData = ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', modID, null, 'shared');
 		var parsed:StageJSON = cast Json.parse(stageData);
 
 		defaultCamZoom = parsed.defaultZoom != null ? parsed.defaultZoom : 1.05;
