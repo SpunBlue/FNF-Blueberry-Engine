@@ -1,0 +1,8 @@
+{
+    "defaultZoom": 0.9,
+    "spawnGirlfriend": true,
+
+    "boyfriend": [770, 100],
+    "girlfriend": [400, 130],
+    "dad": [100, 100]
+}

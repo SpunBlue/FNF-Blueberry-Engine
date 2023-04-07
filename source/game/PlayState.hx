@@ -68,6 +68,15 @@ using StringTools;
 import Discord.DiscordClient;
 #end
 
+typedef StageJSON = {
+	var defaultZoom:Float;
+	var spawnGirlfriend:Bool;
+
+	var boyfriend:Array<Dynamic>;
+	var girlfriend:Array<Dynamic>;
+	var dad:Array<Dynamic>;
+}
+
 class PlayState extends MusicBeatState
 {
 	public static var curStage:String = '';
@@ -277,6 +286,9 @@ class PlayState extends MusicBeatState
 		script.interp.variables.set("strumLines", strumLineNotes);
 
 		script.interp.variables.set("replaceStrum", replaceArrows);
+
+		script.interp.variables.set('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
+		script.interp.variables.set('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
 	}
 
 	override public function create()
@@ -416,36 +428,22 @@ class PlayState extends MusicBeatState
 			script.loadScript('stages/' + curStage.toLowerCase(), 'script', modID);
 		}
 		else{
-			defaultCamZoom = 0.9;
 			curStage = 'stage';
-
-			var bg:BGSprite = new BGSprite('stageback', -600, -200, 0.9, 0.9);
-			add(bg);
-
-			var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
-			stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
-			stageFront.updateHitbox();
-			stageFront.antialiasing = true;
-			stageFront.scrollFactor.set(0.9, 0.9);
-			stageFront.active = false;
-			add(stageFront);
-
-			var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
-			stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
-			stageCurtains.updateHitbox();
-			stageCurtains.antialiasing = true;
-			stageCurtains.scrollFactor.set(1.3, 1.3);
-			stageCurtains.active = false;
-			add(stageCurtains);
 		}
 
 		setScriptVar(false, script);
 
 		script.call("onCreate"); // A lot of stuff here will not run or work properly.
 
-		gf = new Character(400, 130, gfVersion);
+		var stageData = ModAssets.getAsset('data/stages/$curStage.json', modID, null, 'shared');
+		var parsed:StageJSON = cast Json.parse(stageData);
+
+		defaultCamZoom = parsed.defaultZoom != null ? parsed.defaultZoom : 1.05;
+
+		gf = new Character(parsed.girlfriend[0], parsed.girlfriend[1], gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
-		gfGroup.add(gf);
+		if (parsed.spawnGirlfriend)
+		    gfGroup.add(gf);
 
 		switch (gfVersion)
 		{
@@ -454,11 +452,11 @@ class PlayState extends MusicBeatState
 				gf.y -= 200;
 		}
 
-		curDAD = (dad = new Character(100, 100, SONG.player2));
+		curDAD = (dad = new Character(parsed.dad[0], parsed.dad[1], SONG.player2));
 		curDAD.ID = (dad.ID = 0);
 		dadGroup.add(dad);
 
-		curBF = (boyfriend = new Boyfriend(770, 450, SONG.player1));
+		curBF = (boyfriend = new Boyfriend(parsed.boyfriend[0], parsed.boyfriend[1], SONG.player1));
 		curBF.ID = (boyfriend.ID = 0);
 		boyfriendGroup.add(boyfriend);
 
@@ -470,7 +468,8 @@ class PlayState extends MusicBeatState
 
 		add(layer0);
 
-		add(gfGroup);
+		if (parsed.spawnGirlfriend)
+		    add(gfGroup);
 
 		add(layer1);
 

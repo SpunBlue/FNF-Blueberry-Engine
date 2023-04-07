@@ -3,8 +3,6 @@ var grpLimoDancers:FlxTypedGroup<BackgroundDancer> = new FlxTypedGroup();
 var fastCar:FlxSprite;
 
 function onCreate(){
-    setDefaultZoom(0.90);
-
     var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset', 'week4'));
     skyBG.scrollFactor.set(0.1, 0.1);
     add(skyBG);
@@ -46,8 +44,7 @@ function onCreate(){
 }
 
 function createPost(){
-    boyfriend.y -= 220;
-    boyfriend.x += 260;
+
 }
 
 function update(elapsed){
