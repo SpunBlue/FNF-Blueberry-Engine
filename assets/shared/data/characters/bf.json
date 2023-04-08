@@ -1,7 +1,7 @@
 {
 	"imagePath": "characters/BOYFRIEND.png",
 	"xmlPath": "characters/BOYFRIEND.xml",
-	"Position": [0, 0],
+	"Position": [0, 350],
 	"CamPosition": [0, 0],
 	"animations": [
 		{

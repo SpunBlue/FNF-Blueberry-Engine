@@ -1,7 +1,7 @@
 {
     "imagePath": "characters/bfChristmas.png",
     "xmlPath": "characters/bfChristmas.xml",
-    "Position": [0, 0],
+    "Position": [0, 350],
     "CamPosition": [0, -72],
     "animations": [
         {

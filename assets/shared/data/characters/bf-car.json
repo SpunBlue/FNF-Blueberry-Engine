@@ -1,7 +1,7 @@
 {
 	"imagePath": "characters/bfCar.png",
 	"xmlPath": "characters/bfCar.xml",
-	"Position": [0, 0],
+	"Position": [0, 350],
 	"CamPosition": [-300, 0],
 	"animations": [
 		{

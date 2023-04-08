@@ -421,9 +421,15 @@ class PlayState extends MusicBeatState
 
 		script.call("onCreate"); // A lot of stuff here will not run or work properly.
 
-		gf = new Character(400, 130, gfVersion);
+		var stageData = ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared');
+		var parsed:StageJSON = cast Json.parse(stageData);
+
+        defaultCamZoom = parsed.defaultZoom;
+
+		gf = new Character(parsed.girlfriend[0], parsed.girlfriend[1], gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
-		gfGroup.add(gf);
+		if (parsed.spawnGirlfriend)
+		    gfGroup.add(gf);
 
 		switch (gfVersion)
 		{
@@ -432,11 +438,11 @@ class PlayState extends MusicBeatState
 				gf.y -= 200;
 		}
 
-		curDAD = (dad = new Character(100, 100, SONG.player2));
+		curDAD = (dad = new Character(parsed.dad[0], parsed.dad[1], SONG.player2));
 		curDAD.ID = (dad.ID = 0);
 		dadGroup.add(dad);
 
-		curBF = (boyfriend = new Boyfriend(770, 450, SONG.player1));
+		curBF = (boyfriend = new Boyfriend(parsed.boyfriend[0], parsed.boyfriend[1], SONG.player1));
 		curBF.ID = (boyfriend.ID = 0);
 		boyfriendGroup.add(boyfriend);
 
@@ -448,7 +454,8 @@ class PlayState extends MusicBeatState
 
 		add(layer0);
 
-		add(gfGroup);
+		if (parsed.spawnGirlfriend)
+		    add(gfGroup);
 
 		add(layer1);
 
@@ -2472,4 +2479,12 @@ typedef SongData = {
 	var songName:String;
 	var ?week:Int;
 	var ?mod:Mod;
+}
+
+typedef StageJSON = {
+	var defaultZoom:Float;
+	var spawnGirlfriend:Bool;
+	var boyfriend:Array<Dynamic>;
+	var girlfriend:Array<Dynamic>;
+	var dad:Array<Dynamic>;
 }
