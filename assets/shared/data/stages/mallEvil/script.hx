@@ -22,6 +22,8 @@ function onCreate(){
 }
 
 function createPost(){
+    boyfriend.x += 320;
+    dad.y -= 80;
     gf.alpha = 0;
 }
 
