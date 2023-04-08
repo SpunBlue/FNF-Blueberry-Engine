@@ -10,9 +10,8 @@
             ],
     
             "icon": "dad",
-            "iconIsJson": false,
             "week": 1,
-            "color": "0xff9271fd"
+            "rgb": [146, 113, 253]
         },
     
         {
@@ -24,9 +23,8 @@
             ],
     
             "icon": "spooky",
-            "iconIsJson": false,
             "week": 2,
-            "color": "0xff223344"
+            "rgb": [34, 51, 68]
         },
     
         {
@@ -38,23 +36,21 @@
             ],
     
             "icon": "pico",
-            "iconIsJson": false,
             "week": 3,
-            "color": "0xFF941653"
+            "rgb": [148, 22, 83]
         },
     
         {
             "name": "Week 4",
             "songs": [
-                "Satin-panties",
+                "Satin-Panties",
                 "High",
                 "Milf"
             ],
     
             "icon": "mom",
-            "iconIsJson": false,
             "week": 4,
-            "color": "0xFFfc96d7"
+            "rgb": [252, 150, 215]
         },
     
         {
@@ -62,13 +58,12 @@
             "songs": [
                 "Cocoa",
                 "Eggnog",
-                "Winter-horrorland"
+                "Winter-Horrorland"
             ],
     
             "icon": "parents-christmas",
-            "iconIsJson": false,
             "week": 5,
-            "color": "0xFFa0d1ff"
+            "rgb": [160, 209, 255]
         },
         {
             "name": "Week 6",
@@ -79,9 +74,8 @@
             ],
     
             "icon": "senpai",
-            "iconIsJson": false,
             "week": 6,
-            "color": "0xffff78bf"
+            "rgb": [255, 120, 191]
         },
         {
             "name": "Week 7",
@@ -92,9 +86,8 @@
             ],
     
             "icon": "tankman",
-            "iconIsJson": false,
             "week": 7,
-            "color": "0xfff6b604"
+            "rgb": [246, 182, 4]
         }
     ]
 }

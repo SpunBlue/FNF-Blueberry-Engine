@@ -25,28 +25,16 @@ class HealthIcon extends FlxSprite
 
 	public function new(?char:String, isPlayer:Bool = false, ?sprOffset:Int, ?sprYOffset:Int)
 	{
-		super();
-
 		sprOff = sprOffset;
 		sprYOff = sprYOffset;
 
 		this.isPlayer = isPlayer;
 
+		super();
+
 		changeIcon(char);
 		antialiasing = true;
 		scrollFactor.set();
-	}
-
-	public var isOldIcon:Bool = false;
-
-	public function swapOldIcon():Void
-	{
-		isOldIcon = !isOldIcon;
-
-		if (isOldIcon)
-			changeIcon('bf-old');
-		else
-			changeIcon(PlayState.SONG.player1);
 	}
 
 	public function changeIcon(newChar:String):Void
@@ -58,7 +46,10 @@ class HealthIcon extends FlxSprite
 		{
 			if (animation.getByName(newChar) == null)
 			{
-				loadGraphic(ModAssets.getGraphic('images/icons/icon-$newChar.png', ModLib.curMod, null), true, 150, 150);
+				if (ModAssets.assetExists('images/icons/icon-$newChar.png', ModLib.curMod, null))
+					loadGraphic(ModAssets.getGraphic('images/icons/icon-$newChar.png', ModLib.curMod, null), true, 150, 150);
+				else
+					loadGraphic(Paths.image("icons/icon-face", "preload"), true, 150, 150);
 				// loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
 				animation.add(newChar, [0, 1], 0, false, isPlayer);
 			}
@@ -69,9 +60,9 @@ class HealthIcon extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
 		if (sprTracker != null)
 			setPosition(sprTracker.x + (sprTracker.width + 10) + sprOff, (sprTracker.y - 30) + sprYOff);
+
+		super.update(elapsed);
 	}
 }

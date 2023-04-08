@@ -108,7 +108,7 @@ Classes:
 
 Functions:
 - `add(value:FlxObject)`: Adds a FlxObject to the scene.
-- `setDefaultZoom(value:Float)`: Sets the default camera zoom.
+- `setDefaultZoom(value:Dynamic, ?immediateZoom:Bool = false)`: Sets the default camera zoom.
 - `setGF(value:String)`: Sets the current Girlfriend.
 - `curGF()`: Returns the current Girlfriend.
 - `createTrail(char:FlxObject, graphic:FlxGraphic, length:Int, delay:Float, alpha:Float, diff:Float, ?addInGroup:Bool, ?group:FlxGroup)`: Creates a trail effect.

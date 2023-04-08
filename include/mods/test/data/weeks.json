@@ -8,7 +8,7 @@
     
             "icon": "dad",
             "week": 69420,
-            "color": "0xffA293FF"
+            "rgb": [162, 147, 255]
         }
 	]
 }

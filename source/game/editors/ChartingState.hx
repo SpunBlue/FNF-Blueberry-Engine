@@ -1,5 +1,6 @@
 package game.editors;
 
+import Note.NoteData;
 import util.EventNote;
 import lime.app.Application;
 import engine.modutil.ModVariables;
@@ -749,7 +750,12 @@ class ChartingState extends MusicBeatState
 				updateGrid();
 			}
 			else if (wname == 'note_SingerID'){
-				curSelectedNote[4] = nums.value;
+				if (curSelectedNote[4] == null)
+					curSelectedNote[4] = {};
+
+				var data:NoteData = curSelectedNote[4];
+				data.singerID = Std.int(nums.value);
+				curSelectedNote[4] = data;
 			}
 			else if (wname == 'section_bpm')
 			{
@@ -1279,8 +1285,12 @@ class ChartingState extends MusicBeatState
 	{
 		if (curSelectedNote != null){
 			stepperSusLength.value = curSelectedNote[2];
-			if (curSelectedNote[4] != null)
-				idSingStepper.value = curSelectedNote[4];
+			if (curSelectedNote[4] != null){
+				var data:NoteData = curSelectedNote[4];
+
+				if (data.singerID != null)
+					idSingStepper.value = data.singerID;
+			}
 			else
 				idSingStepper.value = 0;
 		}
@@ -1484,7 +1494,7 @@ class ChartingState extends MusicBeatState
 		var noteSus = 0;
 		var noteAlt = false;
 
-		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteAlt, idSingStepper.value]);
+		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteAlt, {singerID: idSingStepper.value}]);
 
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
 

@@ -188,8 +188,7 @@ class ModAssets{
         trace(fullPath);
 
         if ((!FileSystem.exists(fullPath) || mod == null && modID == null) && onFailPullAssets){
-            if (mod != null || modID != null)
-                trace('Directory $fullPath does not exist.');
+            trace('Directory $fullPath does not exist.');
 
             fullPath = Path.normalize('assets/$addDir/$path');
 
