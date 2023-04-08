@@ -125,9 +125,11 @@ class PlayState extends MusicBeatState
 	public var iconP2:HealthIcon;
 	public var camHUD:FlxCamera;
 	public var camGame:FlxCamera;
+	public var cameraSpeed:Float = 1;
 
 	public var gfVersion:String = 'gf';
 
+	var stageData:StageJSON;
 	var dialogue:DialogueShitJson;
 
 	var talking:Bool = true;
@@ -192,6 +194,7 @@ class PlayState extends MusicBeatState
 			{
 				add(value);
 			});
+
 			script.interp.variables.set("setDefaultZoom", function(value:Dynamic, ?immediateZoom:Bool = false)
 			{
 				defaultCamZoom = value;
@@ -199,14 +202,22 @@ class PlayState extends MusicBeatState
 				if (immediateZoom)
 					FlxG.camera.zoom = value;
 			});
+
+			script.interp.variables.set("setCameraSpeed", function(value:Dynamic)
+			{
+				cameraSpeed = value;
+			});
+
 			script.interp.variables.set("setGF", function(value:Dynamic)
 			{
 				gfVersion = value;
 			});
+
 			script.interp.variables.set("curGF", function()
 			{
 				return gfVersion;
 			});
+
 			script.interp.variables.set("createTrail", function(char:Dynamic, graphic:Dynamic, length:Dynamic, delay:Dynamic, alpha:Dynamic, diff:Dynamic, ?addInGroup:Dynamic, ?group:Dynamic){
 				var trail = new FlxTrail(char, graphic, length, delay, alpha, diff);
 				
@@ -411,7 +422,7 @@ class PlayState extends MusicBeatState
 
 		if (ModAssets.assetExists('data/stages/' + curStage.toLowerCase() + '/script.hx', null, modID, 'shared')){
 			script.loadScript('stages/' + curStage.toLowerCase(), 'script', modID);
-			trace('Loading Custom Stage...');
+			trace('Loading Custom Stage Script...');
 		}
 		else{
 			curStage = 'stage';
@@ -421,14 +432,16 @@ class PlayState extends MusicBeatState
 
 		script.call("onCreate"); // A lot of stuff here will not run or work properly.
 
-		var stageData = ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared');
-		var parsed:StageJSON = cast Json.parse(stageData);
+		if (ModAssets.assetExists('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared')){
+			stageData = cast Json.parse(ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared'));
+			trace('Loading Custom Stage Json...');
+		}
 
-        defaultCamZoom = parsed.defaultZoom;
+        defaultCamZoom = stageData.defaultZoom;
 
-		gf = new Character(parsed.girlfriend[0], parsed.girlfriend[1], gfVersion);
+		gf = new Character(stageData.girlfriend[0], stageData.girlfriend[1], gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
-		if (parsed.spawnGirlfriend)
+		if (stageData.spawnGirlfriend)
 		    gfGroup.add(gf);
 
 		switch (gfVersion)
@@ -438,11 +451,11 @@ class PlayState extends MusicBeatState
 				gf.y -= 200;
 		}
 
-		curDAD = (dad = new Character(parsed.dad[0], parsed.dad[1], SONG.player2));
+		curDAD = (dad = new Character(stageData.dad[0], stageData.dad[1], SONG.player2));
 		curDAD.ID = (dad.ID = 0);
 		dadGroup.add(dad);
 
-		curBF = (boyfriend = new Boyfriend(parsed.boyfriend[0], parsed.boyfriend[1], SONG.player1));
+		curBF = (boyfriend = new Boyfriend(stageData.boyfriend[0], stageData.boyfriend[1], SONG.player1));
 		curBF.ID = (boyfriend.ID = 0);
 		boyfriendGroup.add(boyfriend);
 
@@ -454,7 +467,7 @@ class PlayState extends MusicBeatState
 
 		add(layer0);
 
-		if (parsed.spawnGirlfriend)
+		if (stageData.spawnGirlfriend)
 		    add(gfGroup);
 
 		add(layer1);
@@ -506,7 +519,7 @@ class PlayState extends MusicBeatState
 
 		var angrX:Float = (dad.getMidpoint().x + 150) + dad.charJson.CamPosition[0];
 		var angrY:Float = (dad.getMidpoint().y - 100) + dad.charJson.CamPosition[1];
-		
+
 		camFollow.setPosition(angrX, angrY);
 
 		if (prevCamFollow != null)
@@ -1305,6 +1318,11 @@ class PlayState extends MusicBeatState
 		setScriptVar(true, script);
 
 		script.call("update", [elapsed]);
+
+		if(!inCutscene){
+			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed, 0, 1);
+			camFollow.setPosition(FlxMath.lerp(camFollow.x, camFollow.x, lerpVal), FlxMath.lerp(camFollow.y, camFollow.y, lerpVal));
+		}
 
 		super.update(elapsed);
 
