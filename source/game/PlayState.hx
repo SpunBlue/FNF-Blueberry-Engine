@@ -69,15 +69,6 @@ using StringTools;
 import Discord.DiscordClient;
 #end
 
-typedef StageJSON = {
-	var defaultZoom:Float;
-	var spawnGirlfriend:Bool;
-
-	var boyfriend:Array<Dynamic>;
-	var girlfriend:Array<Dynamic>;
-	var dad:Array<Dynamic>;
-}
-
 class PlayState extends MusicBeatState
 {
 	public static var curStage:String = '';
@@ -430,8 +421,8 @@ class PlayState extends MusicBeatState
 		}
 
 		if (ModAssets.assetExists('data/stages/' + curStage.toLowerCase() + '/script.hx', null, modID, 'shared')){
-			trace('Loading Custom Stage...');
 			script.loadScript('stages/' + curStage.toLowerCase(), 'script', modID);
+			trace('Loading Custom Stage...');
 		}
 		else{
 			curStage = 'stage';
@@ -441,15 +432,9 @@ class PlayState extends MusicBeatState
 
 		script.call("onCreate"); // A lot of stuff here will not run or work properly.
 
-		var stageData = ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', modID, null, 'shared');
-		var parsed:StageJSON = cast Json.parse(stageData);
-
-		defaultCamZoom = parsed.defaultZoom != null ? parsed.defaultZoom : 1.05;
-
-		gf = new Character(parsed.girlfriend[0], parsed.girlfriend[1], gfVersion);
+		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
-		if (parsed.spawnGirlfriend)
-		    gfGroup.add(gf);
+		gfGroup.add(gf);
 
 		switch (gfVersion)
 		{
@@ -458,11 +443,11 @@ class PlayState extends MusicBeatState
 				gf.y -= 200;
 		}
 
-		curDAD = (dad = new Character(parsed.dad[0], parsed.dad[1], SONG.player2));
+		curDAD = (dad = new Character(100, 100, SONG.player2));
 		curDAD.ID = (dad.ID = 0);
 		dadGroup.add(dad);
 
-		curBF = (boyfriend = new Boyfriend(parsed.boyfriend[0], parsed.boyfriend[1], SONG.player1));
+		curBF = (boyfriend = new Boyfriend(770, 450, SONG.player1));
 		curBF.ID = (boyfriend.ID = 0);
 		boyfriendGroup.add(boyfriend);
 
@@ -474,8 +459,7 @@ class PlayState extends MusicBeatState
 
 		add(layer0);
 
-		if (parsed.spawnGirlfriend)
-		    add(gfGroup);
+		add(gfGroup);
 
 		add(layer1);
 
