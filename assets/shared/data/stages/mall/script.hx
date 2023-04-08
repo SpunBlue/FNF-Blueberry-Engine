@@ -3,6 +3,8 @@ var bottomBoppers:FlxSprite;
 var santa:FlxSprite;
 
 function onCreate(){
+    setDefaultZoom(0.80);
+
     var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('christmas/bgWalls', 'week5'));
     bg.antialiasing = true;
     bg.scrollFactor.set(0.2, 0.2);
@@ -56,7 +58,7 @@ function onCreate(){
 }
 
 function createPost(){
-
+    boyfriend.x += 200;
 }
 
 function update(elapsed){
