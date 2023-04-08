@@ -1,5 +1,6 @@
 package game;
 
+import flixel.math.FlxPoint;
 import flixel.FlxObject;
 import engine.modding.SpunModLib.ModAssets;
 import engine.modding.SpunModLib.ModLib;
@@ -35,336 +36,380 @@ import flixel.util.FlxArrayUtil;
 using StringTools;
 
 class FreeplayState extends MusicBeatState
-{  
-    var menuItems:FlxTypedGroup<MenuItem> = new FlxTypedGroup();
-    var playIcons:FlxTypedGroup<HealthIcon> = new FlxTypedGroup();
+{
+    var menuItems:FlxGroup = new FlxGroup();
+    var menuSelects:FlxTypedGroup<MenuItem> = new FlxTypedGroup();
+    var menuIcons:FlxTypedGroup<HealthIcon> = new FlxTypedGroup();
 
-    static var generatedWeeksMenu:Array<MItemInf> = null;
-	public static var loopList:Array<SongData> = [];
-
-    var uiItems:FlxGroup = new FlxGroup();
-
-	var loopCheck:Checkbox;
-
-    var itemsLength:Int = 0;
-
-    var curSelected:Int = 1;
-    var lastSelected:Int = 0;
-
-    var selectedWeek:WeekData;
-    var selectedMod:Mod;
-
+    var allowSelections:Bool = true;
     var inSongMenu:Bool = false;
 
-    var camFollow:FlxSprite;
-    var scoreText:FlxText;
+    var curSelected:Int = 0;
+    var lastSelected:Int = 0; // Repersentive of the last item in menuSelects player selected.
+    var lastUpdated:Int = -1; // Repersentive of the last item that updated UI elements.
 
+    var weekJsons:Array<WeekList> = [];
+
+    // Objects
     var bg:FlxSprite;
+    var camFollow:FlxObject;
+
+    var highestWidth:Float = 0;
+
+    // UI Elements
+    var scoreText:FlxText;
+    var loopCheck:Checkbox;
+
+    // Public Variables
+    public static var loopList:Array<SongData> = [];
 
     override function create(){
-        allowCamBeat = true;
+        camFollow = new FlxObject(0, 0, 32, 32);
+        camFollow.screenCenter(X);
+        add(camFollow);
 
-        if (!FlxG.sound.music.playing || FlxG.sound.music == null){
-            FlxG.sound.playMusic(Paths.music('freakyMenu'));
-            FlxG.sound.music.fadeIn(0.5, 0, 1);
-            Conductor.changeBPM(102);
-        }
-
-        super.create();
+        FlxG.camera.follow(camFollow, null, CoolUtil.camLerpShit(0.06));
 
         bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
         bg.scrollFactor.set(0, 0);
         bg.color = FlxColor.fromRGB(79, 134, 247);
 		add(bg);
 
-        camFollow = new FlxSprite().makeGraphic(32, 32, FlxColor.WHITE);
-        camFollow.screenCenter();
-
-        FlxG.camera.follow(camFollow, null, CoolUtil.camLerpShit(0.06));
-
-        generateMenu(getMenu('weeks'));
-
-        add(menuItems);
-        add(playIcons);
-
         var rightBar = new FlxSprite(FlxG.width - 256, 0).makeGraphic(256, FlxG.height, FlxColor.BLACK);
         rightBar.alpha = 0.75;
         rightBar.scrollFactor.set(0, 0);
-        uiItems.add(rightBar);
+        menuItems.add(rightBar);
 
-        scoreText = new FlxText(FlxG.width - 256, 5, rightBar.width, "", 32);
+        scoreText = new FlxText(FlxG.width - 256, 5, rightBar.width, "Score: N/A", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
         scoreText.scrollFactor.set(0, 0);
-        uiItems.add(scoreText);
+        menuItems.add(scoreText);
 
 		loopCheck = new Checkbox(0, 0, PlayState.inLoopMode);
 		loopCheck.setPosition(FlxG.width - loopCheck.width, FlxG.height - loopCheck.height);
-		uiItems.add(loopCheck);
+		menuItems.add(loopCheck);
 
 		var loopText:FlxText = new FlxText(0, 0, "Loop", 32);
 		loopText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
 		loopText.scrollFactor.set(0, 0);
 		loopText.setPosition(loopCheck.x - loopText.width, (loopCheck.y + (loopText.height / 2) + 38));
-		uiItems.add(loopText);
+		menuItems.add(loopText);
 
-        add(uiItems);
+        // Valid Weeks
+        weekJsons.push({json: Json.parse(File.getContent(Paths.json("weeks", "preload")))});
+        for (mod in ModLib.mods){
+            if (ModAssets.assetExists('data/weeks.json', mod, null, null, false)){
+                weekJsons.push({json: Json.parse(ModAssets.getContent('data/weeks.json', mod, null, null, false)), mod: mod});
+            }
+        }
 
-		if (PlayState.songPlaylist != [])
-			PlayState.songPlaylist = [];
+        generateWeeksMenu(weekJsons);
+
+        add(menuSelects);
+        add(menuIcons);
+        add(menuItems);
+
+        super.create();
+
+        if (!FlxG.sound.music.playing || FlxG.sound.music == null){
+            FlxG.sound.playMusic(Paths.music('freakyMenu'));
+            FlxG.sound.music.fadeIn(0.5, 0, 1);
+            Conductor.changeBPM(102);
+        }
     }
 
     override function update(elapsed:Float){
         Conductor.songPosition = FlxG.sound.music.time;
 
-        super.update(elapsed);
-
-		if (FlxG.mouse.justPressed && FlxG.mouse.overlaps(loopCheck)){
-			loopCheck.value = !loopCheck.value;
-
-			PlayState.inLoopMode = loopCheck.value;
-		}
-
-        if (PlayState.songPlaylist != [])
-            PlayState.songPlaylist = [];
-
         if (Conductor.bpm != 102)
             Conductor.changeBPM(102);
 
-        if (curSelected >= 1 && controls.UI_DOWN_P){
+        super.update(elapsed);
+
+        if (controls.UI_UP_P && allowSelections){
+            --curSelected;
+
             FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-            curSelected++;
         }
-        else if(curSelected <= itemsLength && controls.UI_UP_P){
+        else if (controls.UI_DOWN_P && allowSelections){
+            ++curSelected;
+
             FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-            curSelected--;
         }
 
-        if (curSelected <= 0)
-            curSelected = itemsLength;
-        else if (curSelected > itemsLength)
-            curSelected = 1;
+        if (controls.BACK){
+            if (!inSongMenu)
+                FlxG.switchState(new MainMenuState());
+            else{
+                allowSelections = false;
 
-        /*if (controls.UI_UP_P)
-            Engine.debugPrint(curSelected + ' ' + itemsLength);*/
-
-        for (item in menuItems){
-            if (item != null && curSelected == item.ID + 1){
-                if (bg.color != item.targetColor)
-                    bg.color = FlxColor.interpolate(bg.color, item.targetColor, 0.045);
-            }
-
-            if (item != null && curSelected == item.ID + 1 && lastSelected != curSelected){
-                camFollow.y = item.y + 32;
-
-                if (item.type.toLowerCase() == 'week')
-                    scoreText.text = 'SCORE: ' + Highscore.getWeekScore(item.weekData.songs);
-                else if (item.type.toLowerCase() == 'song')
-                    scoreText.text = 'SCORE: ' + Highscore.getScore(item.text);
-                else
-                    scoreText.text = 'SCORE: N/A';
-
-                if (item.mod != null){
-                    scoreText.text += '\nMOD: ' + item.mod.id;
-                }
-
-                if (item.weekData != null && item.weekData.songs != null){
-                    var i:Int = 0;
-                    var suffix:String = '';
-                    for (song in item.weekData.songs){
-                        if (i >= 16){
-                            scoreText.text += '\nAnd ' + Std.string(item.weekData.songs.length - i) + ' more...';
+                FlxTween.tween(camFollow, {x: camFollow.x + 32 + (highestWidth + Std.int(150 * 0.6))}, 0.25, {ease: FlxEase.linear, onComplete: function(v:Dynamic) {
+                    generateWeeksMenu(weekJsons);
+                    curSelected = lastSelected;
+                    lastUpdated = -1;
+                    
+                    camFollow.screenCenter(X);
+                    for (item in menuSelects){
+                        if (item.ID == curSelected){
+                            camFollow.y = item.y + 32;
                             break;
                         }
-                        else if (i == 0)
-                            suffix = '\nSONGS\n'
-                        else
-                            suffix = '';
-
-                        scoreText.text += '\n' + suffix + '$song';
-                        i++;
                     }
+                    FlxG.camera.focusOn(camFollow.getPosition());
+                    allowSelections = true;
+                }});
+            }
+        }
+
+        if (FlxG.keys.justPressed.L || FlxG.mouse.overlaps(loopCheck) && FlxG.mouse.justPressed){
+            loopCheck.value = !loopCheck.value;
+            PlayState.inLoopMode = loopCheck.value;
+        }
+
+        if (curSelected < 0)
+            curSelected = menuSelects.members.length - 1;
+        else if (curSelected > menuSelects.members.length - 1)
+            curSelected = 0;
+
+        for (item in menuSelects){
+            if (item != null && item.ID == curSelected){
+                bg.color = FlxColor.interpolate(bg.color, item.targetColor, 0.045);
+
+                if (curSelected != lastUpdated && allowSelections){
+                    camFollow.y = item.y + 32;
+                    item.alpha = 1;
+
+                    FlxTween.tween(item, {x: 32}, 0.25, {ease: FlxEase.circOut});
+
+                    lastUpdated = curSelected;
+                }
+
+                if (controls.ACCEPT && allowSelections){
+                    runItemTask(item);
                 }
             }
-
-            if (item != null && curSelected == item.ID + 1 && controls.ACCEPT){
-                if (item.type.toLowerCase() == 'week'){
-                    selectedWeek = item.weekData;
-                    selectedMod = item.mod;
-
-                    generateMenu(getMenu('songs'));
-
-                    lastSelected = curSelected;
-                    curSelected = 1;
-                }
-                else if (item.type.toLowerCase() == 'playall' || item.type.toLowerCase() == 'shuffle'){
-                    var damod:Mod = selectedMod;
-
-                    if (inSongMenu){
-                        for (item in menuItems.members){
-                            if (item != null && item.type.toLowerCase() == 'song'){
-                                PlayState.songPlaylist.push({songName: item.text.toLowerCase(), mod: damod, week:selectedWeek.week});
-                                //Engine.debugPrint(item.text);
-                            }
-                        }
-                    }
-                    else{
-                        for (item in menuItems.members){
-                            if (item != null && item.type.toLowerCase() == 'week'){
-                                for (i in 0...item.weekData.songs.length){
-                                    PlayState.songPlaylist.push({songName: item.weekData.songs[i], mod: item.mod, week:item.weekData.week});
-                                    //Engine.debugPrint(item.text);
-                                }
-                            }
-                        }
-                    }
-
-                    if (item.type.toLowerCase() == 'shuffle')
-                        PlayState.songPlaylist = randomizeSongs(PlayState.songPlaylist);
-
-					loopList = [];
-
-					for (song in PlayState.songPlaylist){
-						loopList.push(song);
-					}
-
-                    if (PlayState.songPlaylist[0].mod != null)
-                        ModLib.setMod(PlayState.songPlaylist[0].mod.id);
-
-					PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
-
-                    if (PlayState.songPlaylist[0].week != null)
-                        PlayState.storyWeek = PlayState.songPlaylist[0].week;
-        
-                    LoadingState.loadAndSwitchState(new PlayState());
-                }
-                else if (item.type.toLowerCase() == 'song'){
-                    var poop:String = item.text.toLowerCase();
-
-                    if (selectedMod != null)
-                        ModLib.setMod(selectedMod.id);
-
-					PlayState.SONG = Song.loadFromJson(poop, poop);
-
-                    PlayState.songPlaylist.push({songName: item.text.toLowerCase(), mod: selectedMod, week:selectedWeek.week});
-
-					loopList = [];
-
-					for (song in PlayState.songPlaylist){
-						loopList.push(song);
-					}
-
-                    PlayState.storyWeek = selectedWeek.week;
-
-                    LoadingState.loadAndSwitchState(new PlayState());
-                }
-            }
-
-            if (curSelected == item.ID + 1)
-                item.alpha = 1;
-            else
+            else if (item != null && item.ID != curSelected && item.alpha != 0.75 && allowSelections){
                 item.alpha = 0.75;
-        }
 
-        if (FlxG.keys.justPressed.ESCAPE == true){
-            if (inSongMenu){
-                generateMenu(getMenu('weeks'));
-
-                curSelected = lastSelected;
-
-                for (item in menuItems){
-                    if (item.ID == curSelected)
-                        camFollow.y = item.y;
-                }
+                FlxTween.tween(item, {x: 0}, 0.25, {ease: FlxEase.circOut});
             }
-            else
-                FlxG.switchState(new MainMenuState());
         }
-
     }
 
-    function getMenu(type:String, willLoadMenu:Bool = true){
-        var thismenu:Array<MItemInf> = [];
+    function triggerCamTransition(?func:Void -> Void){
+        FlxTween.tween(camFollow, {x: camFollow.x + 32 + (highestWidth + Std.int(150 * 0.6))}, 0.25, {ease: FlxEase.linear, onComplete: function(v:Dynamic) {
+            lastSelected = curSelected;
+            if (func != null)
+                func();
+            curSelected = 0;
+            lastUpdated = -1;
 
-        switch (type.toLowerCase()){
-            case 'weeks':
-                if (generatedWeeksMenu == null || generatedWeeksMenu == []){
-                    generatedWeeksMenu = [];
-                    generatedWeeksMenu.push({type:'playall', string: 'Play All'});
-                    generatedWeeksMenu.push({type:'shuffle', string: 'Shuffle'});
-        
-                    var vanillaweeks:WeekJson = Json.parse(File.getContent(Paths.json('weeks', 'preload')));
-                
-                    for (week in vanillaweeks.weeks){
-                        generatedWeeksMenu.push({type:'week', weekData: week, string: week.name});
+            camFollow.y = 32;
+            FlxG.camera.focusOn(camFollow.getPosition());
+            camFollow.screenCenter(X);
+            allowSelections = true;
+        }});
+    }
+
+    function runItemTask(item:MenuItem){
+        PlayState.songPlaylist = []; // Reset
+
+        if (item.itemType == STORY_ITEM){
+            allowSelections = false;
+
+            triggerCamTransition(function(){
+                generateSongsMenu(item.weekData, item.mod);
+            });
+        }
+        else if (item.itemType == SONG_ITEM){
+            var poop:String = item.song.toLowerCase();
+
+            PlayState.songPlaylist.push({songName: item.song, mod: item.mod, week: item.weekData.week});
+
+            if (PlayState.songPlaylist[0].mod != null)
+                ModLib.setMod(PlayState.songPlaylist[0].mod.id);
+
+            PlayState.SONG = Song.loadFromJson(poop, poop);
+
+            if (loopCheck.value == true){
+                loopList = [];
+
+                for (song in PlayState.songPlaylist){
+                    loopList.push(song);
+                }
+            }
+
+            if (PlayState.songPlaylist[0].week != null)
+                PlayState.storyWeek = PlayState.songPlaylist[0].week;
+
+            LoadingState.loadAndSwitchState(new PlayState());
+        }
+        else if (item.itemType == GENERAL_ITEM){
+            if (item.text.toLowerCase().startsWith("shuffle") || item.text.toLowerCase().startsWith("play")){ // play = play all
+                for (item in menuSelects.members){
+                    if (item != null && item.itemType == SONG_ITEM && inSongMenu){
+                        PlayState.songPlaylist.push({songName: item.song, mod: item.mod, week: item.weekData.week});
                     }
-                
-                    for (mod in ModLib.mods){
-                        if (ModAssets.assetExists('data/weeks.json', mod, null, null, false)){
-                            var weekJson:WeekJson = Json.parse(ModAssets.getContent('data/weeks.json', mod, null, null, false));
-
-                            for (week in weekJson.weeks){
-                                generatedWeeksMenu.push({type:'week', weekData: week, string: week.name, mod: mod});
-                            }
+                    else if (item != null && item.itemType == STORY_ITEM && !inSongMenu){
+                        for (i in 0...item.weekData.songs.length){
+                            PlayState.songPlaylist.push({songName: item.weekData.songs[i], mod: item.mod, week:item.weekData.week});
                         }
                     }
                 }
 
-                thismenu = generatedWeeksMenu;
-        
-                if (willLoadMenu)
-                    inSongMenu = false;
-            case 'songs':
-                thismenu.push({type:'playall', string: 'Play All'});
-                thismenu.push({type:'shuffle', string: 'Shuffle'});
-        
-                for (song in selectedWeek.songs){
-                    thismenu.push({type: 'song', string: song, mod: selectedMod});
+                if (loopCheck.value == true){
+                    loopList = [];
+
+                    for (song in PlayState.songPlaylist){
+                        loopList.push(song);
+                    }
                 }
-        
-                if (willLoadMenu)
-                    inSongMenu = true;
+
+                if (item.text.toLowerCase().startsWith("shuffle"))
+                    PlayState.songPlaylist = randomizeSongs(PlayState.songPlaylist);
+
+                if (PlayState.songPlaylist[0].mod != null){
+                    ModLib.setMod(PlayState.songPlaylist[0].mod.id);
+                }
+
+                PlayState.SONG = Song.loadFromJson(PlayState.songPlaylist[0].songName, PlayState.songPlaylist[0].songName);
+
+                if (PlayState.songPlaylist[0].week != null)
+                    PlayState.storyWeek = PlayState.songPlaylist[0].week;
+    
+                LoadingState.loadAndSwitchState(new PlayState());
+            }
+        }
+        else{
+            trace('If you see this, something went confusingly wrong.');
+        }
+    }
+
+    function generateSongsMenu(weekdata:WeekData, ?mod:Mod){
+        for (item in menuSelects){
+            item.kill();
+            item.destroy();
         }
 
-        return thismenu;
-    }      
+        menuSelects.clear();
 
-    function generateMenu(items:Array<MItemInf>){
-        menuItems.clear();
-        playIcons.clear();
-        var v:Int = 0;
-    
-        for (item in items){
-            var newItem = new MenuItem(32, (72 * v) + 32, item.string, item.type, item.weekData, item.mod);
-            menuItems.add(newItem);
-            newItem.ID = v;
-            v++;
-    
-            if (item.type == 'week' && item.weekData != null){
-                if (item.mod != null)
-                    ModLib.setMod(item.mod.id, true);
-    
-                if (item.weekData.color != null)
-                    newItem.targetColor = Std.parseInt(item.weekData.color);
-    
-                var icon = new HealthIcon(item.weekData.icon, false, 0, 24);
+        for (item in menuIcons){
+            item.kill();
+            item.destroy();
+        }
 
-                icon.sprTracker = newItem;
+        menuIcons.clear();
+
+        inSongMenu = true;
+
+        var y:Float = 0;
+        var ID:Int = 0;
+
+        var playall:MenuItem = new MenuItem(0, y + 72, "Play All", GENERAL_ITEM);
+        playall.ID = 0;
+        if (weekdata.rgb != null && weekdata.rgb != [])
+            playall.targetColor = FlxColor.fromRGB(weekdata.rgb[0], weekdata.rgb[1], weekdata.rgb[2]);
+        menuSelects.add(playall);
+
+        var shuffle:MenuItem = new MenuItem(0, y + (72 * 2), "Shuffle All", GENERAL_ITEM);
+        shuffle.ID = 1;
+        if (weekdata.rgb != null && weekdata.rgb != [])
+            shuffle.targetColor = FlxColor.fromRGB(weekdata.rgb[0], weekdata.rgb[1], weekdata.rgb[2]);
+        menuSelects.add(shuffle);
+
+        y = (72 * 2);
+        ID = 2;
+
+        for (song in weekdata.songs){
+            var week:MenuItem = new MenuItem(0, y + 72, song, SONG_ITEM, {weekData: weekdata, song: song, mod: mod});
+    
+            if (weekdata.rgb != null && weekdata.rgb != [])
+                week.targetColor = FlxColor.fromRGB(weekdata.rgb[0], weekdata.rgb[1], weekdata.rgb[2]);
+
+            week.ID = ID;
+            week.x = week.width * -1;
+
+            if (week.width > highestWidth)
+                highestWidth = week.width;
+
+            ++ID;
+            y += 72;
+
+            menuSelects.add(week);
+            FlxTween.tween(week, {x: 0}, 0.25, {ease: FlxEase.circOut});
+        }
+    }
+
+    function generateWeeksMenu(weeks:Array<WeekList>){
+        for (item in menuSelects){
+            item.kill();
+            item.destroy();
+        }
+
+        menuSelects.clear();
+
+        for (item in menuIcons){
+            item.kill();
+            item.destroy();
+        }
+
+        menuIcons.clear();
+
+        inSongMenu = false;
+
+        var y:Float = 0;
+        var ID:Int = 0;
+
+        var playall:MenuItem = new MenuItem(0, y + 72, "Play All", GENERAL_ITEM);
+        playall.ID = 0;
+        playall.x = -playall.width;
+        menuSelects.add(playall);
+
+        var shuffle:MenuItem = new MenuItem(0, y + (72 * 2), "Shuffle All", GENERAL_ITEM);
+        shuffle.ID = 1;
+        shuffle.x = -shuffle.width;
+        menuSelects.add(shuffle);
+
+        ID = 2;
+        y += (72 * 2);
+
+        for (junk in weeks){
+            for (daWeek in junk.json.weeks){
+                var week:MenuItem = new MenuItem(0, y + 72, daWeek.name, STORY_ITEM, {weekData: daWeek, mod: junk.mod});
+    
+                if (daWeek.rgb != null && daWeek.rgb != [])
+                    week.targetColor = FlxColor.fromRGB(daWeek.rgb[0], daWeek.rgb[1], daWeek.rgb[2]);
+    
+                week.ID = ID;
+
+                if (junk.mod != null){
+                    ModLib.setMod(junk.mod.id); // Just for the icons lol
+                }
+    
+                var icon:HealthIcon = new HealthIcon(daWeek.icon, false, 0, 24);
+                icon.sprTracker = week;
                 icon.scrollFactor.set(1, 1);
                 icon.setGraphicSize(Std.int(icon.width * 0.6));
                 icon.updateHitbox();
+                icon.alpha = 0;
+    
+                week.x = -(week.width + icon.width);
 
-                playIcons.add(icon);
+                if (week.width > highestWidth)
+                    highestWidth = week.width;
+    
+                menuSelects.add(week);
+                menuIcons.add(icon);
 
-                if (ModLib.curMod != null)
-                    ModLib.setMod(null, true);
+                FlxTween.tween(icon, {alpha: 1}, 0.25, {ease: FlxEase.circOut});
+    
+                ++ID;
+                y += 72;
             }
         }
 
-        itemsLength = v;
+        ModLib.setMod();
     }
-    
 
     public function randomizeSongs(arr:Array<SongData>) {
         var randomizedArray = arr;
@@ -385,6 +430,53 @@ class FreeplayState extends MusicBeatState
         }
     
         return randomizedArray;
+    }
+}
+
+enum MenuItemType {
+    STORY_ITEM;
+    SONG_ITEM;
+    GENERAL_ITEM;
+}
+
+typedef MenuItemData = {
+    var ?song:String;
+    var ?weekData:WeekData;
+    var ?mod:Mod;
+}
+
+class MenuItem extends FlxText {
+    // Data
+    public var itemType:MenuItemType;
+
+    public var song:String;
+
+    public var weekData:WeekData;
+    public var mod:Mod;
+
+    // Target Color for Background (If any)
+    public var targetColor:FlxColor = FlxColor.fromRGB(79, 134, 247); 
+
+    public function new(x:Float, y:Float, text:String, itemType:MenuItemType, ?data:MenuItemData, ?size:Int = 64, ?facing:FlxTextAlign = LEFT) {
+        super(x, y);
+
+        this.text = text;
+        this.itemType = itemType;
+
+        setFormat(Paths.font("PhantomMuff.ttf"), size, FlxColor.WHITE, facing);
+        setBorderStyle(OUTLINE, FlxColor.BLACK, 4, 2);
+
+        switch (itemType) {
+            case STORY_ITEM:
+                this.weekData = data.weekData;
+                this.mod = data.mod;
+            case SONG_ITEM:
+                this.song = data.song;
+                this.weekData = data.weekData;
+                this.mod = data.mod;
+            case GENERAL_ITEM:
+                // No additional data for general item
+        }
     }
 }
 
@@ -443,6 +535,11 @@ class Checkbox extends FlxSprite
 	}
 }
 
+typedef WeekList = {
+    var json:WeekJson;
+    var ?mod:Mod;
+}
+
 typedef WeekJson = {
 	var weeks:Array<WeekData>;
 }
@@ -453,35 +550,7 @@ typedef WeekData =
 	var songs:Array<String>;
 	var week:Int;
 	var icon:String;
-    var iconIsJson:Bool;
 	var ?isMod:Bool;
-    var ?color:String;
+    var ?rgb:Array<Int>;
     var ?disablePreload:Bool;
-}
-
-typedef MItemInf ={
-    var type:String;
-    var ?string:String;
-    var ?weekData:WeekData;
-    var ?mod:Mod;
-}
-
-class MenuItem extends FlxText{
-    public var weekData:WeekData;
-    public var type:String;
-    public var mod:Mod;
-    public var targetColor:FlxColor = FlxColor.fromRGB(79, 134, 247); 
-
-    public function new(x:Float, y:Float, text:String, type:String, ?weekData:WeekData, ?mod:Mod, size:Int = 64, facing:FlxTextAlign = LEFT){
-        super(x, y);
-        this.text = text;
-        this.type = type;
-        this.setFormat(Paths.font("PhantomMuff.ttf"), size, FlxColor.WHITE, facing);
-        setBorderStyle(OUTLINE, FlxColor.BLACK, 4, 2);
-
-        if (weekData != null)
-            this.weekData = weekData;
-        if (mod != null)
-            this.mod = mod;
-    }
 }

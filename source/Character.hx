@@ -247,27 +247,29 @@ class Character extends FlxSprite
 		return (animation.curAnim.name.startsWith('dance') || animation.curAnim.name == 'idle');
 	}
 
-	/**
-	 * FOR GF DANCING SHIT
-	 */
 	public function dance()
 	{
-		if (animation.exists('danceLeft') && animation.exists('danceRight') && !animation.curAnim.name.startsWith('hair')){
-			danced = !danced;
-
-			if (danced)
-				playAnim('danceRight', true);
-			else
-				playAnim('danceLeft', true);
-		}
-		else{
-			switch (curCharacter.toLowerCase()){
-				default:
-					if (animation.exists('idle'))
-						playAnim('idle');
-				case 'pico-speaker':
-					// do nothing
+		try{
+			if (animation.exists('danceLeft') && animation.exists('danceRight') && !animation.curAnim.name.startsWith('hair')){
+				danced = !danced;
+	
+				if (danced)
+					playAnim('danceRight', true);
+				else
+					playAnim('danceLeft', true);
 			}
+			else{
+				switch (curCharacter.toLowerCase()){
+					default:
+						if (animation.exists('idle'))
+							playAnim('idle');
+					case 'pico-speaker':
+						// do nothing
+				}
+			}
+		}
+		catch (e:Dynamic){
+			trace('Dance error! $e');
 		}
 	}
 
@@ -330,6 +332,6 @@ typedef CharAnims = {
 	var name:String;
 	var fps:Int;
 	var ?loop:Bool;
-	var indices:Array<Int>;
+	var ?indices:Array<Int>;
 	var ?offsets:Array<Int>;
 }

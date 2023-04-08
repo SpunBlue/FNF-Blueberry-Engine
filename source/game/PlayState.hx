@@ -1,5 +1,6 @@
 package game;
 
+import Note.NoteData;
 import util.EventNote.ChartEvent;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import engine.modding.SpunModLib.Mod;
@@ -200,9 +201,12 @@ class PlayState extends MusicBeatState
 			{
 				add(value);
 			});
-			script.interp.variables.set("setDefaultZoom", function(value:Dynamic)
+			script.interp.variables.set("setDefaultZoom", function(value:Dynamic, ?immediateZoom:Bool = false)
 			{
 				defaultCamZoom = value;
+
+				if (immediateZoom)
+					FlxG.camera.zoom = value;
 			});
 			script.interp.variables.set("setGF", function(value:Dynamic)
 			{
@@ -287,8 +291,10 @@ class PlayState extends MusicBeatState
 
 		script.interp.variables.set("replaceStrum", replaceArrows);
 
-		script.interp.variables.set('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
-		script.interp.variables.set('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
+		if (SONG.notes[Math.floor(curStep / 16)] != null){
+			script.interp.variables.set('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
+			script.interp.variables.set('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
+		}
 	}
 
 	override public function create()
@@ -551,8 +557,14 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(FlxColor.fromRGB(dad.healthBarColors[0], dad.healthBarColors[1], dad.healthBarColors[2]),
+
+		if (curDAD.healthBarColors != null && curBF.healthBarColors != null){
+			healthBar.createFilledBar(FlxColor.fromRGB(dad.healthBarColors[0], dad.healthBarColors[1], dad.healthBarColors[2]),
 			FlxColor.fromRGB(boyfriend.healthBarColors[0], boyfriend.healthBarColors[1], boyfriend.healthBarColors[2]));
+		}
+		else{
+			healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
+		}
 		add(healthBar);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
@@ -639,7 +651,11 @@ class PlayState extends MusicBeatState
 					gunsIntro();
 	
 				default:
-					startCountdown();
+					if (dialogue == null)
+						startCountdown();
+					else{
+						add(doof);
+					}
 			}
 		}
 		else
@@ -763,14 +779,8 @@ class PlayState extends MusicBeatState
 					else
 						add(dialogueBox);
 				}
-				else{
-					if (dialogue == null)
-						startCountdown();
-					else{
-						dialogueBox = doof;
-						add(dialogueBox);
-					}
-				}
+				else
+					startCountdown();
 
 				remove(black);
 			}
@@ -939,8 +949,10 @@ class PlayState extends MusicBeatState
 				swagNote.altNote = songNotes[3];
 				swagNote.scrollFactor.set(0, 0);
 
-				if (songNotes[4] != null)
-					swagNote.sangByCharID = songNotes[4];
+				var data:NoteData = songNotes[4];
+
+				if (songNotes[4] != null && data.singerID != null)
+					swagNote.sangByCharID = data.singerID;
 
 				var susLength:Float = swagNote.sustainLength;
 
@@ -1243,16 +1255,18 @@ class PlayState extends MusicBeatState
 			case 'playanimation':
 				switch(event.variable1.toLowerCase()){
 					case 'dad':
-						dad.playAnim(event.variable2);
+						curDAD.playAnim(event.variable2);
 					case 'bf' | 'boyfriend':
-						boyfriend.playAnim(event.variable2);
+						curBF.playAnim(event.variable2);
 				}
 			case 'selectcharacter':
 				switch (event.variable2.toLowerCase()){
 					case 'dad':
 						curDAD = getCharFromID(Std.parseInt(event.variable1), true);
+						iconP2.changeIcon(curDAD.curCharacter);
 					case 'bf' | 'boyfriend':
 						curBF = getCharFromID(Std.parseInt(event.variable1), false);
+						iconP1.changeIcon(curBF.curCharacter);
 				}
 		}
 	}
@@ -1317,17 +1331,16 @@ class PlayState extends MusicBeatState
 		#if (windows||linux)
 		textSpacer = '•';
 		#else
-		textSpacer = '-';
+		textSpacer = '-'; // Linux goofy
 		#end
 
-		// Timer looks ugly, gona make an actual bar one day. Might not though since having the timer kinda ruins shit for me personallly.
-		scoreTxt.text = 'Score: $songScore $textSpacer Misses: $songMisses $textSpacer Combo: $combo\n' /*+
-		'${(Math.floor((Conductor.songPosition / 1000) / 60))}:${(Math.floor((Conductor.songPosition / 1000) % 60) < 10 ? '0' : '') + Math.floor((Conductor.songPosition / 1000) % 60)}'.replace('\n', '')*/;
+		scoreTxt.text = 'Score: $songScore $textSpacer Misses: $songMisses $textSpacer Combo: $combo\n';
 
+		// Timer looks ugly, gona make an actual bar one day. Might not though since having the timer kinda ruins shit for me personallly.
 		if (!PreferencesMenu.getPref('downscroll'))
-			hitsTxt.text = 'SHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints\nAccuracy: ' + funnyRatingText(calculateRatingPercent());
+			hitsTxt.text = 'SHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints\nAccuracy: ' + funnyRatingText(calculateRatingPercent()) /*+ ' ' + textSpacer + ' Time: ' + FlxStringUtil.formatTime(FlxG.sound.music.time / 1000.0)*/;
 		else
-			hitsTxt.text = 'Accuracy: ' + funnyRatingText(calculateRatingPercent()) + '\nSHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints';
+			hitsTxt.text = 'Accuracy: ' + funnyRatingText(calculateRatingPercent()) + ' ' + textSpacer /*+ ' Time: ' + FlxStringUtil.formatTime(FlxG.sound.music.time / 1000.0)*/ + '\nSHITS: $shits $textSpacer BADS: $bads $textSpacer GOODS: $goods $textSpacer SICKS: $sicks $textSpacer MINTS: $mints';
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1335,7 +1348,7 @@ class PlayState extends MusicBeatState
 			persistentDraw = true;
 			paused = true;
 
-			var boyfriendPos = boyfriend.getScreenPosition();
+			var boyfriendPos = curBF.getScreenPosition();
 			var pauseSubState = new PauseSubState(boyfriendPos.x, boyfriendPos.y);
 			openSubState(pauseSubState);
 			pauseSubState.camera = camHUD;
@@ -1811,7 +1824,7 @@ class PlayState extends MusicBeatState
 			score = 200;
 			++goods;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.05){
+		else if (noteDiff > Conductor.safeZoneOffset * 0.07){
 			spawnNoteSplash(daNote.noteData);
 			daRating = 'sick';
 			score = 350;
@@ -2405,14 +2418,12 @@ class PlayState extends MusicBeatState
 				return character;
 		}
 
-		try{
-			trace('Unable to find character of ID "$id" in group ${if (isDad == true) return "dadGroup"; else return "boyfriendGroup";}');
-		}
-		catch(e:Dynamic){
-			trace('If you see this, my trace for saying "Unable to find character of ID" didn\'t work properly, and gave the error of "$e". Please report this to me immediatly.');
-		}
+		trace('Unable to find character of ID "$id" isDad: $isDad');
 
-		return 0;
+		if (isDad)
+			return dad;
+		else
+			return boyfriend;
 	}
 
 	public inline function spawnNoteSplash(noteData:Int) {

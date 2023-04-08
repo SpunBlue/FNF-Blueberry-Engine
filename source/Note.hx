@@ -296,3 +296,7 @@ class Note extends FlxSprite
 		}});
 	}
 }
+
+typedef NoteData = {
+	var ?singerID:Int;
+}
