@@ -1721,9 +1721,6 @@ class PlayState extends MusicBeatState
 		switch (SONG.song.toLowerCase()){
 			default:
 				trace('Continuing');
-			case 'stress':
-				playCutscene('kickstarterTrailer', true);
-				return;
 			case 'eggnog':
 				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
 					-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
