@@ -97,8 +97,8 @@ class MainMenuState extends MusicBeatState
 
 		menuItems.enabled = false; // disable for intro
 		menuItems.createItem('freeplay', function() startExitState(new FreeplayState()));
-		menuItems.createItem('options', function() startExitState(new OptionsState()));
 		menuItems.createItem('donate', selectDonate);
+		menuItems.createItem('options', function() startExitState(new OptionsState()));
 		// #if newgrounds
 		// 	if (NGio.isLoggedIn)
 		// 		menuItems.createItem("logout", selectLogout);
