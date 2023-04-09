@@ -19,11 +19,6 @@ function onCreate(){
 
 function createPost(){
     createTrail(dad, null, 4, 24, 0.3, 0.069, true, stageLayer1);
-
-    boyfriend.x += 200;
-    boyfriend.y += 220;
-    gf.x += 180;
-    gf.y += 300;
 }
 
 function update(elapsed){
