@@ -6,6 +6,8 @@ var tankWatchtower:BGSprite;
 var tankGround:BGSprite;
 
 function onCreate(){
+    setDefaultZoom(0.9);
+
     var bg:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0, 'week7');
     add(bg);
 
@@ -80,7 +82,15 @@ function onCreate(){
 }
 
 function createPost(){
-    if (curGF().toLowerCase() != 'pico-speaker'){
+    gf.y += 10;
+    gf.x -= 30;
+    boyfriend.x += 40;
+    boyfriend.y += 0;
+    dad.y += 60;
+    dad.x -= 80;
+
+    if (curGF().toLowerCase() != 'pico-speaker')
+    {
         gf.x -= 170;
         gf.y -= 75;
     }
@@ -118,7 +128,8 @@ function stepHit(curStep){
 }
 
 function beatHit(curBeat){
-    foregroundSprites.forEach(function(spr:BGSprite){
+    foregroundSprites.forEach(function(spr:BGSprite)
+    {
         spr.dance();
     });
     tankWatchtower.dance();
@@ -126,7 +137,8 @@ function beatHit(curBeat){
 
 function moveTank():Void
 {
-    if (!inCutscene){
+    if (!inCutscene)
+    {
         var daAngleOffset:Float = 1;
         tankAngle += FlxG.elapsed * tankSpeed;
         tankGround.angle = tankAngle - 90 + 15;
