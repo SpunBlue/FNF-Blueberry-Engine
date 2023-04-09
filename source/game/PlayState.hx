@@ -1588,20 +1588,17 @@ class PlayState extends MusicBeatState
 
 					if(daNote.gfNote)
 					{
-						// if(gf != null)
+						switch (Math.abs(daNote.noteData))
 						{
-						    switch (Math.abs(daNote.noteData))
-						    {
-							    case 0:
-								    gf.playAnim('singLEFT' + altAnim, true);
-							    case 1:
-								    gf.playAnim('singDOWN' + altAnim, true);
-							    case 2:
-								    gf.playAnim('singUP' + altAnim, true);
-							    case 3:
-							        gf.playAnim('singRIGHT' + altAnim, true);
-						    }
-					    }
+							case 0:
+								gf.playAnim('singLEFT' + altAnim, true);
+							case 1:
+								gf.playAnim('singDOWN' + altAnim, true);
+							case 2:
+								gf.playAnim('singUP' + altAnim, true);
+							case 3:
+							    gf.playAnim('singRIGHT' + altAnim, true);
+						}
 					}
 					else
 					{
@@ -2207,19 +2204,16 @@ class PlayState extends MusicBeatState
 		{
 			if(daNote.gfNote)
 			{
-				// if(gf != null)
+				switch (direction)
 				{
-				    switch (direction)
-				    {
-					    case 0:
-						    gf.playAnim('singLEFTmiss', true);
-					    case 1:
-						    gf.playAnim('singDOWNmiss', true);
-					    case 2:
-						    gf.playAnim('singUPmiss', true);
-					    case 3:
-					       	gf.playAnim('singRIGHTmiss', true);
-				    }
+					case 0:
+						gf.playAnim('singLEFTmiss', true);
+					case 1:
+					    gf.playAnim('singDOWNmiss', true);
+					case 2:
+					    gf.playAnim('singUPmiss', true);
+					case 3:
+					    gf.playAnim('singRIGHTmiss', true);
 			    }
 			}
 			else
@@ -2261,20 +2255,17 @@ class PlayState extends MusicBeatState
 
 			if(note.gfNote)
 			{
-				// if(gf != null)
+				switch (note.noteData)
 				{
-				    switch (note.noteData)
-				    {
-					    case 0:
-						    gf.playAnim('singLEFT', true);
-					    case 1:
-						    gf.playAnim('singDOWN', true);
-					    case 2:
-						    gf.playAnim('singUP', true);
-					    case 3:
-					     	gf.playAnim('singRIGHT', true);
-				    }
-			    }
+					case 0:
+					    gf.playAnim('singLEFT', true);
+					case 1:
+					    gf.playAnim('singDOWN', true);
+					case 2:
+					    gf.playAnim('singUP', true);
+					case 3:
+					 	gf.playAnim('singRIGHT', true);
+				}
 			}
 			else
 			{
