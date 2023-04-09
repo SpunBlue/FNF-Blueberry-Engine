@@ -2031,7 +2031,7 @@ class PlayState extends MusicBeatState
 		{
 			if(gf != null && SONG.notes[Math.floor(curStep / 16)].gfSection)
 			{
-				camFollow.set(gf.getMidpoint().x, gf.getMidpoint().y);
+				camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
 				camFollow.x += gf.charJson.CamPosition[0] + gf.charJson.CamPosition[0];
 				camFollow.y += gf.charJson.CamPosition[1] + gf.charJson.CamPosition[1];
 				return;
