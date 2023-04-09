@@ -440,7 +440,7 @@ class PlayState extends MusicBeatState
 			curStage = 'stage';
 		}
 
-                defaultCamZoom = stageData.defaultZoom;
+        defaultCamZoom = stageData.defaultZoom;
 
 		gf = new Character(stageData.girlfriend[0], stageData.girlfriend[1], gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
