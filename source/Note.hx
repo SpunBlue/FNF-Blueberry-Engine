@@ -34,6 +34,7 @@ class Note extends FlxSprite
 
 	private var willMiss:Bool = false;
 
+	public var gfNote:Bool = false;
 	public var altNote:Bool = false;
 
 	public var sustainLength:Float = 0;

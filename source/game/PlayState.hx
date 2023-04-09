@@ -295,6 +295,7 @@ class PlayState extends MusicBeatState
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null){
 			script.interp.variables.set('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
+			script.interp.variables.set('gfSection', SONG.notes[Math.floor(curStep / 16)].gfSection);
 			script.interp.variables.set('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
 		}
 	}
@@ -942,6 +943,7 @@ class PlayState extends MusicBeatState
 
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, null, strum.arrows[daNoteData], noteStyle, false);
 				swagNote.sustainLength = songNotes[2];
+				swagNote.gfNote = (section.gfSection && (songNotes[1]<4));
 				swagNote.altNote = songNotes[3];
 				swagNote.scrollFactor.set(0, 0);
 
@@ -1584,17 +1586,34 @@ class PlayState extends MusicBeatState
 
 					var cID = daNote.sangByCharID;
 
-					switch (Math.abs(daNote.noteData))
+					if(daNote.gfNote)
 					{
-						case 0:
-							getCharFromID(cID, true).playAnim('singLEFT' + altAnim, true);
-						case 1:
-							getCharFromID(cID, true).playAnim('singDOWN' + altAnim, true);
-						case 2:
-							getCharFromID(cID, true).playAnim('singUP' + altAnim, true);
-						case 3:
-							getCharFromID(cID, true).playAnim('singRIGHT' + altAnim, true);
+						switch (Math.abs(daNote.noteData))
+						{
+							case 0:
+								gf.playAnim('singLEFT' + altAnim, true);
+							case 1:
+								gf.playAnim('singDOWN' + altAnim, true);
+							case 2:
+								gf.playAnim('singUP' + altAnim, true);
+							case 3:
+								gf.playAnim('singRIGHT' + altAnim, true);
+						}
 					}
+					else
+					{
+					    switch (Math.abs(daNote.noteData))
+					    {
+						    case 0:
+							    getCharFromID(cID, true).playAnim('singLEFT' + altAnim, true);
+						    case 1:
+							    getCharFromID(cID, true).playAnim('singDOWN' + altAnim, true);
+						    case 2:
+							    getCharFromID(cID, true).playAnim('singUP' + altAnim, true);
+						    case 3:
+							    getCharFromID(cID, true).playAnim('singRIGHT' + altAnim, true);
+					    }
+				    }
 
 					// if (!daNote.isSustainNote && !daNote.hideBitch){
 						// spawnNoteSplash(daNote.noteData);
@@ -2005,6 +2024,16 @@ class PlayState extends MusicBeatState
 
 	function cameraMovement()
 	{
+		if (SONG.notes[Math.floor(curStep / 16)] != null)
+		{
+			if (SONG.notes[Math.floor(curStep / 16)].gfSection)
+			{
+				camFollow.x += gf.getMidpoint().x + gf.charJson.CamPosition[0];
+			    camFollow.y += gf.getMidpoint().y + gf.charJson.CamPosition[1];
+				return;
+			}
+		}
+
 		if (dadNeedsCamUpdate){
 			dadCamGoofy_X = (curDAD.getMidpoint().x + 150) + curDAD.charJson.CamPosition[0];
 			dadCamGoofy_Y = (curDAD.getMidpoint().y - 100) + curDAD.charJson.CamPosition[1];
@@ -2170,17 +2199,37 @@ class PlayState extends MusicBeatState
 		vocals.volume = 0;
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 
-		switch (direction)
+		notes.forEachAlive(function(daNote:Note)
 		{
-			case 0:
-				curBF.playAnim('singLEFTmiss', true);
-			case 1:
-				curBF.playAnim('singDOWNmiss', true);
-			case 2:
-				curBF.playAnim('singUPmiss', true);
-			case 3:
-				curBF.playAnim('singRIGHTmiss', true);
-		}
+			if(daNote.gfNote)
+			{
+				switch (direction)
+				{
+					case 0:
+						gf.playAnim('singLEFTmiss', true);
+					case 1:
+						gf.playAnim('singDOWNmiss', true);
+					case 2:
+						gf.playAnim('singUPmiss', true);
+					case 3:
+						gf.playAnim('singRIGHTmiss', true);
+				}
+			}
+			else
+			{
+				switch (direction)
+				{
+					case 0:
+						curBF.playAnim('singLEFTmiss', true);
+					case 1:
+						curBF.playAnim('singDOWNmiss', true);
+					case 2:
+						curBF.playAnim('singUPmiss', true);
+					case 3:
+						curBF.playAnim('singRIGHTmiss', true);
+				}
+			}
+		});
 	}
 
 	function goodNoteHit(note:Note):Void
@@ -2203,17 +2252,34 @@ class PlayState extends MusicBeatState
 
 			var cID:Int = note.sangByCharID;
 
-			switch (note.noteData)
+			if(note.gfNote)
 			{
-				case 0:
-					getCharFromID(cID, false).playAnim('singLEFT', true);
-				case 1:
-					getCharFromID(cID, false).playAnim('singDOWN', true);
-				case 2:
-					getCharFromID(cID, false).playAnim('singUP', true);
-				case 3:
-					getCharFromID(cID, false).playAnim('singRIGHT', true);
+				switch (note.noteData)
+				{
+					case 0:
+						gf.playAnim('singLEFT', true);
+					case 1:
+						gf.playAnim('singDOWN', true);
+					case 2:
+						gf.playAnim('singUP', true);
+					case 3:
+						gf.playAnim('singRIGHT', true);
+				}
 			}
+			else
+			{
+			    switch (note.noteData)
+			    {
+				    case 0:
+					    getCharFromID(cID, false).playAnim('singLEFT', true);
+				    case 1:
+					    getCharFromID(cID, false).playAnim('singDOWN', true);
+				    case 2:
+					    getCharFromID(cID, false).playAnim('singUP', true);
+				    case 3:
+					    getCharFromID(cID, false).playAnim('singRIGHT', true);
+			    }
+		    }
 
 			playerStrums.forEach(function(spr:FlxSprite)
 			{
