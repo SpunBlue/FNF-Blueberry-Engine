@@ -83,7 +83,8 @@ function createPost(){
     if (curGF().toLowerCase() != 'pico-speaker'){
         gf.x -= 170;
         gf.y -= 75;
-    }else if (curGF().toLowerCase() == 'pico-speaker'){
+    }
+    else if (curGF().toLowerCase() == 'pico-speaker'){
         gf.x -= 50;
         //gf.y += 200;
 
@@ -120,7 +121,6 @@ function beatHit(curBeat){
     foregroundSprites.forEach(function(spr:BGSprite){
         spr.dance();
     });
-
     tankWatchtower.dance();
 }
 

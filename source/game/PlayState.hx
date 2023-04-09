@@ -436,6 +436,9 @@ class PlayState extends MusicBeatState
 			stageData = cast Json.parse(ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared'));
 			trace('Loading Custom Stage Json...');
 		}
+		else{
+			curStage = 'stage';
+		}
 
         defaultCamZoom = stageData.defaultZoom;
 
