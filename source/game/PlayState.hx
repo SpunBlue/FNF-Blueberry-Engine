@@ -1588,7 +1588,7 @@ class PlayState extends MusicBeatState
 
 					if(daNote.gfNote)
 					{
-						if(gf != null)
+						// if(gf != null)
 						{
 						    switch (Math.abs(daNote.noteData))
 						    {
@@ -2207,7 +2207,7 @@ class PlayState extends MusicBeatState
 		{
 			if(daNote.gfNote)
 			{
-				if(gf != null)
+				// if(gf != null)
 				{
 				    switch (direction)
 				    {
@@ -2261,7 +2261,7 @@ class PlayState extends MusicBeatState
 
 			if(note.gfNote)
 			{
-				if(gf != null)
+				// if(gf != null)
 				{
 				    switch (note.noteData)
 				    {
