@@ -989,7 +989,6 @@ class ChartingState extends MusicBeatState
 				if (FlxG.keys.justPressed.ENTER)
 				{
 					lastSection = curSection;
-		
 					PlayState.SONG = _song;
 					FlxG.sound.music.stop();
 					vocals.stop();
