@@ -1588,17 +1588,20 @@ class PlayState extends MusicBeatState
 
 					if(daNote.gfNote)
 					{
-						switch (Math.abs(daNote.noteData))
+						if(gf != null)
 						{
-							case 0:
-								gf.playAnim('singLEFT' + altAnim, true);
-							case 1:
-								gf.playAnim('singDOWN' + altAnim, true);
-							case 2:
-								gf.playAnim('singUP' + altAnim, true);
-							case 3:
-								gf.playAnim('singRIGHT' + altAnim, true);
-						}
+						    switch (Math.abs(daNote.noteData))
+						    {
+							    case 0:
+								    gf.playAnim('singLEFT' + altAnim, true);
+							    case 1:
+								    gf.playAnim('singDOWN' + altAnim, true);
+							    case 2:
+								    gf.playAnim('singUP' + altAnim, true);
+							    case 3:
+							        gf.playAnim('singRIGHT' + altAnim, true);
+						    }
+					    }
 					}
 					else
 					{
@@ -2026,10 +2029,11 @@ class PlayState extends MusicBeatState
 	{
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
 		{
-			if (SONG.notes[Math.floor(curStep / 16)].gfSection)
+			if(gf != null && SONG.notes[Math.floor(curStep / 16)].gfSection)
 			{
-				camFollow.x += gf.getMidpoint().x + gf.charJson.CamPosition[0];
-			    camFollow.y += gf.getMidpoint().y + gf.charJson.CamPosition[1];
+				camFollow.set(gf.getMidpoint().x, gf.getMidpoint().y);
+				camFollow.x += gf.charJson.CamPosition[0] + gf.charJson.CamPosition[0];
+				camFollow.y += gf.charJson.CamPosition[1] + gf.charJson.CamPosition[1];
 				return;
 			}
 		}
@@ -2203,17 +2207,20 @@ class PlayState extends MusicBeatState
 		{
 			if(daNote.gfNote)
 			{
-				switch (direction)
+				if(gf != null)
 				{
-					case 0:
-						gf.playAnim('singLEFTmiss', true);
-					case 1:
-						gf.playAnim('singDOWNmiss', true);
-					case 2:
-						gf.playAnim('singUPmiss', true);
-					case 3:
-						gf.playAnim('singRIGHTmiss', true);
-				}
+				    switch (direction)
+				    {
+					    case 0:
+						    gf.playAnim('singLEFTmiss', true);
+					    case 1:
+						    gf.playAnim('singDOWNmiss', true);
+					    case 2:
+						    gf.playAnim('singUPmiss', true);
+					    case 3:
+					       	gf.playAnim('singRIGHTmiss', true);
+				    }
+			    }
 			}
 			else
 			{
@@ -2254,17 +2261,20 @@ class PlayState extends MusicBeatState
 
 			if(note.gfNote)
 			{
-				switch (note.noteData)
+				if(gf != null)
 				{
-					case 0:
-						gf.playAnim('singLEFT', true);
-					case 1:
-						gf.playAnim('singDOWN', true);
-					case 2:
-						gf.playAnim('singUP', true);
-					case 3:
-						gf.playAnim('singRIGHT', true);
-				}
+				    switch (note.noteData)
+				    {
+					    case 0:
+						    gf.playAnim('singLEFT', true);
+					    case 1:
+						    gf.playAnim('singDOWN', true);
+					    case 2:
+						    gf.playAnim('singUP', true);
+					    case 3:
+					     	gf.playAnim('singRIGHT', true);
+				    }
+			    }
 			}
 			else
 			{
