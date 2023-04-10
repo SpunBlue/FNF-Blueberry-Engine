@@ -32,12 +32,13 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 
 		add(items = new TextMenuList());
 
-		createPrefItem('naughtyness', 'censor-naughty', true);
-		createPrefItem('downscroll', 'downscroll', false);
-		createPrefItem('middle scroll', 'middle-scroll', false);
-		createPrefItem('flashing menu', 'flashing-menu', true);
-		createPrefItem('allow video cutscenes', 'vidscene', true);
-		createPrefItem('allow cutscenes', 'cutscenes', true);
+		createPrefItem('Naughtyness', 'censor-naughty', true);
+		createPrefItem('Downscroll', 'downscroll', false);
+		createPrefItem('Middle Scroll', 'middle-scroll', false);
+		createPrefItem('Ghost Tapping', 'ghost-tapping', true);
+		createPrefItem('Flashing Menu', 'flashing-menu', true);
+		createPrefItem('Allow Video Cutscenes', 'vidscene', true);
+		createPrefItem('Allow Cutscenes', 'cutscenes', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('Funny Chart Lights', 'chart-lights', true);
 		createPrefItem('Charter Performance Mode', 'chart-perf', false);
@@ -80,6 +81,7 @@ class PreferencesMenu extends util.ui.OptionsState.Page
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
 		preferenceCheck('middle-scroll', false);
+		preferenceCheck('ghost-tapping', true);
 		preferenceCheck('flashing-menu', true);
 		preferenceCheck('vidscene', true);
 		preferenceCheck('cutscenes', true);

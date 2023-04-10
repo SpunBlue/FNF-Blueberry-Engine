@@ -43,6 +43,11 @@ class Note extends FlxSprite
 	public var colorSwap:ColorSwap;
 	public var noteScore:Float = 1;
 
+	public var missed:Bool = false;
+
+	public var sustainParent:Note;
+	public var sustainChildren:Array<Note> = [];
+
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var PURP_NOTE:Int = 0;
 	public static var GREEN_NOTE:Int = 2;
@@ -90,6 +95,16 @@ class Note extends FlxSprite
 		this.strumTime = strumTime;
 
 		this.noteData = noteData;
+
+		if (noteData != -1) {
+			if (isSustainNote && !prevNote.isSustainNote) {
+				sustainParent = prevNote;
+				prevNote.sustainChildren.push(this);
+			} else if (isSustainNote && prevNote.isSustainNote) {
+				sustainParent = prevNote.sustainParent;
+				sustainParent.sustainChildren.push(this);
+			}
+		}
 
 		strumTrack = tracker;
 

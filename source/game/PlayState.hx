@@ -1665,10 +1665,44 @@ class PlayState extends MusicBeatState
 					else
 						health -= 0.1;
 
+					if (!practiceMode)
+						songScore -= 10;
+
 					++songMisses;
 
 					vocals.volume = 0;
+					FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+
 					killCombo();
+
+					if(daNote.gfNote)
+					{
+						switch (daNote.noteData)
+						{
+							case 0:
+								gf.playAnim('singLEFTmiss', true);
+							case 1:
+								gf.playAnim('singDOWNmiss', true);
+							case 2:
+								gf.playAnim('singUPmiss', true);
+							case 3:
+								gf.playAnim('singRIGHTmiss', true);
+						}
+					}
+					else
+					{
+						switch (daNote.noteData)
+						{
+							case 0:
+								curBF.playAnim('singLEFTmiss', true);
+							case 1:
+								curBF.playAnim('singDOWNmiss', true);
+							case 2:
+								curBF.playAnim('singUPmiss', true);
+							case 3:
+								curBF.playAnim('singRIGHTmiss', true);
+						}
+					}
 
 					daNote.fuckNote(notes);
 				}
@@ -2142,27 +2176,25 @@ class PlayState extends MusicBeatState
 
 			possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
 
-			if (perfectMode)
+			if (perfectMode) {
 				goodNoteHit(possibleNotes[0]);
-			else if (possibleNotes.length > 0)
-			{
-				for (shit in 0...pressArray.length)
-				{ // if a direction is hit that shouldn't be
-					if (pressArray[shit] && !directionList.contains(shit))
-						noteMiss(shit);
+			} else if (possibleNotes.length > 0) {
+				for (i in 0...pressArray.length) {
+					if (pressArray[i] && !directionList.contains(i)) {
+			            notes.forEachAlive(function(daNote:Note) {
+				            badNoteHit(daNote, pressArray);
+			            });
+					}
 				}
-				for (coolNote in possibleNotes)
-				{
-					if (pressArray[coolNote.noteData])
-						goodNoteHit(coolNote);
+				for (possibleNote in possibleNotes) {
+					if (pressArray[possibleNote.noteData]) {
+						goodNoteHit(possibleNote);
+					}
 				}
-			}
-			else
-			{
-				for (shit in 0...pressArray.length)
-					if (pressArray[shit])
-						noteMiss(shit);
-			}
+			} else
+			    notes.forEachAlive(function(daNote:Note) {
+				    badNoteHit(daNote, pressArray);
+			    });
 		}
 
 		for (bf in boyfriendGroup){
@@ -2231,6 +2263,23 @@ class PlayState extends MusicBeatState
 				}
 			}
 		});
+	}
+
+	function badNoteHit(note:Note, controlArray:Array<Bool>) {
+		if (!note.missed && !PreferencesMenu.getPref('ghost-tapping')) {
+		    note.missed = true;
+
+			if (note.sustainChildren.length > 0) {
+				for (i in note.sustainChildren) {
+					note.missed = true;
+				}
+			}
+
+		    for (i in 0...controlArray.length) {
+			    if (controlArray[i])
+				    noteMiss(i);
+		    }
+		}
 	}
 
 	function goodNoteHit(note:Note):Void
