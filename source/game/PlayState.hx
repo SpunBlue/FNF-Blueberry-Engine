@@ -190,7 +190,7 @@ class PlayState extends MusicBeatState
 	function setScriptVar(?onlyUpdate:Bool = false, script:Hscript){
 		if (!onlyUpdate){
 			// Functions
-			script.interp.variables.set("add", function(value:Dynamic)
+			script.interp.variables.set("add", function(value:FlxObject)
 			{
 				add(value);
 			});
@@ -1585,6 +1585,10 @@ class PlayState extends MusicBeatState
 						altAnim = '-alt';
 
 					var cID = daNote.sangByCharID;
+					var dad = curDAD;
+
+					if (cID != 0)
+						dad = getCharFromID(cID, true);
 
 					if(daNote.gfNote)
 					{
@@ -1604,14 +1608,14 @@ class PlayState extends MusicBeatState
 					{
 					    switch (Math.abs(daNote.noteData))
 					    {
-						    case 0:
-							    getCharFromID(cID, true).playAnim('singLEFT' + altAnim, true);
-						    case 1:
-							    getCharFromID(cID, true).playAnim('singDOWN' + altAnim, true);
-						    case 2:
-							    getCharFromID(cID, true).playAnim('singUP' + altAnim, true);
-						    case 3:
-							    getCharFromID(cID, true).playAnim('singRIGHT' + altAnim, true);
+						case 0:
+							dad.playAnim('singLEFT' + altAnim, true);
+						case 1:
+							dad.playAnim('singDOWN' + altAnim, true);
+						case 2:
+							dad.playAnim('singUP' + altAnim, true);
+						case 3:
+							dad.playAnim('singRIGHT' + altAnim, true);
 					    }
 				    }
 
@@ -2301,6 +2305,10 @@ class PlayState extends MusicBeatState
 				health += 0.005;
 
 			var cID:Int = note.sangByCharID;
+			var bf = curBF;
+
+			if (cID != 0)
+				bf = getCharFromID(cID, false);
 
 			if(note.gfNote)
 			{
@@ -2319,15 +2327,15 @@ class PlayState extends MusicBeatState
 			else
 			{
 			    switch (note.noteData)
-			    {
-				    case 0:
-					    getCharFromID(cID, false).playAnim('singLEFT', true);
-				    case 1:
-					    getCharFromID(cID, false).playAnim('singDOWN', true);
-				    case 2:
-					    getCharFromID(cID, false).playAnim('singUP', true);
-				    case 3:
-					    getCharFromID(cID, false).playAnim('singRIGHT', true);
+          {
+				case 0:
+					bf.playAnim('singLEFT', true);
+				case 1:
+					bf.playAnim('singDOWN', true);
+				case 2:
+					bf.playAnim('singUP', true);
+				case 3:
+					bf.playAnim('singRIGHT', true);
 			    }
 		    }
 
@@ -2535,9 +2543,9 @@ class PlayState extends MusicBeatState
 		trace('Unable to find character of ID "$id" isDad: $isDad');
 
 		if (isDad)
-			return dad;
+			return curDAD;
 		else
-			return boyfriend;
+			return curBF;
 	}
 
 	public inline function spawnNoteSplash(noteData:Int) {

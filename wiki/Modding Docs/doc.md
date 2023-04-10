@@ -63,6 +63,7 @@ Classes:
 - `FlxText`
 - `FlxGraphic`
 - `FlxTween`
+- `FlxEase`
 - `FlxCamera`
 - `File`
 - `FileSystem`

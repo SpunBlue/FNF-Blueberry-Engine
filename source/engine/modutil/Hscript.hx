@@ -1,5 +1,6 @@
 package engine.modutil;
 
+import flixel.tweens.FlxEase;
 import hxcodec.VideoHandler;
 import hxcodec.VideoSprite;
 import openfl.display.BitmapData;
@@ -61,6 +62,7 @@ class Hscript
 		interp.variables.set("FlxText", FlxText);
 		interp.variables.set("FlxGraphic", FlxGraphic);
 		interp.variables.set("FlxTween", FlxTween);
+		interp.variables.set("FlxEase", FlxEase);
 		interp.variables.set("FlxCamera", FlxCamera);
 		interp.variables.set("File", File);
 		interp.variables.set("Assets", Assets);

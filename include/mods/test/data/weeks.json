@@ -1,14 +1,14 @@
 {
     "weeks": [
         {
-            "name": "Template",
+            "name": "Example",
             "songs": [
-				"Its-Goofy"
+				"Month"
             ],
     
             "icon": "dad",
-            "week": 69420,
-            "rgb": [162, 147, 255]
+            "week": 0,
+            "rgb": [107, 254, 241]
         }
 	]
 }
