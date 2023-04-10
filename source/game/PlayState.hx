@@ -1608,14 +1608,14 @@ class PlayState extends MusicBeatState
 					{
 					    switch (Math.abs(daNote.noteData))
 					    {
-						case 0:
-							dad.playAnim('singLEFT' + altAnim, true);
-						case 1:
-							dad.playAnim('singDOWN' + altAnim, true);
-						case 2:
-							dad.playAnim('singUP' + altAnim, true);
-						case 3:
-							dad.playAnim('singRIGHT' + altAnim, true);
+						    case 0:
+							    dad.playAnim('singLEFT' + altAnim, true);
+						    case 1:
+							    dad.playAnim('singDOWN' + altAnim, true);
+						    case 2:
+							    dad.playAnim('singUP' + altAnim, true);
+						    case 3:
+							    dad.playAnim('singRIGHT' + altAnim, true);
 					    }
 				    }
 
@@ -2327,15 +2327,15 @@ class PlayState extends MusicBeatState
 			else
 			{
 			    switch (note.noteData)
-          {
-				case 0:
-					bf.playAnim('singLEFT', true);
-				case 1:
-					bf.playAnim('singDOWN', true);
-				case 2:
-					bf.playAnim('singUP', true);
-				case 3:
-					bf.playAnim('singRIGHT', true);
+                {
+				    case 0:
+					    bf.playAnim('singLEFT', true);
+				    case 1:
+					    bf.playAnim('singDOWN', true);
+				    case 2:
+					    bf.playAnim('singUP', true);
+				    case 3:
+					    bf.playAnim('singRIGHT', true);
 			    }
 		    }
 
