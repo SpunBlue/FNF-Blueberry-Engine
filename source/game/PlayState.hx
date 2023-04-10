@@ -188,10 +188,11 @@ class PlayState extends MusicBeatState
 	function setScriptVar(?onlyUpdate:Bool = false, script:Hscript){
 		if (!onlyUpdate){
 			// Functions
-			script.interp.variables.set("add", function(value:Dynamic)
+			script.interp.variables.set("add", function(value:FlxObject)
 			{
 				add(value);
 			});
+
 			script.interp.variables.set("setDefaultZoom", function(value:Dynamic, ?immediateZoom:Bool = false)
 			{
 				defaultCamZoom = value;
@@ -1575,17 +1576,21 @@ class PlayState extends MusicBeatState
 						altAnim = '-alt';
 
 					var cID = daNote.sangByCharID;
+					var dad = curDAD;
+
+					if (cID != 0)
+						dad = getCharFromID(cID, true);
 
 					switch (Math.abs(daNote.noteData))
 					{
 						case 0:
-							getCharFromID(cID, true).playAnim('singLEFT' + altAnim, true);
+							dad.playAnim('singLEFT' + altAnim, true);
 						case 1:
-							getCharFromID(cID, true).playAnim('singDOWN' + altAnim, true);
+							dad.playAnim('singDOWN' + altAnim, true);
 						case 2:
-							getCharFromID(cID, true).playAnim('singUP' + altAnim, true);
+							dad.playAnim('singUP' + altAnim, true);
 						case 3:
-							getCharFromID(cID, true).playAnim('singRIGHT' + altAnim, true);
+							dad.playAnim('singRIGHT' + altAnim, true);
 					}
 
 					// if (!daNote.isSustainNote && !daNote.hideBitch){
@@ -2197,17 +2202,21 @@ class PlayState extends MusicBeatState
 				health += 0.005;
 
 			var cID:Int = note.sangByCharID;
+			var bf = curBF;
+
+			if (cID != 0)
+				bf = getCharFromID(cID, false);
 
 			switch (note.noteData)
 			{
 				case 0:
-					getCharFromID(cID, false).playAnim('singLEFT', true);
+					bf.playAnim('singLEFT', true);
 				case 1:
-					getCharFromID(cID, false).playAnim('singDOWN', true);
+					bf.playAnim('singDOWN', true);
 				case 2:
-					getCharFromID(cID, false).playAnim('singUP', true);
+					bf.playAnim('singUP', true);
 				case 3:
-					getCharFromID(cID, false).playAnim('singRIGHT', true);
+					bf.playAnim('singRIGHT', true);
 			}
 
 			playerStrums.forEach(function(spr:FlxSprite)
@@ -2414,9 +2423,9 @@ class PlayState extends MusicBeatState
 		trace('Unable to find character of ID "$id" isDad: $isDad');
 
 		if (isDad)
-			return dad;
+			return curDAD;
 		else
-			return boyfriend;
+			return curBF;
 	}
 
 	public inline function spawnNoteSplash(noteData:Int) {
