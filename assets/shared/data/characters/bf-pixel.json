@@ -1,7 +1,7 @@
 {
     "imagePath": "characters/bfPixel.png",
     "xmlPath": "characters/bfPixel.xml",
-    "Position": [0, 0],
+    "Position": [0, 350],
     "CamPosition": [-100, 24],
     "animations": [
         {
