@@ -218,16 +218,6 @@ class PlayState extends MusicBeatState
 				return gfVersion;
 			});
 
-			script.interp.variables.set("startDialogue", function(name:String)
-			{
-				dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/$name.json', null, ModLib.getModID(ModLib.curMod), null));
-			});
-
-			script.interp.variables.set("startVideo", function(name:String, atEndOfSong:Bool = false, ?midSong:Bool = false)
-			{
-				playCutscene(name, atEndOfSong, midSong);
-			});
-
 			script.interp.variables.set("createTrail", function(char:Dynamic, graphic:Dynamic, length:Dynamic, delay:Dynamic, alpha:Dynamic, diff:Dynamic, ?addInGroup:Dynamic, ?group:Dynamic){
 				var trail = new FlxTrail(char, graphic, length, delay, alpha, diff);
 				
@@ -365,6 +355,10 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(SONG.bpm);
 
 		var modID:String = ModLib.getModID(ModLib.curMod);
+
+		if (ModAssets.assetExists('data/charts/' + SONG.song.toLowerCase() + '/dialogue.json', null, modID, null)){
+			dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/dialogue.json', null, modID, null));
+		}
 
 		for (file in FileSystem.readDirectory(ModAssets.getPath("data/charts/" + SONG.song.toLowerCase() + "/", null, modID, null))){
 			if (file != null && Path.extension(file).toLowerCase() == 'hx'){
