@@ -181,6 +181,17 @@ class FreeplayState extends MusicBeatState
 
                     FlxTween.tween(item, {x: 32}, 0.25, {ease: FlxEase.circOut});
 
+                    if (item.itemType == STORY_ITEM)
+                        scoreText.text = 'SCORE: ' + Highscore.getWeekScore(item.weekData.songs);
+                    else if (item.itemType == SONG_ITEM)
+                        scoreText.text = 'SCORE: ' + Highscore.getScore(item.song);
+                    else
+                        scoreText.text = 'SCORE: N/A';
+    
+                    if (item.mod != null){
+                        scoreText.text += '\nMOD: ' + item.mod.id;
+                    }
+
                     lastUpdated = curSelected;
                 }
 

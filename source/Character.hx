@@ -46,7 +46,6 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
-		curCharacter = character;
 		this.isPlayer = isPlayer;
 
 		antialiasing = true;
@@ -63,9 +62,14 @@ class Character extends FlxSprite
 				mod = ModAssets.findMod(chardata[1]);
 			else
 				mod = ModLib.curMod;
+
+			if (chardata[0] != null)
+				character = chardata[0];
 		}
 		else
 			mod = ModLib.curMod;
+
+		curCharacter = character;
 		
 		if (mod != null && ModVariables.characters.exists({string: '$character', mod: mod}))
 			charJson = ModVariables.characters.get({string: '$character', mod: mod});
@@ -75,9 +79,6 @@ class Character extends FlxSprite
 			addToDef = true;
 		}
 		else{
-			if (chardata != null && chardata.length > 0 && chardata[0] != null)
-				character = chardata[0];
-
 			charJson = Json.parse(ModAssets.getAsset('data/characters/$character.json', mod, null, 'shared'));
 
 			if (mod == null || ModLib.getModID(ModLib.curMod) == null)
@@ -138,7 +139,6 @@ class Character extends FlxSprite
 		else if (animation.exists('danceRight'))
 			animation.play('danceRight');
 
-		// REPLACE LATER WITH "QUICKLOAD" SCRIPT!!! (HScript embeded in JSON)
 		if (character.toLowerCase() == 'pico-speaker'){
 			playAnim('shoot1');
 			loadMappedAnims();
