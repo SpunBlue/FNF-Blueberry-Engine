@@ -218,9 +218,9 @@ class PlayState extends MusicBeatState
 				return gfVersion;
 			});
 
-			script.interp.variables.set("startDialogue", function(file:Dynamic)
+			script.interp.variables.set("startDialogue", function(name:String)
 			{
-				dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/$file.json', null, ModLib.getModID(ModLib.curMod), null));
+				dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/$name.json', null, ModLib.getModID(ModLib.curMod), null));
 			});
 
 			script.interp.variables.set("startVideo", function(name:String, atEndOfSong:Bool = false, ?midSong:Bool = false)
