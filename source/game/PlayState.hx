@@ -2493,18 +2493,18 @@ class PlayState extends MusicBeatState
 				FlxG.sound.music.stop();
 			else
 				FlxG.sound.music.volume = 0;
-	
+
 			tVol = FlxG.sound.volume;
-	
+
 			var video:VideoHandler = new VideoHandler();
 			video.finishCallback = function()
 			{
 				FlxG.sound.volume = tVol;
-	
+
 				if (atEndOfSong)
 				{
 					songPlaylist.remove(songPlaylist[0]);
-	
+
 					if (songPlaylist.length <= 0)
 						FlxG.switchState(new FreeplayState());
 					else
@@ -2518,15 +2518,15 @@ class PlayState extends MusicBeatState
 				else
 					FlxG.sound.music.volume = 1;
 			}
-	
-			video.playVideo(ModAssets.getAsset('videos/$name.mp4', null, ModLib.getModID(ModLib.curMod), null));
-			
+
+			video.playVideo(Paths.video(name));
+
 			if (FlxG.sound.volume < 0.5)
 				FlxG.sound.volume = 0.5;
 		}
 		else{
 			trace('Attempted to play cutscene while cutscenes were disabled.');
-			
+
 			if (atEndOfSong == true){
 				PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 				LoadingState.loadAndSwitchState(new PlayState(), false);
