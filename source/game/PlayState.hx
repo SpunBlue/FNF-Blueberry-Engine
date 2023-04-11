@@ -644,17 +644,18 @@ class PlayState extends MusicBeatState
 				case 'guns':
 					gunsIntro();
 				default:
-					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-						script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared'));
-					}
-					else{
-					    startCountdown();
-					}
 					if (dialogue == null)
 						startCountdown();
 					else{
 						add(doof);
 					}
+			}
+
+			if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
+				script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared'));
+			}
+			else{
+				startCountdown();
 			}
 		}
 		else
@@ -1796,7 +1797,6 @@ class PlayState extends MusicBeatState
 				blackShit.scrollFactor.set();
 				add(blackShit);
 				camHUD.visible = false;
-	
 				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 		}
 
