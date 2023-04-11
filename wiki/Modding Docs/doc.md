@@ -79,7 +79,7 @@ For the script information, scroll down.
 To use Hscript you must have basic and sometimes intermediate knowledge of Haxe and HaxeFlixel, The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
 
 Avaliable on all:
-- `onCreate()`: Called when the gameplay state is created.
+- `create()`: Called when the gameplay state is created.
 - `update(elapsed:Float)`: Called every frame before the gameplay state is updated.
 Avaliable on some:
 - `createPost()`: Called after the gameplay state is created.
@@ -95,7 +95,7 @@ To add custom behavior to the game, modders can write their own functions and ad
 ```haxe
 var sprite:FlxSprite;
 
-function onCreate(){
+function create(){
     trace("State created.");
 
     sprite = new FlxSprite(0, 0);
@@ -183,6 +183,7 @@ Classes:
 Functions:
 - `add(value:FlxObject)`: Adds a FlxObject to the scene.
 - `setDefaultZoom(value:Dynamic, ?immediateZoom:Bool = false)`: Sets the default camera zoom.
+- `setCameraSpeed(value:Dynamic)`: Sets the camera speed.
 - `setGF(value:String)`: Sets the current Girlfriend.
 - `curGF()`: Returns the current Girlfriend.
 - `createTrail(char:FlxObject, graphic:FlxGraphic, length:Int, delay:Float, alpha:Float, diff:Float, ?addInGroup:Bool, ?group:FlxGroup)`: Creates a trail effect.

@@ -1,6 +1,6 @@
 var wiggleShit:WiggleEffect = new WiggleEffect();
 
-function onCreate(){
+function create(){
     var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
     var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
 

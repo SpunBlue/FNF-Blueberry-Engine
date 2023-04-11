@@ -432,7 +432,7 @@ class PlayState extends MusicBeatState
 
 		setScriptVar(false, script);
 
-		script.call("onCreate"); // A lot of stuff here will not run or work properly.
+		script.call("create"); // A lot of stuff here will not run or work properly.
 
 		if (ModAssets.assetExists('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared')){
 			stageData = cast Json.parse(ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared'));
@@ -643,8 +643,13 @@ class PlayState extends MusicBeatState
 					stressIntro();
 				case 'guns':
 					gunsIntro();
-	
 				default:
+					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
+						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
+					}
+					else{
+					    startCountdown();
+					}
 					if (dialogue == null)
 						startCountdown();
 					else{
@@ -851,6 +856,7 @@ class PlayState extends MusicBeatState
 		spr.updateHitbox();
 		spr.screenCenter();
 		add(spr);
+
 		FlxTween.tween(spr, {y: spr.y += 100, alpha: 0}, Conductor.crochet / 1000, {
 			ease: FlxEase.cubeInOut,
 			onComplete: function(twn:FlxTween)
@@ -1780,6 +1786,9 @@ class PlayState extends MusicBeatState
 
 		switch (SONG.song.toLowerCase()){
 			default:
+				if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
+					script.loadScript('cutscenes', SONG.song.toLowerCase() + '-end', ModLib.getModID(ModLib.curMod));
+				}
 				trace('Continuing');
 			case 'eggnog':
 				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
@@ -2484,18 +2493,18 @@ class PlayState extends MusicBeatState
 				FlxG.sound.music.stop();
 			else
 				FlxG.sound.music.volume = 0;
-	
+
 			tVol = FlxG.sound.volume;
-	
+
 			var video:VideoHandler = new VideoHandler();
 			video.finishCallback = function()
 			{
 				FlxG.sound.volume = tVol;
-	
+
 				if (atEndOfSong)
 				{
 					songPlaylist.remove(songPlaylist[0]);
-	
+
 					if (songPlaylist.length <= 0)
 						FlxG.switchState(new FreeplayState());
 					else
@@ -2509,15 +2518,15 @@ class PlayState extends MusicBeatState
 				else
 					FlxG.sound.music.volume = 1;
 			}
-	
+
 			video.playVideo(Paths.video(name));
-			
+
 			if (FlxG.sound.volume < 0.5)
 				FlxG.sound.volume = 0.5;
 		}
 		else{
 			trace('Attempted to play cutscene while cutscenes were disabled.');
-			
+
 			if (atEndOfSong == true){
 				PlayState.SONG = Song.loadFromJson(songPlaylist[0].songName.toLowerCase(), songPlaylist[0].songName);
 				LoadingState.loadAndSwitchState(new PlayState(), false);

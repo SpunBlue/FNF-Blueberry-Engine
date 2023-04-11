@@ -1,7 +1,7 @@
 var bgGirls:BackgroundGirls;
 var repositionShit = -200;
 
-function onCreate(){
+function create(){
     var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky', 'week6'));
     bgSky.scrollFactor.set(0.1, 0.1);
     bgSky.antialiasing = false;
