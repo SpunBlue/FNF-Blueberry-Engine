@@ -81,7 +81,7 @@ class Note extends FlxSprite
 
 	public var noteJson:NoteJson;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true, ?specialType:String, ?noteType:String = '')
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true, ?specialType:String)
 	{
 		super();
 
@@ -113,11 +113,11 @@ class Note extends FlxSprite
 		}
 
 		if (specialType != null){
-		    if (ModAssets.assetExists('data/notes/' + specialType.toLowerCase() + '/data.json', null, ModLib.getModID(ModLib.curMod), 'shared')){
-			    noteJson = Json.parse(ModAssets.getAsset('data/notes/' + specialType.toLowerCase() + '/data.json', null, ModLib.getModID(ModLib.curMod), 'shared'));
+		    if (ModAssets.assetExists('data/notes/' + specialType.toLowerCase() + '.json', null, ModLib.getModID(ModLib.curMod), 'shared')){
+			    noteJson = Json.parse(ModAssets.getAsset('data/notes/' + specialType.toLowerCase() + '.json', null, ModLib.getModID(ModLib.curMod), 'shared'));
 		    }
-		    if (ModAssets.assetExists('data/notes/' + specialType.toLowerCase() + '/script.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-			    PlayState.script.loadScript('notes/' + specialType.toLowerCase(), 'script', ModLib.getModID(ModLib.curMod));
+		    if (ModAssets.assetExists('data/notes/' + specialType.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
+			    PlayState.script.loadScript('notes', specialType.toLowerCase(), ModLib.getModID(ModLib.curMod));
 		    }
 		}
 

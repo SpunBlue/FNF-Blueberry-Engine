@@ -938,7 +938,12 @@ class PlayState extends MusicBeatState
 				else
 					strum = cpuStrums;
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, null, strum.arrows[daNoteData], noteStyle, false);
+				var typelol:String = "";
+
+				if (songNotes[5] != null)
+					typelol = songNotes[5];
+
+				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, null, strum.arrows[daNoteData], noteStyle, false, typelol);
 				swagNote.sustainLength = songNotes[2];
 				swagNote.gfNote = (section.gfSection && (songNotes[1]<4));
 				swagNote.altNote = songNotes[3];

@@ -1,6 +1,8 @@
 package game.editors;
 
+import haxe.io.Path;
 import Note.NoteData;
+import sys.FileSystem;
 import util.EventNote;
 import lime.app.Application;
 import engine.modutil.ModVariables;
@@ -113,6 +115,8 @@ class ChartingState extends MusicBeatState
 
 	var hitsound:String = '-pluck';
 	var ext:String = 'ogg';
+
+	var noteActionDropdown:FlxUIDropDownMenu;
 
 	override function create()
 	{
@@ -649,10 +653,33 @@ class ChartingState extends MusicBeatState
 
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
 
+		var noteActions:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteTypeList'));
+
+		if (ModLib.curMod != null){
+			if (ModVariables.noteTypeList == null)
+				ModVariables.updateNoteTypeList();
+
+			for (goofyNote in ModVariables.noteTypeList){
+				noteActions.push('${goofyNote.string}:${goofyNote.mod.id}');
+			}
+		}
+
+		var instructionsNote:FlxText = new FlxText(10, 90, 0, "Note Type");
+
+		noteActionDropdown = new FlxUIDropDownMenu(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(noteActions, true), function(lol:String)
+		{	
+			if (curSelectedNote != null)
+				curSelectedNote[5] = noteActionDropdown.selectedLabel;
+
+			updateGrid();
+		});
+
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
 		tab_group_note.add(info);
 		tab_group_note.add(idSingStepper);
+		tab_group_note.add(instructionsNote);
+		tab_group_note.add(noteActionDropdown);
 
 		UI_box.addGroup(tab_group_note);
 	}
@@ -1298,6 +1325,11 @@ class ChartingState extends MusicBeatState
 			}
 			else
 				idSingStepper.value = 0;
+
+			if (curSelectedNote[5] != null)
+				noteActionDropdown.selectedLabel = curSelectedNote[5];
+			else
+				noteActionDropdown.selectedLabel = "";
 		}
 	}
 
@@ -1508,6 +1540,8 @@ class ChartingState extends MusicBeatState
 		{
 			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteAlt]);
 		}
+
+		noteActionDropdown.selectedLabel = "";
 
 		trace(noteStrum);
 		trace(curSection);
