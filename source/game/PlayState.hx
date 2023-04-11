@@ -644,12 +644,6 @@ class PlayState extends MusicBeatState
 				case 'guns':
 					gunsIntro();
 				default:
-					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
-						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
-					}
-					else{
-					    startCountdown();
-					}
 					if (dialogue == null)
 						startCountdown();
 					else{
@@ -1786,9 +1780,6 @@ class PlayState extends MusicBeatState
 
 		switch (SONG.song.toLowerCase()){
 			default:
-				if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-					script.loadScript('cutscenes', SONG.song.toLowerCase() + '-end', ModLib.getModID(ModLib.curMod));
-				}
 				trace('Continuing');
 			case 'eggnog':
 				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
@@ -1796,7 +1787,6 @@ class PlayState extends MusicBeatState
 				blackShit.scrollFactor.set();
 				add(blackShit);
 				camHUD.visible = false;
-	
 				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 		}
 
