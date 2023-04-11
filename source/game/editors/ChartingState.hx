@@ -653,16 +653,7 @@ class ChartingState extends MusicBeatState
 
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
 
-		var noteActions:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteTypeList'));
-
-		if (ModLib.curMod != null){
-			if (ModVariables.noteTypeList == null)
-				ModVariables.updateNoteTypeList();
-
-			for (goofyNote in ModVariables.noteTypeList){
-				noteActions.push('${goofyNote.string}:${goofyNote.mod.id}');
-			}
-		}
+		var noteActions:Array<String> = [""];
 
 		var instructionsNote:FlxText = new FlxText(10, 90, 0, "Note Type");
 

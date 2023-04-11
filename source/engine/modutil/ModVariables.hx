@@ -28,8 +28,6 @@ class ModVariables{
     public static var characterList:Array<MData>;
     public static var stageList:Array<MData>;
 
-    public static var noteTypeList:Array<MData>;
-
     public static var validEvents:Array<EventListData> = [
         {eventName: "setZoom", var1Hint: "Which Camera? ('game' or 'hud').", var2Hint: "New Zoom Amount.", var3Hint: "Immediate Zoom? ('true', 'false', or blank)."},
         {eventName: "beatZoom", var1Hint: "Which Camera? ('game' or 'hud').", var2Hint: "How much zoom to add."},
@@ -69,15 +67,6 @@ class ModVariables{
         
         for (mod in ModLib.mods){
             readDirectory(ModAssets.getPath('data/stages/', mod, null, null, false), stageList, mod, 'hx');    
-        }
-    }
-
-    public static function updateNoteTypeList(){
-        if (noteTypeList == null)
-            noteTypeList = [];
-        
-        for (mod in ModLib.mods){
-            readDirectory(ModAssets.getPath('data/notes/', mod, null, null, false), noteTypeList, mod);    
         }
     }
 
