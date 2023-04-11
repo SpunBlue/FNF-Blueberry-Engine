@@ -223,9 +223,9 @@ class PlayState extends MusicBeatState
 				dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/$file.json', null, ModLib.getModID(ModLib.curMod), null));
 			});
 
-			script.interp.variables.set("startVideo", function(file:Dynamic)
+			script.interp.variables.set("startVideo", function(name:String, atEndOfSong:Bool = false, ?midSong:Bool = false)
 			{
-				playCutscene(file);
+				playCutscene(name, atEndOfSong, midSong);
 			});
 
 			script.interp.variables.set("createTrail", function(char:Dynamic, graphic:Dynamic, length:Dynamic, delay:Dynamic, alpha:Dynamic, diff:Dynamic, ?addInGroup:Dynamic, ?group:Dynamic){
@@ -646,12 +646,6 @@ class PlayState extends MusicBeatState
 					});
 				case 'senpai' | 'roses' | 'thorns':
 					schoolIntro();
-				case 'ugh':
-					ughIntro();
-				case 'stress':
-					stressIntro();
-				case 'guns':
-					gunsIntro();
 				default:
 					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
 						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
@@ -688,21 +682,6 @@ class PlayState extends MusicBeatState
 		}, 0);
 		#end
 
-	}
-
-	function ughIntro()
-	{
-		playCutscene('ughCutscene');
-	}
-
-	function gunsIntro()
-	{
-		playCutscene('gunsCutscene');
-	}
-
-	function stressIntro()
-	{
-		playCutscene('stressCutscene');
 	}
 
 	function schoolIntro():Void
