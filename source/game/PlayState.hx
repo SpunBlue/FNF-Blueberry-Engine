@@ -650,13 +650,6 @@ class PlayState extends MusicBeatState
 						add(doof);
 					}
 			}
-
-			if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-				script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared'));
-			}
-			else{
-				startCountdown();
-			}
 		}
 		else
 			startCountdown();
@@ -1787,9 +1780,6 @@ class PlayState extends MusicBeatState
 
 		switch (SONG.song.toLowerCase()){
 			default:
-				if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-					script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared'));
-				}
 				trace('Continuing');
 			case 'eggnog':
 				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
