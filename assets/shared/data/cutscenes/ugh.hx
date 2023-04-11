@@ -1,3 +1,0 @@
-function create(){
-    startVideo('ughCutscene');
-}

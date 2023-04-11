@@ -646,12 +646,18 @@ class PlayState extends MusicBeatState
 					});
 				case 'senpai' | 'roses' | 'thorns':
 					schoolIntro();
+				case 'ugh':
+					ughIntro();
+				case 'stress':
+					stressIntro();
+				case 'guns':
+					gunsIntro();
 				default:
 					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
 						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
 					}
 					else{
-						startCountdown();
+					    startCountdown();
 					}
 					if (dialogue == null)
 						startCountdown();
@@ -682,6 +688,21 @@ class PlayState extends MusicBeatState
 		}, 0);
 		#end
 
+	}
+
+	function ughIntro()
+	{
+		playCutscene('ughCutscene');
+	}
+
+	function gunsIntro()
+	{
+		playCutscene('gunsCutscene');
+	}
+
+	function stressIntro()
+	{
+		playCutscene('stressCutscene');
 	}
 
 	function schoolIntro():Void
@@ -844,6 +865,7 @@ class PlayState extends MusicBeatState
 		spr.updateHitbox();
 		spr.screenCenter();
 		add(spr);
+
 		FlxTween.tween(spr, {y: spr.y += 100, alpha: 0}, Conductor.crochet / 1000, {
 			ease: FlxEase.cubeInOut,
 			onComplete: function(twn:FlxTween)
