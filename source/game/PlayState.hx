@@ -168,7 +168,7 @@ class PlayState extends MusicBeatState
 	var rpcTimer:FlxTimer = new FlxTimer();
 	#end
 
-	public var script:Hscript = new Hscript();
+	public static var script:Hscript = new Hscript();
 
 	// layers
 	public var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
@@ -435,7 +435,7 @@ class PlayState extends MusicBeatState
 		script.call("create"); // A lot of stuff here will not run or work properly.
 
 		if (ModAssets.assetExists('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared')){
-			stageData = cast Json.parse(ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared'));
+			stageData = Json.parse(ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared'));
 			trace('Loading Custom Stage Json...');
 		}
 		else{
