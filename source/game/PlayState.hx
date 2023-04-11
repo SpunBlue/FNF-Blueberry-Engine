@@ -644,8 +644,8 @@ class PlayState extends MusicBeatState
 				case 'guns':
 					gunsIntro();
 				default:
-					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase(), null, ModLib.getModID(ModLib.curMod), 'shared')){
-						script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase(), null, ModLib.getModID(ModLib.curMod), 'shared'));
+					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
+						script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared'));
 					}
 					else{
 					    startCountdown();
