@@ -647,8 +647,8 @@ class PlayState extends MusicBeatState
 				case 'guns':
 					gunsIntro();
 				default:
-					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
-						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
+					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase(), null, ModLib.getModID(ModLib.curMod), 'shared')){
+						script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase(), null, ModLib.getModID(ModLib.curMod), 'shared'));
 					}
 					else{
 					    startCountdown();
@@ -1787,7 +1787,7 @@ class PlayState extends MusicBeatState
 		switch (SONG.song.toLowerCase()){
 			default:
 				if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-					script.loadScript('cutscenes', SONG.song.toLowerCase() + '-end', ModLib.getModID(ModLib.curMod));
+					script.loadScriptFP(ModAssets.getPath('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared'));
 				}
 				trace('Continuing');
 			case 'eggnog':
