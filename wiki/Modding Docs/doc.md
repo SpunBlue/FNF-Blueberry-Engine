@@ -8,7 +8,7 @@ goo goo ga ga, baby documentation, goo goo ga ga, not ready, goo goo ga ga.
 To use Hscript you must have basic and sometimes intermediate knowledge of Haxe and HaxeFlixel, The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
 
 Avaliable on all:
-- `onCreate()`: Called when the gameplay state is created.
+- `create()`: Called when the gameplay state is created.
 - `update(elapsed:Float)`: Called every frame before the gameplay state is updated.
 Avaliable on some:
 - `createPost()`: Called after the gameplay state is created.
@@ -24,7 +24,7 @@ To add custom behavior to the game, modders can write their own functions and ad
 ```haxe
 var sprite:FlxSprite;
 
-function onCreate(){
+function create(){
     trace("State created.");
 
     sprite = new FlxSprite(0, 0);

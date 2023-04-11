@@ -218,6 +218,16 @@ class PlayState extends MusicBeatState
 				return gfVersion;
 			});
 
+			script.interp.variables.set("startDialogue", function(file:Dynamic)
+			{
+				dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/$file.json', null, ModLib.getModID(ModLib.curMod), null));
+			});
+
+			script.interp.variables.set("startVideo", function(file:Dynamic)
+			{
+				playCutscene(file);
+			});
+
 			script.interp.variables.set("createTrail", function(char:Dynamic, graphic:Dynamic, length:Dynamic, delay:Dynamic, alpha:Dynamic, diff:Dynamic, ?addInGroup:Dynamic, ?group:Dynamic){
 				var trail = new FlxTrail(char, graphic, length, delay, alpha, diff);
 				
@@ -356,10 +366,6 @@ class PlayState extends MusicBeatState
 
 		var modID:String = ModLib.getModID(ModLib.curMod);
 
-		if (ModAssets.assetExists('data/charts/' + SONG.song.toLowerCase() + '/dialogue.json', null, modID, null)){
-			dialogue = Json.parse(ModAssets.getContent('data/charts/' + SONG.song.toLowerCase() + '/dialogue.json', null, modID, null));
-		}
-
 		for (file in FileSystem.readDirectory(ModAssets.getPath("data/charts/" + SONG.song.toLowerCase() + "/", null, modID, null))){
 			if (file != null && Path.extension(file).toLowerCase() == 'hx'){
 				trace('Attempting to load script: $file');
@@ -431,7 +437,7 @@ class PlayState extends MusicBeatState
 
 		setScriptVar(false, script);
 
-		script.call("onCreate"); // A lot of stuff here will not run or work properly.
+		script.call("create"); // A lot of stuff here will not run or work properly.
 
 		if (ModAssets.assetExists('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared')){
 			stageData = cast Json.parse(ModAssets.getAsset('data/stages/' + curStage.toLowerCase() + '/data.json', null, modID, 'shared'));
@@ -646,8 +652,10 @@ class PlayState extends MusicBeatState
 					stressIntro();
 				case 'guns':
 					gunsIntro();
-	
 				default:
+					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
+						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
+					}
 					if (dialogue == null)
 						startCountdown();
 					else{
@@ -1780,6 +1788,9 @@ class PlayState extends MusicBeatState
 
 		switch (SONG.song.toLowerCase()){
 			default:
+				if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '-end.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
+					script.loadScript('cutscenes', SONG.song.toLowerCase() + '-end', ModLib.getModID(ModLib.curMod));
+				}
 				trace('Continuing');
 			case 'eggnog':
 				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
@@ -2510,7 +2521,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.music.volume = 1;
 			}
 	
-			video.playVideo(Paths.video(name));
+			video.playVideo(ModAssets.getAsset('videos/$name.mp4', null, ModLib.getModID(ModLib.curMod), null));
 			
 			if (FlxG.sound.volume < 0.5)
 				FlxG.sound.volume = 0.5;

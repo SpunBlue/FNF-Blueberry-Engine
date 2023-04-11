@@ -2,7 +2,7 @@ var upperBoppers:FlxSprite;
 var bottomBoppers:FlxSprite;
 var santa:FlxSprite;
 
-function onCreate(){
+function create(){
     var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG', 'week5'));
     bg.antialiasing = true;
     bg.scrollFactor.set(0.2, 0.2);

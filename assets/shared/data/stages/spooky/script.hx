@@ -1,6 +1,6 @@
 var halloweenBG:FlxSprite;
 
-function onCreate(){
+function create(){
     var hallowTex:FlxAtlasFrames = Paths.getSparrowAtlas('halloween_bg', 'week2'); // broken... somehow?
 
     halloweenBG = new FlxSprite(-200, -100);

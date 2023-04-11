@@ -13,7 +13,7 @@ var trainCooldown:Int = 0;
 
 var curLight:Int = 0;
 
-function onCreate(){
+function create(){
     var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky', 'week3'));
     bg.scrollFactor.set(0.1, 0.1);
     add(bg);

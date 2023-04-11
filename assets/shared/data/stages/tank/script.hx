@@ -5,7 +5,7 @@ var bfTankCutsceneLayer:FlxGroup;
 var tankWatchtower:BGSprite;
 var tankGround:BGSprite;
 
-function onCreate(){
+function create(){
     var bg:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0, 'week7');
     add(bg);
 
