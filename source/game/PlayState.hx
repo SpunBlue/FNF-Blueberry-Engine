@@ -656,6 +656,9 @@ class PlayState extends MusicBeatState
 					if (ModAssets.assetExists('data/cutscenes/' + SONG.song.toLowerCase() + '.hx', null, modID, 'shared')){
 						script.loadScript('cutscenes', SONG.song.toLowerCase(), modID);
 					}
+					else{
+						startCountdown();
+					}
 					if (dialogue == null)
 						startCountdown();
 					else{
