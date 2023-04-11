@@ -3,7 +3,6 @@ goo goo ga ga, baby documentation, goo goo ga ga, not ready, goo goo ga ga.
 
 ## Current Issues
 
-
 ## How to use Hscript Support.
 To use Hscript you must have basic and sometimes intermediate knowledge of Haxe and HaxeFlixel, The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
 
@@ -110,6 +109,7 @@ Classes:
 Functions:
 - `add(value:FlxObject)`: Adds a FlxObject to the scene.
 - `setDefaultZoom(value:Dynamic, ?immediateZoom:Bool = false)`: Sets the default camera zoom.
+- `setCameraSpeed(value:Dynamic)`: Sets the camera speed.
 - `setGF(value:String)`: Sets the current Girlfriend.
 - `curGF()`: Returns the current Girlfriend.
 - `createTrail(char:FlxObject, graphic:FlxGraphic, length:Int, delay:Float, alpha:Float, diff:Float, ?addInGroup:Bool, ?group:FlxGroup)`: Creates a trail effect.
