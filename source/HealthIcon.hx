@@ -1,5 +1,6 @@
 package;
 
+import engine.modutil.ModVariables;
 import engine.modding.SpunModLib.ModLib;
 import engine.modding.SpunModLib.ModAssets;
 import game.PlayState;

@@ -1,7 +1,79 @@
 # Welcome to Blueberry Engine!
 goo goo ga ga, baby documentation, goo goo ga ga, not ready, goo goo ga ga.
 
-## Current Issues
+## How to use Custom Character support
+It's pretty simple, if you know how (Psych Engine)[https://github.com/ShadowMario/FNF-PsychEngine]'s Custom Character support you can figure this out easily by just reading the Character Json's in `assets/shared/data/characters`. But because this is a tutorial I do have to actually WRITE how to use it, damn it.
+
+So for context, here's part of Daddy Dearest's Character file.
+```json
+{
+  "imagePath": "characters/DADDY_DEAREST.png",
+  "xmlPath": "characters/DADDY_DEAREST.xml",
+  "Position": [0, 0],
+  "CamPosition": [0, 0],
+  "animations": [
+    {
+      "prefix": "Dad idle dance",
+      "name": "idle",
+      "fps": 24,
+      "indices": null,
+      "offsets": [0, 0]
+    },
+    {
+      "prefix": "Dad Sing Note UP",
+      "name": "singUP",
+      "fps": 24,
+      "indices": null,
+      "offsets": [-6, 50]
+    }
+  ],
+	"healthBarColor": [
+		175,
+		102,
+		206
+	],
+  "antialiasing": true,
+  "singHold": 6.1,
+  "size": 1
+}
+```
+
+Here's what the shits mean:
+- `imagePath`: The path to the image file, excluding `assets/images` or `/images/`, don't put that shit.
+- `xmlPath`: Basically `imagePath` but for XML's.
+- `Position`: The X and Y offsets for the Character.
+- `CamPosition`: The X and Y offsets for the Camera when the Character is focused on.
+- `animations`: The array of animations.
+    - `prefix`: Animation name within XML File.
+    - `name`: Animation name in-game.
+    - `fps`: Animation Framerate.
+    - `indices`: What frames to play specifically.
+    - `offsets`: Animation offsets.
+- `healthBarColor`: RGB Values for the Health Bar Color.
+- `antialiasing`: Antialiasing.
+- `singHold`: Not exactly sure what it does to be honest. My theory because I'm too lazy to check is that it's the amount of frames to offset the animation when there's a sustain note or something.
+- `size`: Scale of the Character.
+
+If you're wondering how Icons work, just make an Icons folder in your Mods `images` folder and then put an icon with a name like this: `icon-character.png`. Putting a dash in the character name will allow any characters with the first part of the name to use this icon no matter what.
+
+## How to use Custom Stage support
+In your mods data folder, create a folder named "stages". now make a new folder within the stages folder, naming the folder what you want the stages name to be.
+Now that you have your stage folder ready, create a JSON named `data` and a hx file named `script`.
+
+The JSON data should contain the following data:
+```json
+{
+    "defaultZoom": 0.9,
+    "spawnGirlfriend": true,
+
+    "boyfriend": [770, 100],
+    "girlfriend": [400, 130],
+    "dad": [100, 100]
+}
+```
+Should be self-explanatory.
+
+For the script information, scroll down.
 
 ## How to use Hscript Support.
 To use Hscript you must have basic and sometimes intermediate knowledge of Haxe and HaxeFlixel, The engine provides several hooks that modders can use to insert custom behavior into the game. The following hooks are currently available:
@@ -40,10 +112,12 @@ function updatePost(elapsed){
 }
 ```
 
-If a function doesn't need any parameters, it needs to be defined without any.
+When a script is loaded, it overrides these functions. So if you have 2 scripts that use the same functions, it won't work. There's most likely ways around this but I haven't tested them. I do know you can run functions and even modify variables from other scripts within a script if that script is loaded with it, so you could probably make some sort of host script that contains the functions needed.
 
 ### Accessing Haxe and Flixel Classes and Functions.
-The engine provides access to various classes, and functions, through global variables. Modders can use these variables in all states. Keep in mind that this list isn't fully detailed. Here is a list of avaliable global variables:
+The engine provides access to various classes, and functions, through global variables.
+
+Here is a list of avaliable global variables:
 
 Classes:
 - `Int`

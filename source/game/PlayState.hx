@@ -1,5 +1,6 @@
 package game;
 
+import engine.modutil.ModVariables;
 import Note.NoteData;
 import util.EventNote.ChartEvent;
 import flixel.system.FlxAssets.FlxSoundAsset;
@@ -445,6 +446,7 @@ class PlayState extends MusicBeatState
 
 		gf = new Character(stageData.girlfriend[0], stageData.girlfriend[1], gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
+		gf.ID = 0;
 		if (stageData.spawnGirlfriend)
 		    gfGroup.add(gf);
 
@@ -600,11 +602,6 @@ class PlayState extends MusicBeatState
 		scoreTxt.cameras = [camHUD];
 		hitsTxt.cameras = [camHUD];
 
-		// if (SONG.song == 'South')
-		// FlxG.camera.alpha = 0.7;
-		// UI_camera.zoom = 1;
-
-		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 
 		if (PreferencesMenu.getPref('cutscenes') == true){
@@ -1336,6 +1333,9 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.O)
+			trace(ModVariables.characters);
 
 		#if (windows||linux)
 		textSpacer = '•';
