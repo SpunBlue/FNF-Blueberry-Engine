@@ -1,6 +1,6 @@
 {
-    "imagePath": "hurtNote",
-    "xmlPath": "hurtNote",
+    "imagePath": "hurtNote.png",
+    "xmlPath": "hurtNote.xml",
     "animations": {
         "greenScroll": "green0",
         "redScroll": "red0",
