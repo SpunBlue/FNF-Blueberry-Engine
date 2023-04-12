@@ -81,7 +81,7 @@ class Note extends FlxSprite
 
 	public var noteJson:NoteJson;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true, ?specialType:String)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?specialType:String = '', ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true)
 	{
 		super();
 
@@ -115,10 +115,6 @@ class Note extends FlxSprite
 		if (specialType != null){
 		    if (ModAssets.assetExists('data/notes/' + specialType + '.json', null, ModLib.getModID(ModLib.curMod), 'shared')){
 			    noteJson = Json.parse(ModAssets.getAsset('data/notes/' + specialType + '.json', null, ModLib.getModID(ModLib.curMod), 'shared'));
-		    }
-		    if (ModAssets.assetExists('data/notes/' + specialType + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-			    PlayState.script.loadScript('notes', specialType, ModLib.getModID(ModLib.curMod));
-				PlayState.script.interp.variables.set("specialType", specialType);
 		    }
 		}
 

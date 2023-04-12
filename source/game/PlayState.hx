@@ -168,7 +168,7 @@ class PlayState extends MusicBeatState
 	var rpcTimer:FlxTimer = new FlxTimer();
 	#end
 
-	public static var script:Hscript = new Hscript();
+	public var script:Hscript = new Hscript();
 
 	// layers
 	public var boyfriendGroup:FlxTypedGroup<Boyfriend> = new FlxTypedGroup();
@@ -943,7 +943,7 @@ class PlayState extends MusicBeatState
 				if (songNotes[5] != null)
 					typelol = songNotes[5];
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, null, strum.arrows[daNoteData], noteStyle, false, typelol);
+				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, typelol, null, strum.arrows[daNoteData], noteStyle, false);
 				swagNote.sustainLength = songNotes[2];
 				swagNote.gfNote = (section.gfSection && (songNotes[1]<4));
 				swagNote.altNote = songNotes[3];
@@ -970,7 +970,7 @@ class PlayState extends MusicBeatState
 				{
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, strum.arrows[daNoteData], noteStyle, false);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, typelol, true, strum.arrows[daNoteData], noteStyle, false);
 					sustainNote.sangByCharID = oldNote.sangByCharID;
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
