@@ -1,0 +1,18 @@
+{
+    "imagePath": "hurtNote.png",
+    "xmlPath": "hurtNote.xml",
+    "animations": {
+        "greenScroll": "green0",
+        "redScroll": "red0",
+        "blueScroll": "blue0",
+        "purpleScroll": "purple0",
+        "purpleholdend": "pruple end hold0",
+        "greenholdend": "green hold end0",
+        "redholdend": "red hold piece0",
+        "blueholdend": "blue hold end0",
+        "purplehold": "purple hold piece0",
+        "greenhold": "green hold piece0",
+        "redhold": "red hold end0",
+        "bluehold": "blue hold piece0"
+    }
+}

@@ -1,6 +1,8 @@
 package game.editors;
 
+import haxe.io.Path;
 import Note.NoteData;
+import sys.FileSystem;
 import util.EventNote;
 import lime.app.Application;
 import engine.modutil.ModVariables;
@@ -113,6 +115,8 @@ class ChartingState extends MusicBeatState
 
 	var hitsound:String = '-pluck';
 	var ext:String = 'ogg';
+
+	var noteActionDropdown:FlxUIDropDownMenu;
 
 	override function create()
 	{
@@ -649,10 +653,32 @@ class ChartingState extends MusicBeatState
 
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
 
+		var noteActions:Array<String> = [""];
+
+		if (FileSystem.readDirectory(ModAssets.getPath("data/notes/", null, ModLib.getModID(ModLib.curMod), 'shared')) != null){
+			for (file in FileSystem.readDirectory(ModAssets.getPath("data/notes/", null, ModLib.getModID(ModLib.curMod), 'shared'))){
+				if (file != null && file.contains('.json')){
+					noteActions.push(file.replace('.json', ''));
+				}
+			}
+		}
+
+		var instructionsNote:FlxText = new FlxText(10, 90, 0, "Note Type");
+
+		noteActionDropdown = new FlxUIDropDownMenu(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(noteActions, true), function(lol:String)
+		{	
+			if (curSelectedNote != null)
+				curSelectedNote[5] = noteActionDropdown.selectedLabel;
+
+			updateGrid();
+		});
+
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
 		tab_group_note.add(info);
 		tab_group_note.add(idSingStepper);
+		tab_group_note.add(instructionsNote);
+		tab_group_note.add(noteActionDropdown);
 
 		UI_box.addGroup(tab_group_note);
 	}
@@ -1298,6 +1324,11 @@ class ChartingState extends MusicBeatState
 			}
 			else
 				idSingStepper.value = 0;
+
+			if (curSelectedNote[5] != null)
+				noteActionDropdown.selectedLabel = curSelectedNote[5];
+			else
+				noteActionDropdown.selectedLabel = "";
 		}
 	}
 
@@ -1379,8 +1410,9 @@ class ChartingState extends MusicBeatState
 		var daNoteInfo = i[1];
 		var daStrumTime = i[0];
 		var daSus = i[2];
-		
-		var note:Note = new Note(daStrumTime, daNoteInfo % 4);
+		var daType = i[5];
+        
+		var note:Note = new Note(daStrumTime, daNoteInfo % 4, null, daType);
 		note.sustainLength = daSus;
 		note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 		note.updateHitbox();
@@ -1508,6 +1540,8 @@ class ChartingState extends MusicBeatState
 		{
 			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteAlt]);
 		}
+
+		noteActionDropdown.selectedLabel = "";
 
 		trace(noteStrum);
 		trace(curSection);
