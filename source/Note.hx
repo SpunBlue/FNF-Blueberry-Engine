@@ -118,6 +118,7 @@ class Note extends FlxSprite
 		    }
 		    if (ModAssets.assetExists('data/notes/' + specialType + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
 			    PlayState.script.loadScript('notes', specialType, ModLib.getModID(ModLib.curMod));
+				PlayState.script.interp.variables.set("specialType", specialType);
 		    }
 		}
 
