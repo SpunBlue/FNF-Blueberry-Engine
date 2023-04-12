@@ -137,7 +137,7 @@ class Note extends FlxSprite
 	}
 
 	public function updateStyle(style:String){
-		if (noteJson != null && noteJson.imagePath != null && noteJson.xmlPath != null){
+		if (noteJson != null){
 			var spriteAntialiasing:Bool = true;
 			var spriteScale:Float = 0;
 
