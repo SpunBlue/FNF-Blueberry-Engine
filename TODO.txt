@@ -1,3 +1,2 @@
 - custom cutscenes
 - custom note types scripts
-- stage json objects
