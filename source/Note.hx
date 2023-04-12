@@ -113,12 +113,12 @@ class Note extends FlxSprite
 		}
 
 		if (specialType != null){
-		    // if (ModAssets.assetExists('data/notes/' + specialType.toLowerCase() + '/data.json', null, ModLib.getModID(ModLib.curMod), 'shared')){
-			    // noteJson = Json.parse(ModAssets.getAsset('data/notes/' + specialType.toLowerCase() + '/data.json', null, ModLib.getModID(ModLib.curMod), 'shared'));
-		    // }
-		    // if (ModAssets.assetExists('data/notes/' + specialType.toLowerCase() + '/script.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
-			    // PlayState.script.loadScript('notes' + specialType.toLowerCase(), 'script', ModLib.getModID(ModLib.curMod));
-		    // }
+		    if (ModAssets.assetExists('data/notes/' + specialType + '.json', null, ModLib.getModID(ModLib.curMod), 'shared')){
+			    noteJson = Json.parse(ModAssets.getAsset('data/notes/' + specialType + '.json', null, ModLib.getModID(ModLib.curMod), 'shared'));
+		    }
+		    if (ModAssets.assetExists('data/notes/' + specialType + '.hx', null, ModLib.getModID(ModLib.curMod), 'shared')){
+			    PlayState.script.loadScript('notes', specialType, ModLib.getModID(ModLib.curMod));
+		    }
 		}
 
 		strumTrack = tracker;
@@ -146,7 +146,7 @@ class Note extends FlxSprite
 			if (noteJson.scale != null)
 				spriteScale = noteJson.scale;
 
-            frames = FlxAtlasFrames.fromSparrow(ModAssets.getAsset('images/' + noteJson.imagePath, ModLib.curMod, null, 'shared'), ModAssets.getAsset('images/' + noteJson.xmlPath, ModLib.curMod, null, 'shared'));
+			frames = FlxAtlasFrames.fromSparrow(ModAssets.getAsset('images/' + noteJson.imagePath, ModLib.curMod, null, 'shared'), ModAssets.getAsset('images/' + noteJson.xmlPath, ModLib.curMod, null, 'shared'));
 
 			animation.addByPrefix('greenScroll', noteJson.animations.greenScroll);
 			animation.addByPrefix('redScroll', noteJson.animations.redScroll);

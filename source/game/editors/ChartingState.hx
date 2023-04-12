@@ -655,6 +655,14 @@ class ChartingState extends MusicBeatState
 
 		var noteActions:Array<String> = [""];
 
+		if (FileSystem.readDirectory(ModAssets.getPath("data/notes/", null, ModLib.getModID(ModLib.curMod), 'shared')) != null){
+			for (file in FileSystem.readDirectory(ModAssets.getPath("data/notes/", null, ModLib.getModID(ModLib.curMod), 'shared'))){
+				if (file != null && file.contains('.json')){
+					noteActions.push(file.replace('.json', ''));
+				}
+			}
+		}
+
 		var instructionsNote:FlxText = new FlxText(10, 90, 0, "Note Type");
 
 		noteActionDropdown = new FlxUIDropDownMenu(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(noteActions, true), function(lol:String)
