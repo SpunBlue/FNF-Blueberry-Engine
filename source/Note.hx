@@ -1,9 +1,5 @@
 package;
 
-import haxe.Json;
-import engine.modding.SpunModLib.Mod;
-import engine.modding.SpunModLib.ModLib;
-import engine.modding.SpunModLib.ModAssets;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -79,9 +75,7 @@ class Note extends FlxSprite
 
 	public var sangByCharID:Int = 0;
 
-	public var noteJson:NoteJson;
-
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?specialType:String = '', ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?tracker:StrumArrow, ?style:String = '', ?inCharter:Bool = true)
 	{
 		super();
 
@@ -112,12 +106,6 @@ class Note extends FlxSprite
 			}
 		}
 
-		if (specialType != null){
-		    if (ModAssets.assetExists('data/notes/' + specialType + '.json', null, ModLib.getModID(ModLib.curMod), 'shared')){
-			    noteJson = Json.parse(ModAssets.getAsset('data/notes/' + specialType + '.json', null, ModLib.getModID(ModLib.curMod), 'shared'));
-		    }
-		}
-
 		strumTrack = tracker;
 
 		updateStyle(style);
@@ -133,100 +121,64 @@ class Note extends FlxSprite
 	}
 
 	public function updateStyle(style:String){
-		if (noteJson != null){
-			var spriteAntialiasing:Bool = true;
-			var spriteScale:Float = 0;
+		switch (style)
+		{
+			case 'pixel':
+				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels', 'week6'), true, 17, 17);
 
-			if (noteJson.antialiasing != null)
-				spriteAntialiasing = noteJson.antialiasing;
+				animation.add('greenScroll', [6]);
+				animation.add('redScroll', [7]);
+				animation.add('blueScroll', [5]);
+				animation.add('purpleScroll', [4]);
 
-			if (noteJson.scale != null)
-				spriteScale = noteJson.scale;
+				if (isSustainNote)
+				{
+					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds', 'week6'), true, 7, 6);
 
-			frames = FlxAtlasFrames.fromSparrow(ModAssets.getAsset('images/' + noteJson.imagePath, ModLib.curMod, null, 'shared'), ModAssets.getAsset('images/' + noteJson.xmlPath, ModLib.curMod, null, 'shared'));
+					animation.add('purpleholdend', [4]);
+					animation.add('greenholdend', [6]);
+					animation.add('redholdend', [7]);
+					animation.add('blueholdend', [5]);
 
-			animation.addByPrefix('greenScroll', noteJson.animations.greenScroll);
-			animation.addByPrefix('redScroll', noteJson.animations.redScroll);
-			animation.addByPrefix('blueScroll', noteJson.animations.blueScroll);
-			animation.addByPrefix('purpleScroll', noteJson.animations.purpleScroll);
+					animation.add('purplehold', [0]);
+					animation.add('greenhold', [2]);
+					animation.add('redhold', [3]);
+					animation.add('bluehold', [1]);
+				}
 
-			animation.addByPrefix('purpleholdend', noteJson.animations.purpleholdend);
-			animation.addByPrefix('greenholdend', noteJson.animations.greenholdend);
-			animation.addByPrefix('redholdend', noteJson.animations.redholdend);
-			animation.addByPrefix('blueholdend', noteJson.animations.blueholdend);
+				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+				updateHitbox();
 
-			animation.addByPrefix('purplehold', noteJson.animations.purplehold);
-			animation.addByPrefix('greenhold', noteJson.animations.greenhold);
-			animation.addByPrefix('redhold', noteJson.animations.redhold);
-			animation.addByPrefix('bluehold', noteJson.animations.bluehold);
+				antialiasing = false;
 
-			setGraphicSize(Std.int(width * (0.7 + spriteScale)));
-			updateHitbox();
-			antialiasing = spriteAntialiasing;
+			default:
+				frames = Paths.getSparrowAtlas('NOTE_assets');
 
-			if (isSustainNote && noteJson.alpha != null)
-				alpha = noteJson.alpha;
-		}
-		else{
-		    switch (style)
-		    {
-			    case 'pixel':
-				    loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels', 'week6'), true, 17, 17);
+				animation.addByPrefix('greenScroll', 'green instance');
+				animation.addByPrefix('redScroll', 'red instance');
+				animation.addByPrefix('blueScroll', 'blue instance');
+				animation.addByPrefix('purpleScroll', 'purple instance');
 
-				    animation.add('greenScroll', [6]);
-				    animation.add('redScroll', [7]);
-				    animation.add('blueScroll', [5]);
-				    animation.add('purpleScroll', [4]);
+				animation.addByPrefix('purpleholdend', 'pruple end hold');
+				animation.addByPrefix('greenholdend', 'green hold end');
+				animation.addByPrefix('redholdend', 'red hold end');
+				animation.addByPrefix('blueholdend', 'blue hold end');
 
-				    if (isSustainNote)
-				    {
-					    loadGraphic(Paths.image('weeb/pixelUI/arrowEnds', 'week6'), true, 7, 6);
+				animation.addByPrefix('purplehold', 'purple hold piece');
+				animation.addByPrefix('greenhold', 'green hold piece');
+				animation.addByPrefix('redhold', 'red hold piece');
+				animation.addByPrefix('bluehold', 'blue hold piece');
 
-					    animation.add('purpleholdend', [4]);
-					    animation.add('greenholdend', [6]);
-					    animation.add('redholdend', [7]);
-					    animation.add('blueholdend', [5]);
+				setGraphicSize(Std.int(width * 0.7));
+				updateHitbox();
+				antialiasing = true;
 
-					    animation.add('purplehold', [0]);
-					    animation.add('greenhold', [2]);
-					    animation.add('redhold', [3]);
-					    animation.add('bluehold', [1]);
-				    }
+				// colorSwap.colorToReplace = 0xFFF9393F;
+				// colorSwap.newColor = 0xFF00FF00;
 
-				    setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-				    updateHitbox();
-
-				    antialiasing = false;
-
-			    default:
-				    frames = Paths.getSparrowAtlas('NOTE_assets');
-
-				    animation.addByPrefix('greenScroll', 'green instance');
-				    animation.addByPrefix('redScroll', 'red instance');
-				    animation.addByPrefix('blueScroll', 'blue instance');
-				    animation.addByPrefix('purpleScroll', 'purple instance');
-
-				    animation.addByPrefix('purpleholdend', 'pruple end hold');
-				    animation.addByPrefix('greenholdend', 'green hold end');
-				    animation.addByPrefix('redholdend', 'red hold end');
-				    animation.addByPrefix('blueholdend', 'blue hold end');
-
-				    animation.addByPrefix('purplehold', 'purple hold piece');
-				    animation.addByPrefix('greenhold', 'green hold piece');
-				    animation.addByPrefix('redhold', 'red hold piece');
-				    animation.addByPrefix('bluehold', 'blue hold piece');
-
-				    setGraphicSize(Std.int(width * 0.7));
-				    updateHitbox();
-				    antialiasing = true;
-
-				    // colorSwap.colorToReplace = 0xFFF9393F;
-				    // colorSwap.newColor = 0xFF00FF00;
-
-				    // color = FlxG.random.color();
-				    // color.saturation *= 4;
-				    // replaceColor(0xFFC1C1C1, FlxColor.RED);
-		    }
+				// color = FlxG.random.color();
+				// color.saturation *= 4;
+				// replaceColor(0xFFC1C1C1, FlxColor.RED);
 		}
 
 		colorSwap = new ColorSwap();
@@ -363,28 +315,4 @@ class Note extends FlxSprite
 
 typedef NoteData = {
 	var ?singerID:Int;
-}
-
-typedef NoteJson = {
-	var ?imagePath:String;
-	var ?xmlPath:String;
-	var ?animations:NoteAnimations;
-	var ?scale:Float;
-	var ?alpha:Float;
-	var ?antialiasing:Bool;
-}
-
-typedef NoteAnimations = {
-	var greenScroll:String;
-	var redScroll:String;
-	var blueScroll:String;
-	var purpleScroll:String;
-	var purpleholdend:String;
-	var greenholdend:String;
-	var redholdend:String;
-	var blueholdend:String;
-	var purplehold:String;
-	var greenhold:String;
-	var redhold:String;
-	var bluehold:String;
 }
